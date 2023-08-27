@@ -4,7 +4,10 @@ services:
   registry:
     image: registry:latest
     volumes:
-    - ./docker/registry:/var/lib/registry
+    - ./.docker/registry/cache:/cache
+    - ./.docker/registry/config.yml:/etc/docker/registry/config.yml
+    environment:
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /cache
     networks:
     - game
   user:
