@@ -1,36 +1,12 @@
 version: '3.8'
 
 services:
-  team:
-    build:
-      context: ./.docker/teamserver
-      dockerfile: dockerfile
-    privileged: true
-    restart: always
-    deploy:
-      mode: replicated
-      replicas: ${TEAM_COUNT}
+  registry:
+    image: registry:latest
     volumes:
-    - ./services:/team
-    - ./.docker/teamserver/entry.sh:/entry.sh
-    working_dir: /team
-    entrypoint: sh /entry.sh
+    - ./docker/registry:/var/lib/registry
     networks:
     - game
-
-  api:
-    build:
-      context: ./.docker/api
-      dockerfile: dockerfile
-    hostname: api
-    restart: always
-    volumes:
-    - ./.docker/api/app:/code/app
-    environment:
-      - API_KEY=${API_KEY}
-    networks:
-    - game
-
   user:
     build:
       context: ./.docker/user

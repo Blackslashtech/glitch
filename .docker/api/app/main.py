@@ -26,9 +26,9 @@ def register_service(service_id: str, ip: str, api_key: str = ''):
     if service_id not in services:
         services[service_id] = []
     team_id = len(services[service_id])
-    hostname = 'team' + str(team_id) + '_' + service_id
+    hostname = 'team' + str(team_id) + '.' + service_id + '.lan'
     services[service_id].append({'team_id': team_id, 'service_id': service_id, 'ip': ip, 'hostname': hostname})
-    return team_id
+    return hostname
 
 
 @app.get('/targets')

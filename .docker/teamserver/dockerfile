@@ -1,4 +1,0 @@
-FROM docker:latest
-
-# Install curl
-RUN apk add curl

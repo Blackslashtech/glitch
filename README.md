@@ -6,7 +6,9 @@ A general purpose attack-defense range for zero-config deployment
 
 1. Drop each service into a folder in the [`./services`](services) directory.  Each service should have a `docker-compose.yml` file that defines the service.
 2. Modify the [`.env`](.env) as desired for all configuration options.
-3. Run `docker-compose up -d --build --force-recreate` to start the range.
+3. Run `sh up.sh` to start the range.
+
+To stop the range, run `sh down.sh`.
 
 
 # License

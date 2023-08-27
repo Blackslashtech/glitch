@@ -1,0 +1,209 @@
+@font-face {
+  font-family: Metshige;
+  src: url(/metshige.ttf);
+}
+
+.metshige {
+  font-family: Metshige, sans-serif;
+}
+
+.no-borders {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body,
+html {
+  font-family: "Roboto";
+  font-size: large;
+}
+
+.sohnav {
+  background-image: url("/nav_bg.png");
+  background-position: center bottom;
+  background-repeat: repeat-x;
+}
+
+.big-font {
+  font-size: xx-large;
+}
+
+.bg-1 {
+  background: url("/img/bg-1.jpg") rgba(0, 0, 0, 0.45);
+  background-position: center bottom;
+  background-size: cover;
+  background-blend-mode: multiply;
+}
+
+.bg-2 {
+  background: url("/img/bg-2.jpg") rgba(0, 0, 0, 0.45);
+  background-position: center center;
+  background-size: cover;
+  background-blend-mode: multiply;
+}
+
+.bg-3 {
+  background: url("/img/bg-3.jpg") rgba(0, 0, 0, 0.45);
+  background-position: center center;
+  background-size: cover;
+  background-blend-mode: multiply;
+}
+
+.bg-4 {
+  background: url("/img/bg-4.jpg");
+  background-position: center center;
+  background-size: cover;
+}
+
+.bg-scroll {
+  background: url("/img/bg-scroll.png");
+  background-position: center center;
+  background-size: cover;
+  /* z-index: -1; */
+}
+
+.smoke {
+  background: url("/img/smoke.png");
+  background-position: center center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.sea-1 {
+  background-image: url("/img/sea-1.png");
+  background-position: right center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.sea-2 {
+  background-image: url("/img/sea-2.png");
+  background-position: left center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.scroll-body {
+  background-image: url("/img/scroll-body.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.footer {
+  background-image: url("/img/footer.png");
+  background-position: center top;
+  background-repeat: repeat-x;
+  margin-top: -90px;
+  z-index: 10000 !important;
+  position: relative;
+}
+
+.w-10 {
+  width: 10%;
+}
+
+.w-20 {
+  width: 20%;
+}
+
+.w-30 {
+  width: 30%;
+}
+
+.w-40 {
+  width: 40%;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.w-60 {
+  width: 60%;
+}
+
+.w-70 {
+  width: 70%;
+}
+
+.w-80 {
+  width: 80%;
+}
+
+.w-90 {
+  width: 90%;
+}
+
+.w-33 {
+  width: 33.33%;
+}
+
+.w-66 {
+  width: 66.66%;
+}
+
+.bottom-1 {
+  margin-bottom: -20px;
+}
+
+.bg-color-0 {
+  background-color: #daa56e;
+}
+
+.bg-color-1 {
+  background-color: #9e0242;
+}
+
+.bg-color-2 {
+  background-color: #f46d43;
+}
+
+.bg-color-3 {
+  background-color: #ffe08b;
+}
+
+.bg-color-4 {
+  background-color: #abdda4;
+}
+
+.bg-color-5 {
+  background-color: #000000;
+}
+
+.bg-color-6 {
+  background-color: #3288bd;
+}
+
+.bg-color-7 {
+  background-color: #5e4fa2;
+}
+
+.bg-blank {
+  background-color: transparent !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.boat-container {
+  padding-bottom: 100%;
+}
+
+.selected-0 {
+  opacity: 0.5;
+}
+.selected-1 {
+  filter: invert(1);
+  border: 3px solid white;
+  border-radius: 16px;
+}
+
+.color-selected-1 {
+  opacity: 1;
+}
+
+.color-selected-0 {
+  opacity: 0.25;
+}

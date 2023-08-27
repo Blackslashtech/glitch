@@ -7,12 +7,20 @@ services:
       dockerfile: .docker/Dockerfile
     privileged: true
     restart: always
+    stop_signal: SIGINT
     volumes:
     - ./${SERVICE_ID}:/service
     - ./.docker/entry.sh:/entry.sh
+    # - ./.docker/cache:/var/lib/docker/image/overlay2/imagedb
     environment:
       - ROOT_PASSWORD=${ROOT_PASSWORD}
-      - SERVICE_ID=${SERVICE_ID}
+      - HOSTNAME=${HOSTNAME}
+    hostname: ${HOSTNAME}
     working_dir: /service
     entrypoint: sh /entry.sh
-    network_mode: host
+    networks:
+    - range_game
+
+networks:
+  range_game:
+    external: true
