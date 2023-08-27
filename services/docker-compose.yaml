@@ -8,10 +8,11 @@ services:
     privileged: true
     restart: always
     volumes:
-    - ./${SERVICE_NAME}:/service
+    - ./${SERVICE_ID}:/service
     - ./.docker/entry.sh:/entry.sh
     environment:
       - ROOT_PASSWORD=${ROOT_PASSWORD}
+      - SERVICE_ID=${SERVICE_ID}
     working_dir: /service
     entrypoint: sh /entry.sh
     network_mode: host

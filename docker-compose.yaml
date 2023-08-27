@@ -2,21 +2,39 @@ version: '3.8'
 
 services:
   team:
-    image: docker
+    build:
+      context: ./.docker/teamserver
+      dockerfile: dockerfile
     privileged: true
     restart: always
     deploy:
       mode: replicated
       replicas: ${TEAM_COUNT}
     volumes:
-    - ./services:/services
-    - ./.docker/entry.sh:/entry.sh
-    working_dir: /services
+    - ./services:/team
+    - ./.docker/teamserver/entry.sh:/entry.sh
+    working_dir: /team
     entrypoint: sh /entry.sh
     networks:
     - game
 
+  api:
+    build:
+      context: ./.docker/api
+      dockerfile: dockerfile
+    hostname: api
+    restart: always
+    volumes:
+    - ./app:/app
+    environment:
+      - API_KEY=${API_KEY}
+    networks:
+    - game
+
   user:
+    build:
+      context: ./.docker/user
+      dockerfile: dockerfile
     image: alpine:latest
     container_name: user
     entrypoint: sleep infinity
