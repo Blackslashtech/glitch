@@ -25,7 +25,7 @@ services:
     hostname: api
     restart: always
     volumes:
-    - ./app:/app
+    - ./.docker/api/app:/code/app
     environment:
       - API_KEY=${API_KEY}
     networks:
