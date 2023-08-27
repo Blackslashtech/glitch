@@ -1,0 +1,7 @@
+version: '3.8'
+
+services:
+  ping:
+    image: alpine:latest
+    container_name: user
+    entrypoint: sleep infinity

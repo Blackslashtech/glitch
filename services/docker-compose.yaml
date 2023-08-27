@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  host:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    privileged: true
+    restart: always
+    volumes:
+    - ./${SERVICE_NAME}:/service
+    - ./.docker/entry.sh:/entry.sh
+    environment:
+      - ROOT_PASSWORD=${ROOT_PASSWORD}
+    working_dir: /service
+    entrypoint: sh /entry.sh
+    network_mode: host

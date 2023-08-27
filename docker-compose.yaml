@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  team:
+    image: docker
+    privileged: true
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: ${TEAM_COUNT}
+    volumes:
+    - ./services:/services
+    - ./.docker/entry.sh:/entry.sh
+    working_dir: /services
+    entrypoint: sh /entry.sh
+    networks:
+    - game
+
+  user:
+    image: alpine:latest
+    container_name: user
+    entrypoint: sleep infinity
+    networks:
+    - game
+
+networks:
+  game:
+    driver: bridge
