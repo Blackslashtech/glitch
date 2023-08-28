@@ -1,12 +1,19 @@
 #!/bin/sh
 
+# Create randomized api key
+API_KEY="$(openssl rand -hex 16)"
+TEAM_COUNT=2
+VPN_PER_TEAM=1
+VPN_SERVER_URL="localhost"
+
 source .env set
 
-echo "Starting range services..."
-docker-compose up -d --build --force-recreate > /dev/null
+VPN_COUNT=$(expr $TEAM_COUNT \* $VPN_PER_TEAM)
 
-# Sleep for 5 seconds to allow range services to come up
-sleep 5
+echo "API KEY: $API_KEY"
+
+echo "Starting range services..."
+API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT SERVERURL=$VPN_SERVER_URL docker-compose up -d --build --force-recreate > /dev/null
 
 # Loop from 1 to $TEAM_COUNT
 for TEAM_ID in $(seq 1 $TEAM_COUNT); do
@@ -27,7 +34,7 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
             ROOT_PASSWORD="$(openssl rand -hex 16)"
             HOSTNAME=$(echo "team$TEAM_ID-$SERVICE_ID" | tr '[:upper:]' '[:lower:]')
             echo "Starting $HOSTNAME, root password is $ROOT_PASSWORD ..."
-            HOSTNAME=$HOSTNAME SERVICE_ID=$SERVICE_ID ROOT_PASSWORD=$ROOT_PASSWORD docker-compose -f services/docker-compose.yaml --project-name $HOSTNAME up -d --build --force-recreate
+            API_KEY=$API_KEY HOSTNAME=$HOSTNAME SERVICE_ID=$SERVICE_ID ROOT_PASSWORD=$ROOT_PASSWORD docker-compose -f services/docker-compose.yaml --project-name $HOSTNAME up -d --build --force-recreate
         fi
     done
 done

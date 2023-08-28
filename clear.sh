@@ -24,9 +24,8 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
             SERVICE_ID="$(basename "$dir")"
             # Generate a random root password
             HOSTNAME=$(echo "team$TEAM_ID-$SERVICE_ID" | tr '[:upper:]' '[:lower:]')
-            DOCKERNAME="$HOSTNAME-host-1"
             echo "Deleting $HOSTNAME..."
-            docker rm $DOCKERNAME > /dev/null &
+            docker rm $HOSTNAME > /dev/null &
         fi
     done
 done

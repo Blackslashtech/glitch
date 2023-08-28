@@ -3,6 +3,8 @@ version: '3.8'
 services:
   registry:
     image: registry:latest
+    hostname: registry
+    container_name: registry
     volumes:
     - ./.docker/registry/cache:/cache
     - ./.docker/registry/config.yml:/etc/docker/registry/config.yml
@@ -10,6 +12,24 @@ services:
       REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /cache
     networks:
     - game
+
+  api:
+    build:
+      context: ./.docker/api
+      dockerfile: dockerfile
+    hostname: api
+    container_name: api
+    environment:
+    - TEAM_COUNT=${TEAM_COUNT}
+    - PEERS=${PEERS}
+    volumes:
+    - ./.docker/api:/code
+    - ./.docker/vpn/config:/vpn
+    ports:
+    - "8000:80"
+    networks:
+    - game
+
   user:
     build:
       context: ./.docker/user
@@ -19,6 +39,27 @@ services:
     entrypoint: sleep infinity
     networks:
     - game
+
+  vpn:
+    image: linuxserver/wireguard:latest
+    hostname: vpn
+    container_name: vpn
+    environment:
+    - PEERS=${PEERS}
+    cap_add:
+      - NET_ADMIN
+    sysctl:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - "net.ipv6.conf.all.disable_ipv6=0"
+      - "net.ipv6.conf.all.forwarding=1"
+      - "net.ipv6.conf.default.forwarding=1"
+    volumes:
+      - ./.docker/vpn/config:/config
+    ports:
+      - "51820:51820/udp"
+    networks:
+      - game
+
 
 networks:
   game:

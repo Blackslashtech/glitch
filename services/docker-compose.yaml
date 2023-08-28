@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: .docker/Dockerfile
+    container_name: ${HOSTNAME}
+    hostname: ${HOSTNAME}
     privileged: true
     restart: always
     stop_signal: SIGINT
@@ -15,7 +17,6 @@ services:
     environment:
       - ROOT_PASSWORD=${ROOT_PASSWORD}
       - HOSTNAME=${HOSTNAME}
-    hostname: ${HOSTNAME}
     working_dir: /service
     entrypoint: sh /entry.sh
     networks:
@@ -23,4 +24,5 @@ services:
 
 networks:
   range_game:
+    driver: bridge
     external: true
