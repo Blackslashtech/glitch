@@ -24,7 +24,7 @@ services:
     - PEERS=${PEERS}
     volumes:
     - ./.docker/api:/code
-    - ./.docker/vpn/config:/vpn
+    - ./.docker/vpn:/vpn
     ports:
     - "8000:80"
     networks:
@@ -54,7 +54,7 @@ services:
       - "net.ipv6.conf.all.forwarding=1"
       - "net.ipv6.conf.default.forwarding=1"
     volumes:
-      - ./.docker/vpn/config:/config
+      - ./.docker/vpn:/config
     ports:
       - "51820:51820/udp"
     networks:

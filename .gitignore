@@ -1,3 +1,4 @@
 .docker/registry/cache
 .docker/api/app/__pycache__
+.docker/vpn
 .env
