@@ -12,7 +12,8 @@ A general purpose attack-defense range for zero-config deployment
 To temporarily the range, run `sh down.sh`.
 To delete all data associated with the range, run `sh clear.sh`.
 
-**Warning** `clear.sh` runs a docker image and volume prune.  This can have unintended consequences if you have other docker containers on the host system.  Use with caution.
+> [!WARNING] 
+> `clear.sh` runs a docker image and volume prune.  This can have unintended consequences if you have other docker containers on the host system.  Use with caution.
 
 
 # License
