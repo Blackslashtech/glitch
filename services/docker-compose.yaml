@@ -5,22 +5,24 @@ services:
     build:
       context: .
       dockerfile: .docker/Dockerfile
+      args:
+        - SERVICE_NAME=${SERVICE_NAME}
     container_name: ${HOSTNAME}
     hostname: ${HOSTNAME}
     privileged: true
     restart: always
     stop_signal: SIGINT
-    volumes:
-    - ./${SERVICE_ID}:/service
-    - ./.docker/entry.sh:/entry.sh
-    # - ./.docker/cache:/var/lib/docker/image/overlay2/imagedb
     environment:
       - ROOT_PASSWORD=${ROOT_PASSWORD}
       - HOSTNAME=${HOSTNAME}
+      - SERVICE_ID=${SERVICE_ID}
+      - SERVICE_NAME=${SERVICE_NAME}
+      - TEAM_ID=${TEAM_ID}
+      - API_KEY=${API_KEY}
     working_dir: /service
-    entrypoint: sh /entry.sh
     networks:
-    - range_game
+     range_game:
+        ipv4_address: ${IP}
 
 networks:
   range_game:

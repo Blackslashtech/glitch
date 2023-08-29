@@ -29,3 +29,12 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
         fi
     done
 done
+
+# Prune dangling images
+docker image prune -f > /dev/null
+
+# Prune dangling volumes
+docker volume prune -f > /dev/null
+
+# Delete all the vpn files
+rm -rf ./.docker/vpn/* > /dev/null

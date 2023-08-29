@@ -6,12 +6,13 @@ services:
     hostname: registry
     container_name: registry
     volumes:
-    - ./.docker/registry/cache:/cache
-    - ./.docker/registry/config.yml:/etc/docker/registry/config.yml
+      - ./.docker/registry/cache:/cache
+      - ./.docker/registry/config.yml:/etc/docker/registry/config.yml
     environment:
       REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /cache
     networks:
-    - game
+      game:
+        ipv4_address: 10.101.0.4
 
   api:
     build:
@@ -20,15 +21,17 @@ services:
     hostname: api
     container_name: api
     environment:
-    - TEAM_COUNT=${TEAM_COUNT}
-    - PEERS=${PEERS}
+      - API_KEY=${API_KEY}
+      - TEAM_COUNT=${TEAM_COUNT}
+      - PEERS=${PEERS}
     volumes:
-    - ./.docker/api:/code
-    - ./.docker/vpn:/vpn
+      - ./.docker/api:/code
+      - ./.docker/vpn:/vpn
     ports:
-    - "8000:80"
+      - "8000:80"
     networks:
-    - game
+      game:
+        ipv4_address: 10.101.0.2
 
   user:
     build:
@@ -38,7 +41,8 @@ services:
     container_name: user
     entrypoint: sleep infinity
     networks:
-    - game
+      game:
+        ipv4_address: 10.101.0.3
 
   vpn:
     image: linuxserver/wireguard:latest
@@ -46,21 +50,21 @@ services:
     container_name: vpn
     environment:
     - PEERS=${PEERS}
+    - ALLOWEDIPS=10.100.0.0/15
     cap_add:
       - NET_ADMIN
-    sysctl:
-      - net.ipv4.conf.all.src_valid_mark=1
-      - "net.ipv6.conf.all.disable_ipv6=0"
-      - "net.ipv6.conf.all.forwarding=1"
-      - "net.ipv6.conf.default.forwarding=1"
     volumes:
       - ./.docker/vpn:/config
     ports:
       - "51820:51820/udp"
     networks:
-      - game
+      game:
+        ipv4_address: 10.101.0.1
 
 
 networks:
   game:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 10.100.0.0/15

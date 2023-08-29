@@ -1,11 +1,16 @@
 #!/bin/sh
 
+API_KEY=""
+TEAM_COUNT=2
+VPN_PER_TEAM=1
+VPN_SERVER_URL="localhost"
+
 source .env set
 
 
 # Loop from 1 to $TEAM_COUNT
 for TEAM_ID in $(seq 1 $TEAM_COUNT); do
-  # Loop over every directory in /services
+    # Loop over every directory in /services
     for dir in ./services/*; do
         # Check if the file is named .docker
         if [ "$(basename "$dir")" = ".docker" ]; then
@@ -27,4 +32,4 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
 done
 
 echo "Stopping range services..."
-docker-compose down -t 2 > /dev/null
+API_KEY="" PEERS="" docker-compose down -t 2 > /dev/null

@@ -10,6 +10,8 @@ A general purpose attack-defense range for zero-config deployment
 
 To stop the range, run `sh down.sh`.
 
+**Warning** `clean.sh` runs a docker image and volume prune.  This can have unintended consequences if you have other docker containers on the host system.  Use with caution.
+
 
 # License
 
