@@ -1,49 +1,6 @@
 version: '3.8'
 
 services:
-  registry:
-    image: registry:latest
-    hostname: registry
-    container_name: registry
-    volumes:
-      - ./.docker/registry/cache:/cache
-      - ./.docker/registry/config.yml:/etc/docker/registry/config.yml
-    environment:
-      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /cache
-    networks:
-      game:
-        ipv4_address: 10.101.0.4
-
-  api:
-    build:
-      context: ./.docker/api
-      dockerfile: dockerfile
-    hostname: api
-    container_name: api
-    environment:
-      - API_KEY=${API_KEY}
-      - TEAM_COUNT=${TEAM_COUNT}
-      - PEERS=${PEERS}
-    volumes:
-      - ./.docker/api:/code
-      - ./.docker/vpn:/vpn
-    ports:
-      - "8000:80"
-    networks:
-      game:
-        ipv4_address: 10.101.0.2
-
-  user:
-    build:
-      context: ./.docker/user
-      dockerfile: dockerfile
-    image: alpine:latest
-    container_name: user
-    entrypoint: sleep infinity
-    networks:
-      game:
-        ipv4_address: 10.101.0.3
-
   vpn:
     image: linuxserver/wireguard:latest
     hostname: vpn
@@ -61,6 +18,50 @@ services:
     networks:
       game:
         ipv4_address: 10.101.0.1
+
+  api:
+    build:
+      context: ./.docker/api
+      dockerfile: Dockerfile
+    hostname: api
+    container_name: api
+    environment:
+      - API_KEY=${API_KEY}
+      - TEAM_COUNT=${TEAM_COUNT}
+      - PEERS=${PEERS}
+    volumes:
+      - ./.docker/api:/code
+      - ./.docker/vpn:/vpn
+    ports:
+      - "8000:80"
+    networks:
+      game:
+        ipv4_address: 10.101.0.2
+
+  registry:
+    image: registry:latest
+    hostname: registry
+    container_name: registry
+    volumes:
+      - ./.docker/registry/cache:/cache
+      - ./.docker/registry/config.yml:/etc/docker/registry/config.yml
+    environment:
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /cache
+    networks:
+      game:
+        ipv4_address: 10.101.0.6
+
+  rangemaster:
+    build:
+      context: ./.docker/user
+      dockerfile: Dockerfile
+    image: alpine:latest
+    container_name: rangemaster
+    hostname: rangemaster
+    entrypoint: sleep infinity
+    networks:
+      game:
+        ipv4_address: 10.101.0.7
 
 
 networks:

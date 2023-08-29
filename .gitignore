@@ -1,5 +1,5 @@
 .docker/registry/cache
 .docker/api/app/__pycache__
-.docker/vpn
+.docker/vpn/**
 .env
 .DS_Store

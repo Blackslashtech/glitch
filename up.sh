@@ -15,8 +15,8 @@ echo "API KEY: $API_KEY"
 echo "Starting range services..."
 API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT SERVERURL=$VPN_SERVER_URL docker-compose up -d --build --force-recreate > /dev/null
 
-# Loop from 1 to $TEAM_COUNT
-for TEAM_ID in $(seq 1 $TEAM_COUNT); do
+# Loop from 1 to $TEAM_COUNT - 1
+for TEAM_ID in $(seq 0 $TEAM_COUNT); do
   # Loop over every directory in /services
     # Create a counter for service IDs starting at 1
     SERVICE_ID=1

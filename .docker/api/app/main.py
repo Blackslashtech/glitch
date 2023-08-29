@@ -56,6 +56,6 @@ def get_vpn(team_id: int, peer_id: int):
         return 'invalid-peer-id'
     if team_id > TEAM_COUNT:
         return 'invalid-team-id'
-    vpn_id = (TEAM_COUNT * team_id) + peer_id + 1
+    vpn_id = (TEAM_COUNT * (team_id - 1)) + peer_id
     with open(f'/vpn/peer{vpn_id}/peer{vpn_id}.conf', 'r') as f:
         return f.read()

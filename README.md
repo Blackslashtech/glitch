@@ -15,6 +15,32 @@ To delete all data associated with the range, run `sh clear.sh`.
 > [!WARNING] 
 > `clear.sh` runs a docker image and volume prune.  This can have unintended consequences if you have other docker containers on the host system.  Use with caution.
 
+## Connecting to the Range
+Credentials for all services are printed to STDOUT during the range startup.
+
+For local testing, you can get a shell inside the range environment with the command `docker exec -it user sh`.
+
+As long as the `VPN_SERVER_URL` is properly set and port forwarding is enabled for UDP 51820, you can connect to the range from anywhere with the Wireguard client.
+Wireguard configs are stored in the [`.docker/vpn`](..docker/vpn) directory, or can be downloaded from the API at `http://api/vpn/<team_id>/wg<vpn_id>.conf`. (i.e. `http://api/vpn/1/wg1.conf`)
+
+> [!NOTE]
+> Team IDs, Service IDs, and VPN IDs are all 1-indexed.  This is to avoid subnetting/IP confusion.
+
+# Network
+
+The range network is defined in [`docker-compose.yml`](docker-compose.yml):
+- Range network: `10.100.0.0/15`
+  - Infrastructure subnet: `10.101.0.0/16`
+    - VPN Server (NAT source for all traffic): `10.101.0.1` (hostname `vpn`)
+    - API: `10.101.0.2` (hostname `api`)
+    - (WIP) Checker: `10.101.0.3` (hostname `checker`)
+    - (WIP) DB: `10.101.0.4` (hostname `db`)
+    - (WIP) Frontend: `10.101.0.5` (hostname `api`)
+    - Docker Registry: `10.101.0.6` (hostname `registry`)
+    - Rangemaster troubleshooting container: `10.101.0.7` (hostname `rangemaster`)
+  - Team subnet: `10.100.<team_id>.0/24`
+    - Service host: `10.100.<team_id>.<service_id>` (hostname `team<team_id>-<service_name>` - i.e. `team1-web`)
+
 
 # License
 
