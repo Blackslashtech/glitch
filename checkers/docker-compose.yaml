@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  checker:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+      args:
+        - SERVICE_NAME=${SERVICE_NAME}
+    container_name: ${HOSTNAME}
+    hostname: ${HOSTNAME}
+    privileged: true
+    restart: always
+    stop_signal: SIGINT
+    environment:
+      - ROOT_PASSWORD=${ROOT_PASSWORD}
+      - HOSTNAME=${HOSTNAME}
+      - SERVICE_ID=${SERVICE_ID}
+      - SERVICE_NAME=${SERVICE_NAME}
+      - TEAM_ID=${TEAM_ID}
+      - API_KEY=${API_KEY}
+    working_dir: /service
+    networks:
+     range_game:
+        ipv4_address: ${IP}
+
+networks:
+  range_game:
+    driver: bridge
+    external: true

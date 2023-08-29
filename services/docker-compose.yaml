@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  host:
+  service:
     build:
       context: .
       dockerfile: .docker/Dockerfile

@@ -51,6 +51,7 @@ services:
     environment:
     - PEERS=${PEERS}
     - ALLOWEDIPS=10.100.0.0/15
+    - SERVERURL=${VPN_SERVER_URL}
     cap_add:
       - NET_ADMIN
     volumes:
