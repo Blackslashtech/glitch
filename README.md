@@ -4,8 +4,8 @@ A general purpose attack-defense range for zero-config deployment
 
 ## Usage
 
-1. Drop each service into a folder in the [`./services`](services) directory.  Each service should have a `docker-compose.yml` file that defines the service, or a `deploy.sh` which starts the service. [services README](services/README.md).
-3. Drop each checker script in the [`./checkers`](checkers) directory.  Each checker directory should be named the same as the service it corresponds to. [checkers README](checkers/README.md).
+1. Drop each service into a folder in the [`./services`](services) directory.  Each service should have a `docker-compose.yml` file that defines the service, or a `deploy.sh` which starts the service. ([Services README](./services)).
+3. Drop each checker script in the [`./checkers`](checkers) directory.  Each checker directory should be named the same as the service it corresponds to. ([Checkers README](./checkers)).
 4. Modify the [`.env`](.env) as desired for all configuration options
 5. Run `sh up.sh` to start the range.
 
