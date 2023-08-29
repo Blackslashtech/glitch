@@ -28,7 +28,7 @@ Wireguard configs are stored in the [`.docker/vpn`](..docker/vpn) directory, or 
 
 # Network
 
-The range network is defined in [`docker-compose.yml`](docker-compose.yml):
+The range network is defined in [`docker-compose.yaml`](docker-compose.yaml):
 - Range network: `10.100.0.0/15`
   - Infrastructure subnet: `10.101.0.0/16`
     - VPN Server (NAT source for all traffic): `10.101.0.1` (hostname `vpn`)
