@@ -21,8 +21,8 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
     # Create a counter for service IDs starting at 1
     SERVICE_ID=1
     for dir in ./services/*; do
-        # Check if the file is named .docker
-        if [ "$(basename "$dir")" = ".docker" ]; then
+        # Check if the file is named .docker or README.md
+        if [ "$(basename "$dir")" = ".docker" ] || [ "$(basename "$dir")" = "README.md" ]; then
             # If it is, skip it
             continue
         fi

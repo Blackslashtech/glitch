@@ -4,13 +4,15 @@ A general purpose attack-defense range for zero-config deployment
 
 ## Usage
 
-1. Drop each service into a folder in the [`./services`](services) directory.  Each service should have a `docker-compose.yml` file that defines the service.
-2. Modify the [`.env`](.env) as desired for all configuration options.
-3. Run `sh up.sh` to start the range.
+1. Drop each service into a folder in the [`./services`](services) directory.  Each service should have a `docker-compose.yml` file that defines the service, or a `deploy.sh` which starts the service. [services README](services/README.md).
+3. Drop each checker script in the [`./checkers`](checkers) directory.  Each checker directory should be named the same as the service it corresponds to. [checkers README](checkers/README.md).
+4. Modify the [`.env`](.env) as desired for all configuration options
+5. Run `sh up.sh` to start the range.
 
-To stop the range, run `sh down.sh`.
+To temporarily the range, run `sh down.sh`.
+To delete all data associated with the range, run `sh clear.sh`.
 
-**Warning** `clean.sh` runs a docker image and volume prune.  This can have unintended consequences if you have other docker containers on the host system.  Use with caution.
+**Warning** `clear.sh` runs a docker image and volume prune.  This can have unintended consequences if you have other docker containers on the host system.  Use with caution.
 
 
 # License
