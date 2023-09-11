@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  checker:
+    build:
+      context: ${SERVICE_NAME}
+      dockerfile: .docker/Dockerfile
+      args:
+        - SERVICE_NAME=${SERVICE_NAME}
+    container_name: ${HOSTNAME}
+    hostname: ${HOSTNAME}
+    privileged: true
+    restart: always
+    stop_signal: SIGINT
+    working_dir: /checker
+    environment:
+      - GATEWAY=${GATEWAY}
+      - HOSTNAME=${HOSTNAME}
+      - SERVICE_ID=${SERVICE_ID}
+      - SERVICE_NAME=${SERVICE_NAME}
+    networks:
+     range_checker:
+        ipv4_address: ${IP}
+
+
+networks:
+  range_checker:
+    driver: bridge
+    external: true

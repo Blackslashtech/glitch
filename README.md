@@ -31,15 +31,30 @@ Wireguard configs are stored in the [`.docker/vpn`](..docker/vpn) directory, or 
 The range network is defined in [`docker-compose.yaml`](docker-compose.yaml):
 - Range network: `10.100.0.0/15`
   - Infrastructure subnet: `10.101.0.0/16`
-    - VPN Server (NAT source for all traffic): `10.101.0.1` (hostname `vpn`)
+    - VPN Server: `10.101.0.1` (hostname `vpn`) - NAT Source for all traffic (players and checkers)
     - API: `10.101.0.2` (hostname `api`)
-    - (WIP) Checker: `10.101.0.3` (hostname `checker`)
-    - (WIP) DB: `10.101.0.4` (hostname `db`)
-    - (WIP) Frontend: `10.101.0.5` (hostname `api`)
-    - Docker Registry: `10.101.0.6` (hostname `registry`)
-    - Rangemaster troubleshooting container: `10.101.0.7` (hostname `rangemaster`)
+    - Docker Registry: `10.101.0.3` (hostname `registry`)
+    - Rangemaster: `10.101.0.5` (hostname `rangemaster`) - For troubleshooting
+    - (WIP) Frontend: `10.101.0.5` (hostname `frontend`)
   - Team subnet: `10.100.<team_id>.0/24`
     - Service host: `10.100.<team_id>.<service_id>` (hostname `team<team_id>-<service_name>` - i.e. `team1-web`)
+- Internal network: `10.102.0.0/16`
+  - Ticker: `10.102.0.1` (hostname `ticker`)
+  - API: `10.102.0.2` (hostname `api`)
+  - DB: `10.102.0.3` (hostname `db`)
+  - Rangemaster: `10.102.0.5` (hostname `rangemaster`)
+- Checker network: `10.103.0.0/16`
+  - VPN Server: `10.103.1.1` (hostname `vpn`)
+  - Ticker: `10.103.1.2` (hostname `ticker`)
+  - Docker Registry: `10.103.1.3` (hostname `registry`)
+  - Rangemaster: `10.103.1.5` (hostname `rangemaster`)
+  - Checker: `10.103.2.<service_id` (hostname `checker-<service_name>` - i.e. `checker-web`)
+
+
+
+# Service Archive
+SECCONF (argv) ~40 services: https://github.com/HITB-CyberWeek
+ICC (checklib) 10 services: https://github.com/CybersecNatLab
 
 
 # License

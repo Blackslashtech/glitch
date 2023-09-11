@@ -5,6 +5,11 @@ API_KEY="$(openssl rand -hex 16)"
 TEAM_COUNT=2
 VPN_PER_TEAM=1
 VPN_SERVER_URL="localhost"
+SERVICES=""
+TICK_SECONDS=60
+START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+END_TIME=$(gdate -u +"%Y-%m-%dT%H:%M:%SZ" -d "+$(expr $TICK_SECONDS \* 100) seconds")
+
 
 source .env set
 
@@ -15,8 +20,9 @@ echo "API KEY: $API_KEY"
 echo "Starting range services..."
 API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT SERVERURL=$VPN_SERVER_URL docker-compose up -d --build --force-recreate > /dev/null
 
+
 # Loop from 1 to $TEAM_COUNT - 1
-for TEAM_ID in $(seq 0 $TEAM_COUNT); do
+for TEAM_ID in $(seq 1 $TEAM_COUNT); do
   # Loop over every directory in /services
     # Create a counter for service IDs starting at 1
     SERVICE_ID=1
@@ -41,4 +47,25 @@ for TEAM_ID in $(seq 0 $TEAM_COUNT); do
             SERVICE_ID=$(expr $SERVICE_ID + 1)
         fi
     done
+done
+
+SERVICE_ID=1
+for dir in ./checkers/*; do
+    # Check if the file is named .templates or README.md
+    if [ "$(basename "$dir")" = ".templates" ] || [ "$(basename "$dir")" = "README.md" ]; then
+        # If it is, skip it
+        continue
+    fi
+    # If the file is a directory
+    if [ -d "$dir" ]; then
+        # Start docker-compose in the /checkers directory with a volume mount of the directory
+        # set the service environment variable to the directory name
+        # Isolate the end of the directory name with the basename command
+        SERVICE_NAME="$(basename "$dir")"
+        HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
+        IP=$(echo "10.103.2.$SERVICE_ID" | tr '[:upper:]' '[:lower:]')
+        echo "Starting $HOSTNAME ..."
+        IP=$IP GATEWAY="10.103.1.1" HOSTNAME=$HOSTNAME SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d --build > /dev/null
+        SERVICE_ID=$(expr $SERVICE_ID + 1)
+    fi
 done

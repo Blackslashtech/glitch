@@ -1,0 +1,8 @@
+{
+    "command": "python3 ./checker.py",
+    "timeout": {
+        "CHECK_SLA": 40000,
+        "PUT_FLAG": 15000,
+        "GET_FLAG": 15000
+    }
+}

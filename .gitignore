@@ -3,3 +3,4 @@
 .docker/vpn/**
 .env
 .DS_Store
+**/__pycache__/

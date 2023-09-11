@@ -5,6 +5,9 @@ services:
     image: linuxserver/wireguard:latest
     hostname: vpn
     container_name: vpn
+    restart: unless-stopped
+    depends_on:
+      - api
     environment:
     - PEERS=${PEERS}
     - ALLOWEDIPS=10.100.0.0/15
@@ -18,6 +21,8 @@ services:
     networks:
       game:
         ipv4_address: 10.101.0.1
+      checker:
+        ipv4_address: 10.103.1.1
 
   api:
     build:
@@ -25,23 +30,31 @@ services:
       dockerfile: Dockerfile
     hostname: api
     container_name: api
+    restart: unless-stopped
+    depends_on:
+      - db
+      - ticker
     environment:
       - API_KEY=${API_KEY}
       - TEAM_COUNT=${TEAM_COUNT}
       - PEERS=${PEERS}
+      - SERVICES=${SERVICES}
     volumes:
-      - ./.docker/api:/code
+      - ./.docker/api/src:/code
       - ./.docker/vpn:/vpn
     ports:
       - "8000:80"
     networks:
       game:
         ipv4_address: 10.101.0.2
+      infra:
+        ipv4_address: 10.102.0.2
 
   registry:
     image: registry:latest
     hostname: registry
     container_name: registry
+    restart: unless-stopped
     volumes:
       - ./.docker/registry/cache:/cache
       - ./.docker/registry/config.yml:/etc/docker/registry/config.yml
@@ -49,19 +62,63 @@ services:
       REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /cache
     networks:
       game:
-        ipv4_address: 10.101.0.6
+        ipv4_address: 10.101.0.3
+      checker:
+        ipv4_address: 10.103.1.3
 
   rangemaster:
     build:
-      context: ./.docker/user
+      context: ./.docker/rangemaster
       dockerfile: Dockerfile
     image: alpine:latest
-    container_name: rangemaster
     hostname: rangemaster
+    container_name: rangemaster
+    restart: unless-stopped
     entrypoint: sleep infinity
     networks:
       game:
-        ipv4_address: 10.101.0.7
+        ipv4_address: 10.101.0.5
+      infra:
+        ipv4_address: 10.102.1.5
+      checker:
+        ipv4_address: 10.103.1.5
+
+
+  ticker:
+    build:
+      context: ./.docker/ticker
+      dockerfile: Dockerfile
+    hostname: ticker
+    container_name: ticker
+    restart: unless-stopped
+    environment:
+      - SERVICES=${SERVICES}
+      - TEAM_COUNT=${TEAM_COUNT}
+      - TICK_SECONDS=${TICK_SECONDS}
+      - START_TIME=${START_TIME}
+      - END_TIME=${END_TIME}
+    volumes:
+      - ./.docker/ticker/src:/code
+    networks:
+      infra:
+        ipv4_address: 10.102.0.4
+      checker:
+        ipv4_address: 10.103.1.4
+
+  db:
+    image: mongo:latest
+    hostname: db
+    container_name: db
+    restart: unless-stopped
+    volumes:
+      - db:/data/db
+    networks:
+      infra:
+        ipv4_address: 10.102.0.3
+
+
+volumes:
+  db:
 
 
 networks:
@@ -70,3 +127,13 @@ networks:
     ipam:
       config:
         - subnet: 10.100.0.0/15
+  infra:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.102.0.0/16
+  checker:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.103.0.0/16
