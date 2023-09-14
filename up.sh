@@ -54,7 +54,7 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
     # Copy vpn files
     for VPN_ID in $(seq 1 $VPN_PER_TEAM); do
         VPN_NAME="peer$(expr $VPN_ID + $(expr $(expr $TEAM_ID - 1) \* $VPN_PER_TEAM))"
-        cp ./.docker/vpn/$VPN_NAME/$VPN_NAME.conf ./.docker/api/teamdata/$TEAM_TOKEN/wg$VPN_ID.conf
+        cp ./.docker/vpn/$VPN_NAME/$VPN_NAME.conf ./.docker/api/teamdata/$TEAM_TOKEN/vpn/wg$VPN_ID.conf
     done
     # Create a counter for service IDs starting at 1
     SERVICE_ID=1
