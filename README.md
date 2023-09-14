@@ -18,7 +18,7 @@ To delete all data associated with the range, run `sh clear.sh`.
 ## Connecting to the Range
 Credentials for all services are printed to STDOUT during the range startup.
 
-For local testing, you can get a shell inside the range environment with the command `docker exec -it user sh`.
+For local testing, you can get a shell inside the range environment with the command `docker exec -it rangemaster sh`.
 
 As long as the `VPN_SERVER_URL` is properly set and port forwarding is enabled for UDP 51820, you can connect to the range from anywhere with the Wireguard client.
 Wireguard configs are stored in the [`.docker/vpn`](..docker/vpn) directory, or can be downloaded from the API at `http://api/vpn/<team_id>/wg<vpn_id>.conf`. (i.e. `http://api/vpn/1/wg1.conf`)
