@@ -10,16 +10,6 @@ import xmlrpc.server
 import enum
 from socketserver import ThreadingMixIn
 
-# Because the checklib expects to send flagids back to a server, we have to run that server locally to avoid needing to modify the checklib
-# os.environ['FLAGID_SERVICE'] = 'http://127.0.0.1'
-# os.environ['ACTION'] = 'check'
-# os.environ['TEAM_ID'] = '0'
-# os.environ['VULNBOX_ID'] = '0'
-# os.environ['ROUND'] = '0'
-# os.environ['FLAGID_TOKEN'] = ''
-
-# import checker
-
 
 class SimpleThreadedXMLRPCServer(ThreadingMixIn, xmlrpc.server.SimpleXMLRPCServer):
     pass
