@@ -27,15 +27,15 @@ Wireguard configs are stored in the [`.docker/vpn`](..docker/vpn) directory, or 
 > Team IDs, Service IDs, and VPN IDs are all 1-indexed.  This is to avoid subnetting/IP confusion.
 
 ## API Quickstart
-Once connected to the range, the api can be reached at `http://10.101.0.2`.
+Once connected to the range, the api can be reached at `http://10.101.0.2:8000`.
 
-- To get all targets, `GET http://10.101.0.2/hosts`.
-- To get flag IDs, `GET http://10.101.0.2/flagids`.
-- To submit a flag, `POST http://10.101.0.2/steal`
-- To list scores, `GET http://10.101.0.2/scores`
-- To list detailed scoring checks, `GET http://10.101.0.2/checks`
+- To get all targets, `GET http://10.101.0.2:8000/hosts`.
+- To get flag IDs, `GET http://10.101.0.2:8000/flagids`.
+- To submit a flag, `POST http://10.101.0.2:8000/steal`
+- To list scores, `GET http://10.101.0.2:8000/scores`
+- To list detailed scoring checks, `GET http://10.101.0.2:8000/checks`
 
-For full documentation, visit `http://10.101.0.2/docs`
+For full documentation, visit `http://10.101.0.2:8000/docs`
 
 
 # Network
