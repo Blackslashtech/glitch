@@ -66,7 +66,7 @@ The range network is defined in [`docker-compose.yaml`](docker-compose.yaml):
 
 # Service Archive
 - SECCONF (argv) ~40 services: https://github.com/HITB-CyberWeek
-- ICC (checklib) 10 services: https://github.com/CybersecNatLab
+- ICC (checklib) ~20 services: https://github.com/CybersecNatLab
 - HACKERDOM (custom/checklib) ~40 services: https://github.com/HackerDom
 - C4T-BUT-S4D (checklib) ~30 services: https://github.com/C4T-BuT-S4D
 - FAUST (faust) ~50 services: https://github.com/fausecteam
