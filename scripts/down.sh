@@ -1,9 +1,17 @@
 #!/bin/sh
 
+# Check if cwd is range
+if [[ ! -d "./checkers" && -d "./services" && -d "./.docker" ]]; then
+    echo "Please run this script from the range directory (i.e. sh scripts/down.sh))"
+    exit 1
+fi
+
 API_KEY=""
 TEAM_COUNT=2
 VPN_PER_TEAM=1
-VPN_SERVER_URL="localhost"
+SERVER_URL="localhost"
+VPN_PORT=0
+API_PORT=0
 TEAM_TOKENS=""
 
 source .env set

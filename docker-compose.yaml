@@ -11,13 +11,14 @@ services:
     environment:
     - PEERS=${PEERS}
     - ALLOWEDIPS=10.100.0.0/15
-    - SERVERURL=${VPN_SERVER_URL}
+    - SERVERURL=${SERVER_URL}
+    - SERVERPORT=${VPN_PORT}
     cap_add:
       - NET_ADMIN
     volumes:
       - ./.docker/vpn:/config
     ports:
-      - "51820:51820/udp"
+      - "${VPN_PORT}:${VPN_PORT}/udp"
     networks:
       game:
         ipv4_address: 10.101.0.1
@@ -45,7 +46,7 @@ services:
       - ./.docker/vpn:/vpn
       - ./.docker/api/teamdata:/teamdata
     ports:
-      - "8000:80"
+      - "${API_PORT}:80"
     networks:
       game:
         ipv4_address: 10.101.0.2
@@ -84,7 +85,6 @@ services:
         ipv4_address: 10.102.1.5
       checker:
         ipv4_address: 10.103.1.5
-
 
   ticker:
     build:

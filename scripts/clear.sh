@@ -1,11 +1,17 @@
 #!/bin/sh
 
+# Check if cwd is range
+if [[ ! -d "./checkers" && -d "./services" && -d "./.docker" ]]; then
+    echo "Please run this script from the range directory (i.e. sh scripts/clear.sh))"
+    exit 1
+fi
+
 TEAM_TOKENS=""
 
 source .env set
 
 echo "Stopping all containers..."
-sh down.sh
+sh scripts/down.sh
 
 # Wait for all the docker stop commands to finish
 sleep 5

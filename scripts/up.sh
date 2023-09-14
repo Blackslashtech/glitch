@@ -1,10 +1,19 @@
 #!/bin/sh
 
+# Check if cwd is range
+if [[ ! -d "./checkers" && -d "./services" && -d "./.docker" ]]; then
+    echo "Please run this script from the range directory (i.e. sh scripts/up.sh))"
+    exit 1
+fi
+
 # Create randomized api key
 API_KEY="$(openssl rand -hex 16)"
+# Set default values
 TEAM_COUNT=2
 VPN_PER_TEAM=1
-VPN_SERVER_URL="localhost"
+SERVER_URL="localhost"
+VPN_PORT=51820
+API_PORT=8000
 SERVICES=""
 TICK_SECONDS=60
 START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -16,9 +25,6 @@ source .env set
 
 VPN_COUNT=$(expr $TEAM_COUNT \* $VPN_PER_TEAM)
 SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
-
-
-echo "API KEY: $API_KEY"
 
 # Create empty teamdata directory
 rm -rf ./.docker/api/teamdata
@@ -35,13 +41,13 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
     mkdir ./.docker/api/teamdata/$TEAM_TOKEN
     mkdir ./.docker/api/teamdata/$TEAM_TOKEN/vpn
     echo "API Token: $TEAM_TOKEN\n" >> ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
-    echo "Team $TEAM_ID: http://$VPN_SERVER_URL:8000/teamdata/$TEAM_TOKEN/rangedata.zip" >> ./teamdata.txt
+    echo "Team $TEAM_ID: http://$SERVER_URL:$API_PORT/teamdata/$TEAM_TOKEN/rangedata.zip" >> ./teamdata.txt
 done
 # Strip leading comma
 TEAM_TOKENS="${TEAM_TOKENS:1}"
 
 echo "Starting range services..."
-API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT SERVERURL=$VPN_SERVER_URL TEAM_TOKENS=$TEAM_TOKENS docker-compose up -d --force-recreate > /dev/null
+API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT SERVERURL=$SERVER_URL TEAM_TOKENS=$TEAM_TOKENS docker-compose up -d --force-recreate > /dev/null
 
 echo "Waiting 5 seconds for VPN to start..."
 sleep 5
@@ -94,5 +100,7 @@ for SERVICE_NAME in $SERVICE_LIST; do
 done
 
 # Print teamdata download links
+echo "*******************************************************"
+echo "\nAdmin API KEY: $API_KEY\n"
 cat ./teamdata.txt
 echo "\n(Team data stored in ./teamdata.txt)"
