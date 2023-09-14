@@ -6,8 +6,6 @@ import os
 app = FastAPI()
 
 
-services = {}
-
 API_KEY = os.environ.get('API_KEY')
 TEAM_COUNT = int(os.environ.get('TEAM_COUNT'))
 VPN_COUNT = int(os.environ.get('PEERS'))
@@ -23,51 +21,39 @@ db = client['range']
 def read_root():
     return {'Hello': 'World'}
 
-
-@app.get('/service/create')
-def create_service(hostname: str, ip: str, status: str = '', api_key: str = ''):
-    if api_key != API_KEY:
-        return 'create-invalid-api-key'
-    if ip == '':
-        return 'register-invalid-ip'
-    service_id = ''.join(hostname.split('-')[1:])
-    if service_id not in services:
-        services[service_id] = {}
-    team_id = hostname.split('-')[0].strip('team')
-    services[service_id][team_id] = {'hostname': hostname, 'ip': ip, 'status': status} 
-    return hostname
-
-
-@app.get('/service/update')
-def update_service(hostname: str, status: str = '', api_key: str = ''):
-    if api_key != API_KEY:
-        return {'result': 'update-invalid-api-key'}
-    service_id = ''.join(hostname.split('-')[1:])
-    if service_id not in services:
-        services[service_id] = {}
-    team_id = hostname.split('-')[0].strip('team')
-    services[service_id][team_id] = {'hostname': hostname, 'status': status} 
-    return {'result': 'success'}
-
-
-@app.get('/targets')
-def get_teams():
-    return services
+@app.get('/hosts')
+def get_hosts():
+    return list(db.hosts.find())
 
 @app.get('/scores')
 def get_scores():
     scores = {}
     for team in db.teams.find():
-        scores[team['team_id']] = team['score']
+        scores[team['team_id']] = {}
+        scores[team['team_id']]['services'] = {}
+        for host in db.hosts.find({'team_id': team['team_id']}):
+            scores[team['team_id']]['services'][host['service_name']] = host['score']
+        scores[team['team_id']]['total'] = team['score']
     return scores
 
 @app.get('/checks')
 def get_checks():
-    checks = {}
-    for check in db.checks.find():
-        checks[check['service_id']] = check['status']
-    return checks
+    return list(db.checks.find().sort('time', -1).limit(TEAM_COUNT * len(SERVICES) * 10))
 
+@app.get('/flagids')
+def get_flagids():
+    return list(db.flags.find({}, {'service': 1, 'service_id': 1, 'team_id': 1, 'flag_id': 1, 'tick': 1}))
+
+@app.post('/steal')
+def steal_flag(flag: str, team_id: int):
+    correct = db.flags.find_one({'flag': flag})
+    if not correct:
+        return 'invalid'
+    existing = db.steals.find_one({'flag': flag})
+    if not existing:
+        return 'duplicate'
+    db.steals.insert_one({'service_id': correct['service_id'], 'team_id': team_id, 'flag_id': correct['flag_id'], 'flag': flag})
+    return 'success'
 
 
 @app.get('/vpn/{team_id}/wg{peer_id}.conf', response_class=PlainTextResponse)
