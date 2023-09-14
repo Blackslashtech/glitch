@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:15.3
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./initdb.sql:/docker-entrypoint-initdb.d/initdb.sql:ro
+    networks:
+      - service_network
+
+  backend:
+    container_name: backend
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5000:5000'
+    networks:
+      - service_network
+
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    restart: unless-stopped
+    links:
+      - backend
+    ports:
+      - '80:3000'
+    networks:
+      - service_network
+
+networks:
+  service_network:
+    driver: bridge

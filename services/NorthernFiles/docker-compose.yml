@@ -1,0 +1,81 @@
+version: '3'
+
+services:
+    frontend:
+        build: frontend
+        restart: unless-stopped
+
+    api:
+        build: api
+        restart: unless-stopped
+        environment:
+            AUTH_HOST: 'http://auth:5000'
+            DATABASE_HOST: api-database
+            DATABASE_DB: api
+            DATABASE_USER: MOlUnUDpyuRFABtucSyX
+            DATABASE_PASSWORD: WcYLQqEUsedRqgsrZyEL4kmd
+            BUCKET_NAME: bucket
+            BUCKET_HOST: minio
+            BUCKET_KEY: ${BUCKET_KEY}
+            BUCKET_SECRET: ${BUCKET_SECRET}
+        depends_on:
+            - api-database
+            - minio
+
+    api-database:
+        image: mariadb
+        restart: unless-stopped
+        environment:
+            MARIADB_USER: MOlUnUDpyuRFABtucSyX
+            MARIADB_PASSWORD: WcYLQqEUsedRqgsrZyEL4kmd
+            MARIADB_DATABASE: api
+            MARIADB_RANDOM_ROOT_PASSWORD: 'yes'
+        volumes:
+            - ./api_db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+    minio:
+        image: bitnami/minio
+        restart: unless-stopped
+        environment:
+            MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+            MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+            ACCESS_KEY: ${ACCESS_KEY}
+            ACCESS_KEY_SECRET: ${ACCESS_KEY_SECRET}
+        volumes:
+            - ./minio/customsetup.sh:/opt/customsetup.sh:ro
+            - ./minio/accesskey_policy.json:/opt/accesskey_policy.json:ro
+            - ./minio/bucket_policy.json:/opt/bucket_policy.json:ro
+        command: bash /opt/customsetup.sh
+
+    auth:
+        build: auth
+        restart: unless-stopped
+        environment:
+            DATABASE_HOST: auth-database
+            DATABASE_DB: auth
+            DATABASE_USER: QFKFVlQzXhSQwUKyevEG
+            DATABASE_PASSWORD: SmYGSWZ5BZRSGRzYkXSyw9jj
+
+    auth-database:
+        image: mariadb
+        restart: unless-stopped
+        environment:
+            MARIADB_USER: QFKFVlQzXhSQwUKyevEG
+            MARIADB_PASSWORD: SmYGSWZ5BZRSGRzYkXSyw9jj
+            MARIADB_DATABASE: auth
+            MARIADB_RANDOM_ROOT_PASSWORD: 'yes'
+
+    proxy:
+        image: nginx
+        restart: unless-stopped
+        volumes:
+            - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+        ports:
+            - 80:80
+
+    auth_proxy:
+        build: auth_proxy
+        restart: unless-stopped
+        environment:
+            API_HOST: 'http://api:3000'
+            AUTH_HOST: 'http://auth:5000'

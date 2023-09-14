@@ -4,6 +4,7 @@ API_KEY=""
 TEAM_COUNT=2
 VPN_PER_TEAM=1
 VPN_SERVER_URL="localhost"
+TEAM_TOKENS=""
 
 source .env set
 

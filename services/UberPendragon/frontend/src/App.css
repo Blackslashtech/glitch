@@ -1,0 +1,45 @@
+@font-face {
+  font-family: "Cochin";
+  src: local("Cochin Regular"),
+    url("./Cochin Regular.otf") format("truetype");
+}
+
+.home-text {
+  text-align: center;
+}
+
+.monitor-map {
+  width: 100vw;
+  max-width: 2102px;
+  max-height: 1000px;
+  aspect-ratio: 2102/1000;
+}
+
+.flying-dragon {
+  position: absolute;
+  width: 5%;
+  max-width: 100px;
+  max-height: 100px;
+}
+
+.no-borders {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body, html {
+  font-family: 'Cochin';
+  font-size: large;
+}
+
+.nav-title {
+  color: white;
+}
+
+.nav-link{
+  color: white !important;
+}
+
+.big-font {
+  font-size: xx-large;
+}

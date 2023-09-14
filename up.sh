@@ -20,13 +20,42 @@ SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
 
 echo "API KEY: $API_KEY"
 
-echo "Starting range services..."
-API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT SERVERURL=$VPN_SERVER_URL docker-compose up -d --build --force-recreate > /dev/null
+# Create empty teamdata directory
+rm -rf ./.docker/api/teamdata
+mkdir ./.docker/api/teamdata
+echo "Team data download links (distribute one link to each team):" > ./teamdata.txt
 
+# Generate team tokens
+TEAM_TOKENS=""
+for TEAM_ID in $(seq 1 $TEAM_COUNT); do
+    # Generate team token
+    TEAM_TOKEN="$(openssl rand -hex 16)"
+    TEAM_TOKENS="$TEAM_TOKENS,$TEAM_TOKEN"
+    # Create teamdata directory and credentials file
+    mkdir ./.docker/api/teamdata/$TEAM_TOKEN
+    mkdir ./.docker/api/teamdata/$TEAM_TOKEN/vpn
+    echo "API Token: $TEAM_TOKEN\n" >> ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
+    echo "Team $TEAM_ID: http://$VPN_SERVER_URL:8000/teamdata/$TEAM_TOKEN/rangedata.zip" >> ./teamdata.txt
+done
+# Strip leading comma
+TEAM_TOKENS="${TEAM_TOKENS:1}"
+
+echo "Starting range services..."
+API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT SERVERURL=$VPN_SERVER_URL TEAM_TOKENS=$TEAM_TOKENS docker-compose up -d --force-recreate > /dev/null
+
+echo "Waiting 5 seconds for VPN to start..."
+sleep 5
 
 # Loop from 1 to $TEAM_COUNT - 1
 for TEAM_ID in $(seq 1 $TEAM_COUNT); do
-  # Loop over every directory in /services
+    echo "Starting team $TEAM_ID..."
+    TEAM_TOKEN="$(echo $TEAM_TOKENS | cut -d',' -f$TEAM_ID)"
+    echo "Team $TEAM_ID Range Credentials:\n" > ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
+    # Copy vpn files
+    for VPN_ID in $(seq 1 $VPN_PER_TEAM); do
+        VPN_NAME="peer$(expr $VPN_ID + $(expr $(expr $TEAM_ID - 1) \* $VPN_PER_TEAM))"
+        cp ./.docker/vpn/$VPN_NAME/$VPN_NAME.conf ./.docker/api/teamdata/$TEAM_TOKEN/wg$VPN_ID.conf
+    done
     # Create a counter for service IDs starting at 1
     SERVICE_ID=1
     for SERVICE_NAME in $SERVICE_LIST; do
@@ -39,10 +68,16 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
             HOSTNAME=$(echo "team$TEAM_ID-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
             IP=$(echo "10.100.$TEAM_ID.$SERVICE_ID" | tr '[:upper:]' '[:lower:]')
             echo "Starting $HOSTNAME, root password is $ROOT_PASSWORD ..."
-            API_KEY=$API_KEY IP=$IP HOSTNAME=$HOSTNAME TEAM_ID=$TEAM_ID SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME ROOT_PASSWORD=$ROOT_PASSWORD CPU_LIMIT=$CPU_LIMIT MEM_LIMIT=$MEM_LIMIT docker-compose -f ./services/docker-compose.yaml --project-name $HOSTNAME up -d --build > /dev/null
+            # Write creds to creds.txt
+            echo "$IP ($SERVICE_NAME) - root : $ROOT_PASSWORD" >> ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
+            API_KEY=$API_KEY IP=$IP HOSTNAME=$HOSTNAME TEAM_ID=$TEAM_ID SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME ROOT_PASSWORD=$ROOT_PASSWORD CPU_LIMIT=$CPU_LIMIT MEM_LIMIT=$MEM_LIMIT docker-compose -f ./services/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null 2>&1
             SERVICE_ID=$(expr $SERVICE_ID + 1)
         fi
     done
+    # Zip teamdata directory
+    pushd ./.docker/api/teamdata > /dev/null
+    zip -r $TEAM_TOKEN.zip $TEAM_TOKEN > /dev/null
+    popd > /dev/null
 done
 
 SERVICE_ID=1
@@ -53,7 +88,11 @@ for SERVICE_NAME in $SERVICE_LIST; do
         HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
         IP=$(echo "10.103.2.$SERVICE_ID" | tr '[:upper:]' '[:lower:]')
         echo "Starting $HOSTNAME ..."
-        IP=$IP GATEWAY="10.103.1.1" HOSTNAME=$HOSTNAME SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d --build > /dev/null
+        IP=$IP GATEWAY="10.103.1.1" HOSTNAME=$HOSTNAME SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null 2>&1
         SERVICE_ID=$(expr $SERVICE_ID + 1)
     fi
 done
+
+# Print teamdata download links
+cat ./teamdata.txt
+echo "\n(Team data stored in ./teamdata.txt)"

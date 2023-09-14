@@ -39,9 +39,11 @@ services:
       - TEAM_COUNT=${TEAM_COUNT}
       - PEERS=${PEERS}
       - SERVICES=${SERVICES}
+      - TEAM_TOKENS=${TEAM_TOKENS}
     volumes:
       - ./.docker/api/src:/code
       - ./.docker/vpn:/vpn
+      - ./.docker/api/teamdata:/teamdata
     ports:
       - "8000:80"
     networks:

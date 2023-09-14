@@ -1,5 +1,7 @@
 #!/bin/sh
 
+TEAM_TOKENS=""
+
 source .env set
 
 echo "Stopping all containers..."
@@ -47,3 +49,7 @@ docker volume prune -f > /dev/null
 
 # Delete all the vpn files
 rm -rf ./.docker/vpn/* > /dev/null
+
+# Delete all the teamdata files
+rm ./teamdata.txt
+rm -rf ./.docker/api/teamdata/* > /dev/null

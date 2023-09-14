@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"sourceMap": true,
+		"outDir": "dist",
+		"target": "ES2020",
+		"module": "ESNext",
+		"moduleResolution": "NodeNext",
+		"strict": true,
+		"lib": ["esnext", "dom"],
+		"esModuleInterop": true,
+		"downlevelIteration": true,
+		"jsx": "react"
+	},
+	"exclude": ["dist", "tests", "lib", "scripts"],
+	"ts-node": {
+		"esm": true,
+		"experimentalSpecifierResolution": "node"
+	}
+}

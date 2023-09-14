@@ -1,0 +1,12 @@
+coverage/
+dist/
+node_modules/
+emails-build/
+emails_local/
+lib/
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+logs/
+yarn-error.log
+!.env

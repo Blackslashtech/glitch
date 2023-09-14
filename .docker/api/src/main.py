@@ -1,6 +1,6 @@
 import pymongo
 from fastapi import FastAPI
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import PlainTextResponse, FileResponse
 import os
 
 app = FastAPI()
@@ -11,6 +11,7 @@ TEAM_COUNT = int(os.environ.get('TEAM_COUNT'))
 VPN_COUNT = int(os.environ.get('PEERS'))
 VPN_PER_TEAM = VPN_COUNT / TEAM_COUNT
 SERVICES = os.environ.get('SERVICES').split(',')
+TEAM_TOKENS = os.environ.get('TEAM_TOKENS').split(',')
 
 
 client = pymongo.MongoClient('mongodb://db:27017/')
@@ -65,3 +66,11 @@ def get_vpn(team_id: int, peer_id: int):
     vpn_id = (TEAM_COUNT * (team_id - 1)) + peer_id
     with open(f'/vpn/peer{vpn_id}/peer{vpn_id}.conf', 'r') as f:
         return f.read()
+    
+
+@app.get('/teamdata/{team_token}/rangedata.zip')
+def get_teamdata(team_token: str):
+    # Check if team token is strictly hex characters
+    if not all(c in '0123456789abcdef' for c in team_token) or len(team_token) != 32:
+        return 'invalid-team-token'
+    return FileResponse(f'/teamdata/{team_token}.zip')

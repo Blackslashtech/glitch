@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"outDir": ".",
+		"target": "ES2020",
+		"module": "CommonJS",
+		"moduleResolution": "Node",
+		"strict": true
+	},
+	"exclude": ["dist", "tests", "lib", "scripts"],
+	"ts-node": {
+		"esm": true,
+		"experimentalSpecifierResolution": "node"
+	}
+}
