@@ -1,14 +1,14 @@
 FROM python:3.9
 
+RUN apt update
+RUN apt install -y iproute2
+
 WORKDIR /checker
 
-COPY ./.docker/requirements.txt /checker/requirements.txt
+COPY . /checker
+COPY ./.docker/adapter.py /checker/adapter.py
+COPY ./.docker/checkerserver.py /checker/checkerserver.py
 
-RUN pip install --no-cache-dir --upgrade -r /checker/requirements.txt
+RUN bash ./setup.sh
 
-COPY ./.docker/interface.py /checker/interface.py
-COPY ./.docker/checkeradapter.py /checker/checkeradapter.py
-
-COPY . /checker/src
-
-CMD ["python3", "interface.py"]
+CMD ["python3", "checkerserver.py"]

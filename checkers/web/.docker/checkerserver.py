@@ -21,16 +21,17 @@ class StatusCode(enum.Enum):
 class Checker:
     def check(self, host: str, timeout: int) -> dict:
         status = {'action': 'check', 'host': host, 'code': int(StatusCode.OK), 'comment': '', 'latency': 0}
-        print(status)
+        print(status, flush=True)
         return status
 
     def put(self, host: str, flag: str, flag_id: str, timeout: int) -> dict:
         status = {'action': 'put', 'host': host, 'code': int(StatusCode.OK), 'comment': '', 'latency': 0, 'flag': flag, 'flag_id': flag_id}
+        print(status, flush=True)
         return status
 
     def get(self, host: str, flag: str, flag_id: str, timeout: int) -> dict:
         status = {'action': 'get', 'host': host, 'code': int(StatusCode.OK), 'comment': '', 'latency':0, 'flag': flag, 'flag_id': flag_id}
-        print(status)
+        print(status, flush=True)
         return status
 
 

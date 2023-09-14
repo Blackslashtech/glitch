@@ -1,5 +1,10 @@
 import xmlrpc.client
+import threading
+import secrets
+import random
 import enum
+import time
+
 
 
 class StatusCode(enum.Enum):
@@ -63,27 +68,58 @@ class Flag:
 
 
 class RemoteChecker:
-    def __init__(self, checker: str, callback) -> None:
-        self.server = xmlrpc.client.ServerProxy(f'http://{checker}:5000', allow_none=True)
-        self.checkerserver = self.server.create('Checker')
+    def __init__(self, checker: str, service: str, callback, tick: int = 0, randomize: bool = False, lock: threading.Lock = threading.Lock()) -> None:
+        self.checker = checker
+        self.service = service
         self.callback = callback
+        self.randomize = randomize
+        self.tick = tick
+        self.lock = lock
 
     def check(self, host: str, timeout: int) -> dict:
-        result = self.server.call(self.checkerserver, 'check', host, timeout)
-        # print("[REMOTECHECKER]: check result: ", result)
-        self.callback(result)
+        if self.randomize:
+            time.sleep(secrets.randbelow(timeout))
+        with self.lock:
+            server = xmlrpc.client.ServerProxy(f'http://{self.checker}:5000', allow_none=True)
+            checkerserver = server.create('Checker')
+            result = server.call(checkerserver, 'check', host, timeout)
+            result['service'] = self.service
+            result['tick'] = self.tick
+            self.callback(result)
         return result
 
     def put(self, flag: Flag, timeout: int) -> dict:
-        # print("Put called")
-        result = self.server.call(self.checkerserver, 'put', flag.host, flag.flag, flag.flag_id, timeout)
-        # print("[REMOTECHECKER]: put result: ", result)
-        self.callback(result)
+        if self.randomize:
+            time.sleep(secrets.randbelow(timeout))
+        with self.lock:
+            server = xmlrpc.client.ServerProxy(f'http://{self.checker}:5000', allow_none=True)
+            checkerserver = server.create('Checker')
+            result = server.call(checkerserver, 'put', flag.host, flag.flag, flag.flag_id, timeout)
+            result['service'] = self.service
+            result['tick'] = self.tick
+            self.callback(result)
         return result
-    
+
     def get(self, flag: Flag, timeout: int) -> dict:
-        # print("Get called")
-        result = self.server.call(self.checkerserver, 'get', flag.host, flag.flag, flag.flag_id, timeout)
-        # print("[REMOTECHECKER]: get result: ", result)
-        self.callback(result)
+        if self.randomize:
+            time.sleep(secrets.randbelow(timeout))
+        with self.lock:
+            server = xmlrpc.client.ServerProxy(f'http://{self.checker}:5000', allow_none=True)
+            checkerserver = server.create('Checker')
+            result = server.call(checkerserver, 'get', flag.host, flag.flag, flag.flag_id, timeout)
+            result['service'] = self.service
+            result['tick'] = self.tick
+            self.callback(result)
         return result
+
+    def run_all(self, host: str, put_flag: Flag, get_flag: Flag, timeout: int) -> None:
+        order = ['check', 'put', 'get']
+        random.shuffle(order)
+        for action in order:
+            if action == 'check':
+                self.check(host, timeout//3)
+            elif action == 'put':
+                self.put(put_flag, timeout//3)
+            elif action == 'get':
+                self.get(get_flag, timeout//3)
+

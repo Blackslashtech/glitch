@@ -5,42 +5,38 @@ source .env set
 echo "Stopping all containers..."
 sh down.sh
 
+# Wait for all the docker stop commands to finish
+sleep 5
+
 echo "Deleting all containers..."
+
+SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
 
 # Loop from 1 to $TEAM_COUNT
 for TEAM_ID in $(seq 1 $TEAM_COUNT); do
-    # Loop over every checker in /checkers
-    for dir in ./checkers/*; do
-        # Check if the file is named .templates or README.md
-        if [ "$(basename "$dir")" = ".templates" ] || [ "$(basename "$dir")" = "README.md" ]; then
-            # If it is, skip it
-            continue
-        fi
+    # Loop over every service
+    for SERVICE_NAME in $SERVICE_LIST; do
+        dir="./services/$SERVICE_NAME"
         # If the file is a directory
         if [ -d "$dir" ]; then
-            SERVICE_ID="$(basename "$dir")"
             # Generate a random root password
-            HOSTNAME=$(echo "checker-$SERVICE_ID" | tr '[:upper:]' '[:lower:]')
+            HOSTNAME=$(echo "team$TEAM_ID-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
             echo "Deleting $HOSTNAME..."
             docker rm $HOSTNAME > /dev/null &
         fi
     done
-    # Loop over every directory in /services
-    for dir in ./services/*; do
-        # Check if the file is named .docker
-        if [ "$(basename "$dir")" = ".docker" ]; then
-            # If it is, skip it
-            continue
-        fi
-        # If the file is a directory
-        if [ -d "$dir" ]; then
-            SERVICE_ID="$(basename "$dir")"
-            # Generate a random root password
-            HOSTNAME=$(echo "team$TEAM_ID-$SERVICE_ID" | tr '[:upper:]' '[:lower:]')
-            echo "Deleting $HOSTNAME..."
-            docker rm $HOSTNAME > /dev/null &
-        fi
-    done
+done
+
+# Loop over every checker
+for SERVICE_NAME in $SERVICE_LIST; do
+    dir="./checkers/$SERVICE_NAME"
+    # If the file is a directory
+    if [ -d "$dir" ]; then
+        # Generate a random root password
+        HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
+        echo "Deleting $HOSTNAME..."
+        docker rm $HOSTNAME > /dev/null &
+    fi
 done
 
 # Prune dangling images

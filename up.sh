@@ -9,11 +9,14 @@ SERVICES=""
 TICK_SECONDS=60
 START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 END_TIME=$(gdate -u +"%Y-%m-%dT%H:%M:%SZ" -d "+$(expr $TICK_SECONDS \* 100) seconds")
-
+MEM_LIMIT="1G"
+CPU_LIMIT="1"
 
 source .env set
 
 VPN_COUNT=$(expr $TEAM_COUNT \* $VPN_PER_TEAM)
+SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
+
 
 echo "API KEY: $API_KEY"
 
@@ -26,42 +29,27 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
   # Loop over every directory in /services
     # Create a counter for service IDs starting at 1
     SERVICE_ID=1
-    for dir in ./services/*; do
-        # Check if the file is named .docker or README.md
-        if [ "$(basename "$dir")" = ".docker" ] || [ "$(basename "$dir")" = "README.md" ]; then
-            # If it is, skip it
-            continue
-        fi
+    for SERVICE_NAME in $SERVICE_LIST; do
+        dir="./services/$SERVICE/"
         # If the file is a directory
         if [ -d "$dir" ]; then
             # Start docker-compose in the /services directory with a volume mount of the directory
-            # set the service environment variable to the directory name
-            # Isolate the end of the directory name with the basename command
-            SERVICE_NAME="$(basename "$dir")"
             # Generate a random root password
             ROOT_PASSWORD="$(openssl rand -hex 16)"
             HOSTNAME=$(echo "team$TEAM_ID-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
             IP=$(echo "10.100.$TEAM_ID.$SERVICE_ID" | tr '[:upper:]' '[:lower:]')
             echo "Starting $HOSTNAME, root password is $ROOT_PASSWORD ..."
-            API_KEY=$API_KEY IP=$IP HOSTNAME=$HOSTNAME TEAM_ID=$TEAM_ID SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME ROOT_PASSWORD=$ROOT_PASSWORD docker-compose -f ./services/docker-compose.yaml --project-name $HOSTNAME up -d --build > /dev/null
+            API_KEY=$API_KEY IP=$IP HOSTNAME=$HOSTNAME TEAM_ID=$TEAM_ID SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME ROOT_PASSWORD=$ROOT_PASSWORD CPU_LIMIT=$CPU_LIMIT MEM_LIMIT=$MEM_LIMIT docker-compose -f ./services/docker-compose.yaml --project-name $HOSTNAME up -d --build > /dev/null
             SERVICE_ID=$(expr $SERVICE_ID + 1)
         fi
     done
 done
 
 SERVICE_ID=1
-for dir in ./checkers/*; do
-    # Check if the file is named .templates or README.md
-    if [ "$(basename "$dir")" = ".templates" ] || [ "$(basename "$dir")" = "README.md" ]; then
-        # If it is, skip it
-        continue
-    fi
+for SERVICE_NAME in $SERVICE_LIST; do
+    dir="./checkers/$SERVICE_NAME/"
     # If the file is a directory
     if [ -d "$dir" ]; then
-        # Start docker-compose in the /checkers directory with a volume mount of the directory
-        # set the service environment variable to the directory name
-        # Isolate the end of the directory name with the basename command
-        SERVICE_NAME="$(basename "$dir")"
         HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
         IP=$(echo "10.103.2.$SERVICE_ID" | tr '[:upper:]' '[:lower:]')
         echo "Starting $HOSTNAME ..."
