@@ -25,7 +25,7 @@ def hello():
 
 @app.get('/hosts')
 def get_hosts():
-    return list(db.hosts.find({'ip': 1, 'team_id': 1, 'service_id': 1, 'service_name': 1, '_id': 0}))
+    return list(db.hosts.find({}, {'ip': 1, 'team_id': 1, 'service_id': 1, 'service_name': 1, '_id': 0}))
 
 @app.get('/scores')
 def get_scores():
