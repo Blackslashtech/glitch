@@ -11,7 +11,7 @@ TEAM_TOKENS=""
 source .env set
 
 echo "Stopping all containers..."
-sh scripts/down.sh
+bash scripts/down.sh
 
 # Wait for all the docker stop commands to finish
 sleep 5
