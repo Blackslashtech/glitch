@@ -25,7 +25,7 @@ def hello():
 
 @app.get('/hosts')
 def get_hosts():
-    return list(db.hosts.find({'_id': 0}))
+    return list(db.hosts.find({'ip': 1, 'team_id': 1, 'service_id': 1, 'service_name': 1, '_id': 0}))
 
 @app.get('/scores')
 def get_scores():
@@ -40,7 +40,7 @@ def get_scores():
 
 @app.get('/checks')
 def get_checks(skip: int = 0, limit: int = 20):
-    return list(db.checks.find({}, {'_id': 0}).sort('time', -1).skip(TEAM_COUNT * len(SERVICES) * skip).limit(TEAM_COUNT * len(SERVICES) * limit))
+    return list(db.checks.find({}, {'_id': 0, 'comment': 0}).sort('time', -1).skip(TEAM_COUNT * len(SERVICES) * skip).limit(TEAM_COUNT * len(SERVICES) * limit))
 
 @app.get('/flagids')
 def get_flagids():
