@@ -21,8 +21,12 @@ else
 fi
 
 # Set root password to ROOT_PASSWORD env var
-echo "Setting root password..."
+echo "Setting root password to $ROOT_PASSWORD..."
 echo "root:$ROOT_PASSWORD" | chpasswd
+
+# Enable root login via ssh
+echo "Enabling root login via ssh..."
+sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 # Start sshd
 echo "Starting sshd..."

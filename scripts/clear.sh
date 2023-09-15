@@ -47,15 +47,18 @@ for SERVICE_NAME in $SERVICE_LIST; do
     fi
 done
 
-# Prune dangling images
-docker image prune -f > /dev/null
-
-# Prune dangling volumes
-docker volume prune -f > /dev/null
-
 # Delete all the vpn files
 rm -rf ./.docker/vpn/* > /dev/null
 
 # Delete all the teamdata files
 rm ./teamdata.txt
 rm -rf ./.docker/api/teamdata/* > /dev/null
+
+# Wait to ensure all docker containers are down
+sleep 2
+
+# Prune dangling volumes
+docker volume prune -f > /dev/null
+
+# Prune dangling images
+docker image prune -f -a > /dev/null
