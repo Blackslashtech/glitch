@@ -12,6 +12,7 @@ VPN_COUNT = int(os.environ.get('PEERS'))
 VPN_PER_TEAM = VPN_COUNT / TEAM_COUNT
 SERVICES = os.environ.get('SERVICES').split(',')
 TEAM_TOKENS = os.environ.get('TEAM_TOKENS').split(',')
+FLAG_LIFETIME = int(os.environ.get('FLAG_LIFETIME'))
 
 
 client = pymongo.MongoClient('mongodb://db:27017/')
@@ -29,21 +30,21 @@ def get_hosts():
 @app.get('/scores')
 def get_scores():
     scores = {}
-    for team in db.teams.find():
+    for team in list(db.teams.find({}, {'team_id': 1, 'score': 1, '_id': 0})):
         scores[team['team_id']] = {}
         scores[team['team_id']]['services'] = {}
-        for host in db.hosts.find({'team_id': team['team_id']}):
+        for host in list(db.hosts.find({'team_id': team['team_id']}, {'service_name': 1, 'score': 1})):
             scores[team['team_id']]['services'][host['service_name']] = host['score']
         scores[team['team_id']]['total'] = team['score']
     return scores
 
 @app.get('/checks')
 def get_checks(skip: int = 0, limit: int = 20):
-    return list(db.checks.find().sort('time', -1).skip(TEAM_COUNT * len(SERVICES) * skip).limit(TEAM_COUNT * len(SERVICES) * limit))
+    return list(db.checks.find({}, {'_id': 0}).sort('time', -1).skip(TEAM_COUNT * len(SERVICES) * skip).limit(TEAM_COUNT * len(SERVICES) * limit))
 
 @app.get('/flagids')
 def get_flagids():
-    return list(db.flags.find({}, {'service': 1, 'service_id': 1, 'team_id': 1, 'flag_id': 1, 'tick': 1}))
+    return list(db.flags.find({}, {'service': 1, 'service_id': 1, 'team_id': 1, 'flag_id': 1, 'tick': 1, '_id': 0}).sort('tick', -1).limit(TEAM_COUNT * len(SERVICES) * FLAG_LIFETIME))
 
 @app.post('/steal')
 def steal_flag(flag: str, token: str):

@@ -106,16 +106,16 @@ def run_checks(service_name: str, target_ips: list, tick: int) -> None:
 
 def calculate_scores(tick: int = 0) -> None:
     global range_initialized
-    # print('Calculating scores', flush=True)
+    print('Calculating scores', flush=True)
     # Calculate the scores for each team
-    # if not range_initialized:
-    #     # Check if all checks from the current tick are correct
-    #     if db.checks.count_documents({'tick': tick, 'code': int(StatusCode.OK)}) == TEAM_COUNT * len(SERVICES) * 3:
-    #         range_initialized = True
-    #         print('Range Initialized! Going hot...', flush=True)
-    #     else:
-    #         print('Pending initialization, skipping score calculation...', flush=True)
-    #         return
+    if not range_initialized:
+        # Check if all checks from the current tick are correct
+        if db.checks.count_documents({'tick': tick, 'code': int(StatusCode.OK)}) == TEAM_COUNT * len(SERVICES) * 3:
+            range_initialized = True
+            print('Range Initialized! Going hot...', flush=True)
+        else:
+            print('Pending initialization, skipping score calculation...', flush=True)
+            return
     print('Team Service          CHECK PUT GET  ', flush=True)
     for team in db.teams.find():
         team_score = 0

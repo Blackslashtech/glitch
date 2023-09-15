@@ -18,6 +18,11 @@ sleep 5
 
 echo "Deleting all containers..."
 
+docker rm -f range-api > /dev/null
+docker rm -f range-ticker > /dev/null
+docker rmi -f range-api > /dev/null
+docker rmi -f range-ticker > /dev/null
+
 SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
 
 # Loop from 1 to $TEAM_COUNT
@@ -30,7 +35,8 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
             # Generate a random root password
             HOSTNAME=$(echo "team$TEAM_ID-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
             echo "Deleting $HOSTNAME..."
-            docker rm $HOSTNAME > /dev/null &
+            docker rm -f $HOSTNAME > /dev/null
+            docker rmi -f $HOSTNAME-service > /dev/null
         fi
     done
 done
@@ -43,7 +49,8 @@ for SERVICE_NAME in $SERVICE_LIST; do
         # Generate a random root password
         HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
         echo "Deleting $HOSTNAME..."
-        docker rm $HOSTNAME > /dev/null &
+        docker rm -f $HOSTNAME > /dev/null
+        docker rmi -f $HOSTNAME-checker > /dev/null
     fi
 done
 
@@ -54,11 +61,5 @@ rm -rf ./.docker/vpn/* > /dev/null
 rm ./teamdata.txt
 rm -rf ./.docker/api/teamdata/* > /dev/null
 
-# Wait to ensure all docker containers are down
-sleep 2
-
-# Prune dangling volumes
-docker volume prune -f > /dev/null
-
-# Prune dangling images
-docker image prune -f -a > /dev/null
+# Prune docker networks
+docker network prune -f > /dev/null

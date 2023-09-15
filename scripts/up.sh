@@ -11,6 +11,7 @@ API_KEY="$(openssl rand -hex 16)"
 # Set default values
 TEAM_COUNT=2
 VPN_PER_TEAM=1
+FLAG_LIFETIME=5
 SERVER_URL="localhost"
 VPN_PORT=51820
 API_PORT=8000
@@ -48,7 +49,7 @@ done
 TEAM_TOKENS="${TEAM_TOKENS:1}"
 
 echo "Starting range services..."
-API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT SERVERURL=$SERVER_URL API_PORT=$API_PORT VPN_PORT=$VPN_PORT VPN_DNS=$VPN_DNS TEAM_TOKENS=$TEAM_TOKENS docker-compose up -d --force-recreate > /dev/null
+API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT FLAG_LIFETIME=$FLAG_LIFETIME SERVERURL=$SERVER_URL API_PORT=$API_PORT VPN_PORT=$VPN_PORT VPN_DNS=$VPN_DNS TEAM_TOKENS=$TEAM_TOKENS docker-compose up -d --force-recreate > /dev/null
 
 echo "Waiting 5 seconds for VPN to start..."
 sleep 5

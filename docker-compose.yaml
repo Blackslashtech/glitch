@@ -37,6 +37,7 @@ services:
       - db
       - ticker
     environment:
+      - FLAG_LIFETIME=${FLAG_LIFETIME}
       - API_KEY=${API_KEY}
       - TEAM_COUNT=${TEAM_COUNT}
       - PEERS=${PEERS}

@@ -1,4 +1,0 @@
-Team data download links (distribute one link to each team):
-Team 1: http://localhost:8000/teamdata/c1d50663bde306de0232a5c00e2f20a4/rangedata.zip
-Team 2: http://localhost:8000/teamdata/c9acf96e30c39022af38e011533f02b0/rangedata.zip
-Team 3: http://localhost:8000/teamdata/f6549a5e1d43752923fead3de7823af0/rangedata.zip
