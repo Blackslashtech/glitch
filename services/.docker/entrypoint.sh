@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# Check in with API server
-curl -s http://api/service/create?api_key=$API_KEY\&hostname=$HOSTNAME\&ip=$(hostname -i | tr -d '\n')\&status=starting
-
 # Start docker daemon
 echo "Starting docker daemon..."
 dockerd --insecure-registry http://registry:5000 --registry-mirror http://registry:5000 &
@@ -11,10 +8,6 @@ dockerd --insecure-registry http://registry:5000 --registry-mirror http://regist
 echo "Waiting for docker daemon to start..."
 while ! docker info >/dev/null 2>&1; do sleep 1; done
 echo "Docker daemon started."
-
-# Update status with API server
-curl -s http://api/service/update?api_key=$API_KEY\&hostname=$HOSTNAME\&status=building
-
 
 # Check if there is a deploy.sh script in the service directory
 if [ -f deploy.sh ]; then
@@ -26,9 +19,6 @@ else
     echo "Running docker-compose..."
     docker-compose up -d >/dev/null
 fi
-
-# Update status with API server
-curl -s http://api/service/update?api_key=$API_KEY\&hostname=$HOSTNAME\&status=up
 
 # Set root password to ROOT_PASSWORD env var
 echo "Setting root password..."

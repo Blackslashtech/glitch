@@ -7,11 +7,11 @@ A general purpose attack-defense range for zero-config deployment
 1. Drop each service into a folder in the [`./services`](services) directory.  Each service must have a `docker-compose.yml` file that defines the service, or a `deploy.sh` which starts the service. ([Services README](./services)).
 3. Drop each checker script in the [`./checkers`](checkers) directory.  Each checker directory must be named the same as the service it corresponds to. ([Checkers README](./checkers)).
 4. Modify the [`.env`](.env) as desired for all configuration options
-5. Run `sh scripts/up.sh` to start the range.
+5. Run `bash scripts/up.sh` to start the range.
 6. Distribute the printed team links to each team, which will allow them to download the VPN configs and credentials.
 
-To temporarily stop the range, run `sh scripts/down.sh`.
-To delete all data associated with the range, run `sh scripts/clear.sh`.
+To temporarily stop the range, run `bash scripts/down.sh`.
+To delete all data associated with the range, run `bash scripts/clear.sh`.
 
 > [!WARNING] 
 > `scripts/clear.sh` runs a docker image and volume prune.  This can have unintended consequences if you have other docker containers on the host system.  Use with caution.
@@ -19,7 +19,7 @@ To delete all data associated with the range, run `sh scripts/clear.sh`.
 ## Connecting to the Range
 Credentials for all services are printed to STDOUT during the range startup.
 
-For local testing, you can get a shell inside the range environment with the command `sh scripts/rangemaster.sh`.
+For local testing, you can get a shell inside the range environment with the command `bash scripts/rangemaster.sh`.
 
 As long as the `SERVER_URL` is properly set and port forwarding is enabled for UDP 51820, you can connect to the range from anywhere with the Wireguard client.
 Wireguard configs are stored in the [`.docker/vpn`](..docker/vpn) directory, or can be downloaded from the API at `http://api/vpn/<team_id>/wg<vpn_id>.conf`. (i.e. `http://api/vpn/1/wg1.conf`)
@@ -30,11 +30,11 @@ Wireguard configs are stored in the [`.docker/vpn`](..docker/vpn) directory, or 
 ## API Quickstart
 The API is at `http://10.101.0.2:8000` inside the range and `http://<server>:8000` from outside the range.
 
-- To get all targets, `GET http://10.101.0.2:8000/hosts`.
-- To get flag IDs, `GET http://10.101.0.2:8000/flagids`.
-- To submit a flag, `POST http://10.101.0.2:8000/steal`
-- To list scores, `GET http://10.101.0.2:8000/scores`
-- To list detailed scoring checks, `GET http://10.101.0.2:8000/checks`
+- To get all targets, `GET /hosts`.
+- To get flag IDs, `GET /flagids`.
+- To submit a flag, `POST /steal`
+- To list scores, `GET /scores`
+- To list detailed scoring checks, `GET /checks`
 
 For full API documentation, visit `http://10.101.0.2:8000/docs`
 

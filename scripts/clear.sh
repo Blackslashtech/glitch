@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Check if cwd is range
 if [[ ! -d "./checkers" && -d "./services" && -d "./.docker" ]]; then

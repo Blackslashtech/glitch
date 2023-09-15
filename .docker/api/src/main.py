@@ -19,12 +19,12 @@ db = client['range']
 
 
 @app.get('/')
-def read_root():
+def hello():
     return {'Hello': 'World'}
 
 @app.get('/hosts')
 def get_hosts():
-    return list(db.hosts.find())
+    return list(db.hosts.find({'_id': 0}))
 
 @app.get('/scores')
 def get_scores():
@@ -38,38 +38,30 @@ def get_scores():
     return scores
 
 @app.get('/checks')
-def get_checks():
-    return list(db.checks.find().sort('time', -1).limit(TEAM_COUNT * len(SERVICES) * 10))
+def get_checks(skip: int = 0, limit: int = 20):
+    return list(db.checks.find().sort('time', -1).skip(TEAM_COUNT * len(SERVICES) * skip).limit(TEAM_COUNT * len(SERVICES) * limit))
 
 @app.get('/flagids')
 def get_flagids():
     return list(db.flags.find({}, {'service': 1, 'service_id': 1, 'team_id': 1, 'flag_id': 1, 'tick': 1}))
 
 @app.post('/steal')
-def steal_flag(flag: str, team_id: int):
+def steal_flag(flag: str, token: str):
+    if token not in TEAM_TOKENS:
+        return 'error: unauthorized'
     correct = db.flags.find_one({'flag': flag})
     if not correct:
-        return 'invalid'
+        return 'error: invalid'
     existing = db.steals.find_one({'flag': flag})
     if not existing:
-        return 'duplicate'
-    db.steals.insert_one({'service_id': correct['service_id'], 'team_id': team_id, 'flag_id': correct['flag_id'], 'flag': flag})
+        return 'error: duplicate'
+    if correct['team_id'] == TEAM_TOKENS.index(token) + 1:
+        return 'error: self'
+    db.steals.insert_one({'service_id': correct['service_id'], 'team_id': correct['team_id'], 'flag_id': correct['flag_id'], 'flag': flag})
     return 'success'
 
-
-@app.get('/vpn/{team_id}/wg{peer_id}.conf', response_class=PlainTextResponse)
-def get_vpn(team_id: int, peer_id: int):
-    if peer_id > VPN_PER_TEAM:
-        return 'invalid-peer-id'
-    if team_id > TEAM_COUNT:
-        return 'invalid-team-id'
-    vpn_id = (TEAM_COUNT * (team_id - 1)) + peer_id
-    with open(f'/vpn/peer{vpn_id}/peer{vpn_id}.conf', 'r') as f:
-        return f.read()
-    
-
 @app.get('/teamdata/{team_token}/rangedata.zip')
-def get_teamdata(team_token: str):
+def get_team_data(team_token: str):
     # Check if team token is strictly hex characters
     if not all(c in '0123456789abcdef' for c in team_token) or len(team_token) != 32:
         return 'invalid-team-token'

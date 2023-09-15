@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Check if cwd is range
 if [[ ! -d "./checkers" && -d "./services" && -d "./.docker" ]]; then
@@ -14,6 +14,7 @@ VPN_PER_TEAM=1
 SERVER_URL="localhost"
 VPN_PORT=51820
 API_PORT=8000
+VPN_DNS="8.8.8.8"
 SERVICES=""
 TICK_SECONDS=60
 START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -47,7 +48,7 @@ done
 TEAM_TOKENS="${TEAM_TOKENS:1}"
 
 echo "Starting range services..."
-API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT SERVERURL=$SERVER_URL TEAM_TOKENS=$TEAM_TOKENS docker-compose up -d --force-recreate > /dev/null
+API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT SERVERURL=$SERVER_URL API_PORT=$API_PORT VPN_PORT=$VPN_PORT VPN_DNS=$VPN_DNS TEAM_TOKENS=$TEAM_TOKENS docker-compose up -d --force-recreate > /dev/null
 
 echo "Waiting 5 seconds for VPN to start..."
 sleep 5
@@ -73,10 +74,9 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
             ROOT_PASSWORD="$(openssl rand -hex 16)"
             HOSTNAME=$(echo "team$TEAM_ID-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
             IP=$(echo "10.100.$TEAM_ID.$SERVICE_ID" | tr '[:upper:]' '[:lower:]')
-            echo "Starting $HOSTNAME, root password is $ROOT_PASSWORD ..."
             # Write creds to creds.txt
             echo "$IP ($SERVICE_NAME) - root : $ROOT_PASSWORD" >> ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
-            API_KEY=$API_KEY IP=$IP HOSTNAME=$HOSTNAME TEAM_ID=$TEAM_ID SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME ROOT_PASSWORD=$ROOT_PASSWORD CPU_LIMIT=$CPU_LIMIT MEM_LIMIT=$MEM_LIMIT docker-compose -f ./services/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null 2>&1
+            IP=$IP HOSTNAME=$HOSTNAME TEAM_ID=$TEAM_ID SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME ROOT_PASSWORD=$ROOT_PASSWORD CPU_LIMIT=$CPU_LIMIT MEM_LIMIT=$MEM_LIMIT docker-compose -f ./services/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null 2>&1
             SERVICE_ID=$(expr $SERVICE_ID + 1)
         fi
     done

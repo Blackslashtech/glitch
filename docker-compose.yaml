@@ -13,6 +13,7 @@ services:
     - ALLOWEDIPS=10.100.0.0/15
     - SERVERURL=${SERVER_URL}
     - SERVERPORT=${VPN_PORT}
+    - PEERDNS=${VPN_DNS}
     cap_add:
       - NET_ADMIN
     volumes:
