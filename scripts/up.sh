@@ -42,7 +42,8 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
     # Create teamdata directory and credentials file
     mkdir ./.docker/api/teamdata/$TEAM_TOKEN
     mkdir ./.docker/api/teamdata/$TEAM_TOKEN/vpn
-    echo "API Token: $TEAM_TOKEN\n" >> ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
+    echo -e "Team $TEAM_ID Range Credentials:\n" > ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
+    echo -e "API Token: $TEAM_TOKEN\n" >> ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
     echo "Team $TEAM_ID: http://$SERVER_URL:$API_PORT/teamdata/$TEAM_TOKEN/rangedata.zip" >> ./teamdata.txt
 done
 # Strip leading comma
@@ -58,7 +59,6 @@ sleep 5
 for TEAM_ID in $(seq 1 $TEAM_COUNT); do
     echo "Starting team $TEAM_ID..."
     TEAM_TOKEN="$(echo $TEAM_TOKENS | cut -d',' -f$TEAM_ID)"
-    echo "Team $TEAM_ID Range Credentials:\n" > ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
     # Copy vpn files
     for VPN_ID in $(seq 1 $VPN_PER_TEAM); do
         VPN_NAME="peer$(expr $VPN_ID + $(expr $(expr $TEAM_ID - 1) \* $VPN_PER_TEAM))"

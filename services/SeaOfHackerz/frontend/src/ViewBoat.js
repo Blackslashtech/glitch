@@ -16,7 +16,7 @@ function ViewBoat() {
     useEffect(() => {
 
         async function getStyle() {
-            fetch(`http://${window.location.hostname}:5001/api/users/${userId}/ship`, {
+            fetch(`http://${window.location.hostname}:5000/api/users/${userId}/ship`, {
                 credentials: "include",
             })
                 .then(res => res.json())
@@ -42,7 +42,7 @@ function ViewBoat() {
         };
 
         async function getUsername() {
-            fetch(`http://${window.location.hostname}:5001/api/user/${userId}`, {
+            fetch(`http://${window.location.hostname}:5000/api/user/${userId}`, {
                 credentials: "include",
             })
                 .then(res => res.json())

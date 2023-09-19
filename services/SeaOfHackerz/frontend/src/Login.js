@@ -31,7 +31,7 @@ function Login(props) {
             setShowError(true);
         }
         else {
-            fetch(`http://${window.location.hostname}:5001/api/register`, {
+            fetch(`http://${window.location.hostname}:5000/api/register`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ function Login(props) {
         e.preventDefault();
         setMessage('');
 
-        fetch(`http://${window.location.hostname}:5001/api/login`, {
+        fetch(`http://${window.location.hostname}:5000/api/login`, {
             method: "POST",
             credentials: "include",
             headers: {

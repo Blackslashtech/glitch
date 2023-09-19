@@ -32,7 +32,7 @@ function Attack() {
             setShowSuccess(false);
             return;
         }
-        fetch(`http://${window.location.hostname}:5001/api/users/${userId}/attack/${attackId}`, {
+        fetch(`http://${window.location.hostname}:5000/api/users/${userId}/attack/${attackId}`, {
             method: "POST",
             credentials: "include",
             headers: {

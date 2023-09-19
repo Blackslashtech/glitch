@@ -6,7 +6,7 @@ function TableRow(props) {
 
     function start() {
 
-        fetch(`http://${window.location.hostname}:5001/api/users/${props.id}/attack/start`, {
+        fetch(`http://${window.location.hostname}:5000/api/users/${props.id}/attack/start`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -60,7 +60,7 @@ function StartAttack() {
     const navigate = useNavigate();
 
     function searchPlayer() {
-        fetch(`http://${window.location.hostname}:5001/api/users/search/${username}`, {
+        fetch(`http://${window.location.hostname}:5000/api/users/search/${username}`, {
             credentials: "include",
             headers: {
                 'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ function StartAttack() {
     }
 
     useEffect(() => {
-        fetch(`http://${window.location.hostname}:5001/api/users?${new URLSearchParams({ page: 0 })}`, {
+        fetch(`http://${window.location.hostname}:5000/api/users?${new URLSearchParams({ page: 0 })}`, {
             credentials: "include",
             headers: {
                 'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ function StartAttack() {
     }, []);
 
     useEffect(() => {
-        fetch(`http://${window.location.hostname}:5001/api/users?${new URLSearchParams({ page: index })}`, {
+        fetch(`http://${window.location.hostname}:5000/api/users?${new URLSearchParams({ page: index })}`, {
             credentials: "include",
             headers: {
                 'Content-Type': 'application/json',

@@ -37,7 +37,7 @@ function Boat(props) {
     useEffect(() => {
         async function getItems() {
             let items = [];
-            fetch(`http://${window.location.hostname}:5001/api/items`)
+            fetch(`http://${window.location.hostname}:5000/api/items`)
                 .then(res => res.json())
                 .then(data => {
                     for (let d of data.items) {
@@ -52,7 +52,7 @@ function Boat(props) {
             for (let i in inv) {
                 inv[i][0] = 0;
             }
-            fetch(`http://${window.location.hostname}:5001/api/user/items`, {
+            fetch(`http://${window.location.hostname}:5000/api/user/items`, {
                 credentials: 'include',
             })
                 .then(res => res.json())
@@ -66,7 +66,7 @@ function Boat(props) {
         };
 
         async function getStyle() {
-            fetch(`http://${window.location.hostname}:5001/api/users/${props.id}/ship`, {
+            fetch(`http://${window.location.hostname}:5000/api/users/${props.id}/ship`, {
                 credentials: "include",
             })
                 .then(res => res.json())
@@ -113,7 +113,7 @@ function Boat(props) {
                     items = [...items, { id: i, personal_description: inventory[i][1] }];
                 }
             }
-            fetch(`http://${window.location.hostname}:5001/api/user/items`, {
+            fetch(`http://${window.location.hostname}:5000/api/user/items`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -144,7 +144,7 @@ function Boat(props) {
                 ['Porthole', porthole],
                 ['Flag color', flagColor]
             ];
-            fetch(`http://${window.location.hostname}:5001/api/user/ship`, {
+            fetch(`http://${window.location.hostname}:5000/api/user/ship`, {
                 method: "PUT",
                 credentials: "include",
                 headers: {
