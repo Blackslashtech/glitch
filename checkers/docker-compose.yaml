@@ -28,5 +28,4 @@ services:
 networks:
   range_checker:
     driver: bridge
-    enable_ipv6: true
     external: true

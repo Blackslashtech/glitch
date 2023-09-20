@@ -33,5 +33,4 @@ services:
 networks:
   range_game:
     driver: bridge
-    enable_ipv6: true
     external: true
