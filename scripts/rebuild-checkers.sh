@@ -35,6 +35,7 @@ for SERVICE_NAME in $SERVICE_LIST; do
         IP=$(echo "10.103.2.$SERVICE_ID" | tr '[:upper:]' '[:lower:]')
         echo "Restarting $HOSTNAME ..."
         docker stop $HOSTNAME > /dev/null 2>&1
+        docker rm $HOSTNAME > /dev/null 2>&1
         IP=$IP GATEWAY="10.103.1.1" HOSTNAME=$HOSTNAME SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME TICK_SECONDS=$TICK_SECONDS docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null
         SERVICE_ID=$(expr $SERVICE_ID + 1)
     fi
