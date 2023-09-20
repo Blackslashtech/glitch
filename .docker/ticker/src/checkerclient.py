@@ -81,8 +81,7 @@ class RemoteChecker:
             time.sleep(secrets.randbelow(timeout))
         with self.lock:
             server = xmlrpc.client.ServerProxy(f'http://{self.checker}:5000', allow_none=True)
-            checkerserver = server.create('Checker')
-            result = server.call(checkerserver, 'check', host, timeout)
+            result = server.check(host, timeout)
             result['service'] = self.service
             result['tick'] = self.tick
             self.callback(result)
@@ -93,8 +92,7 @@ class RemoteChecker:
             time.sleep(secrets.randbelow(timeout))
         with self.lock:
             server = xmlrpc.client.ServerProxy(f'http://{self.checker}:5000', allow_none=True)
-            checkerserver = server.create('Checker')
-            result = server.call(checkerserver, 'put', flag.host, flag.flag, flag.flag_id, timeout)
+            result = server.put(flag.host, flag.flag, flag.flag_id, timeout)
             result['service'] = self.service
             result['tick'] = self.tick
             self.callback(result)
@@ -105,8 +103,7 @@ class RemoteChecker:
             time.sleep(secrets.randbelow(timeout))
         with self.lock:
             server = xmlrpc.client.ServerProxy(f'http://{self.checker}:5000', allow_none=True)
-            checkerserver = server.create('Checker')
-            result = server.call(checkerserver, 'get', flag.host, flag.flag, flag.flag_id, timeout)
+            result = server.get(flag.host, flag.flag, flag.flag_id, timeout)
             result['service'] = self.service
             result['tick'] = self.tick
             self.callback(result)
