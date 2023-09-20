@@ -41,7 +41,7 @@ class FlagEndpoint:
         FlagEndpoint.port_counter += 1
         self.port_number = FlagEndpoint.port_counter
         server = http.server.HTTPServer(('127.0.0.1', self.port_number), Handler)
-        self.server_thread = threading.Thread(target=server.serve_forever)
+        self.server_thread = threading.Thread(target=server.handle_request)
         self.server_thread.start()
         self.data = {}
 
