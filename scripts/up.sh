@@ -104,7 +104,7 @@ for SERVICE_NAME in $SERVICE_LIST; do
             IP="fd00:1003:2::$SERVICE_ID"
             GATEWAY="fd00:1003:1::100"
         else
-            IP6="10.103.2.$SERVICE_ID"
+            IP="10.103.2.$SERVICE_ID"
             GATEWAY="10.103.1.100"
         fi
         echo "Starting $HOSTNAME ..."
