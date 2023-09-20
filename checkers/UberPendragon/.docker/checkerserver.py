@@ -99,7 +99,7 @@ class Checker:
         comment = ''
         exitcode = StatusCode.ERROR
         try:
-            comment = subprocess.check_output("python3 adapter.py put " + host + " " + flag + " " + flag_id + " " + self.flag_endpoint.get_endpoint(), shell=True, stderr=subprocess.STDOUT, timeout=timeout)
+            comment = subprocess.check_output("python3 adapter.py put " + host + " " + flag + " " + flag_id + " " + flag_endpoint.get_endpoint(), shell=True, stderr=subprocess.STDOUT, timeout=timeout)
             exitcode = StatusCode.OK
         except subprocess.CalledProcessError as e:
             comment = e.output
