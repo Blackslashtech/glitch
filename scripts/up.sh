@@ -108,7 +108,7 @@ for SERVICE_NAME in $SERVICE_LIST; do
             GATEWAY="10.103.1.100"
         fi
         echo "Starting $HOSTNAME ..."
-        IP=$IP GATEWAY=$GATEWAY HOSTNAME=$HOSTNAME SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME TICK_SECONDS=$TICK_SECONDS docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null 2>&1
+        IP=$IP GATEWAY=$GATEWAY HOSTNAME=$HOSTNAME SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME TICK_SECONDS=$TICK_SECONDS docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null
         SERVICE_ID=$(expr $SERVICE_ID + 1)
     fi
 done
