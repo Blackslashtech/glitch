@@ -11,9 +11,7 @@ from socketserver import ThreadingMixIn
 
 
 class SimpleThreadedXMLRPCServer(ThreadingMixIn, xmlrpc.server.SimpleXMLRPCServer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.block_on_close = False
+    pass
 
 class StatusCode(enum.Enum):
     OK = 101
