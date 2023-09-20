@@ -2,7 +2,7 @@
 
 # Start docker daemon
 echo "Starting docker daemon..."
-dockerd --insecure-registry http://registry:5000 --registry-mirror http://registry:5000 &
+dockerd --insecure-registry http://registry:5000 --registry-mirror http://registry:5000 --dns 8.8.8.8 &
 
 # Wait for docker daemon to start
 echo "Waiting for docker daemon to start..."
