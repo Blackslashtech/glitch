@@ -60,12 +60,12 @@ class FlagEndpoint:
             return str(Handler.data[self.port_number]['flagId'])
         except Exception:
             return ''
+        
+    def destroy(self):
+        self.server_thread.join(0)
 
 
 class Checker:
-    def __init__(self):
-        self.flag_endpoint = FlagEndpoint()
-
     def check(self, host: str, timeout: int) -> dict:
         start = time.time()
         print("[CHECK] Starting against " + host)
@@ -93,6 +93,7 @@ class Checker:
         return status
 
     def put(self, host: str, flag: str, flag_id: str, timeout: int) -> dict:
+        flag_endpoint = FlagEndpoint()
         start = time.time()
         print("[CHECK] Starting against " + host)
         comment = ''
@@ -113,8 +114,9 @@ class Checker:
             comment = comment.decode('latin-1')
         except:
             comment = ''
+        flag_endpoint.destroy()
         print("[PUT] Finished against " + str(host) + " after " + str(int((time.time() - start) * 1000)) + " with exitcode " + str(exitcode))
-        status = {'action': 'put', 'host': host, 'code': int(exitcode), 'comment': str(comment), 'latency': int((time.time() - start) * 1000), 'flag': flag, 'flag_id': self.flag_endpoint.get_id()}
+        status = {'action': 'put', 'host': host, 'code': int(exitcode), 'comment': str(comment), 'latency': int((time.time() - start) * 1000), 'flag': flag, 'flag_id': flag_endpoint.get_id()}
         print('Status: ' + str(status), flush=True)
         return status
 
