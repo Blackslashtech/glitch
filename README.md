@@ -44,11 +44,11 @@ For full API documentation, visit `http://10.101.0.2:8000/docs`
 The range network is defined in [`docker-compose.yaml`](docker-compose.yaml):
 - Range network: `10.100.0.0/15`
   - Infrastructure subnet: `10.101.0.0/16`
-    - VPN Server: `10.101.0.1` (hostname `vpn`) - NAT Source for all traffic (players and checkers)
-    - API: `10.101.0.2` (hostname `api`)
-    - Docker Registry: `10.101.0.3` (hostname `registry`)
-    - Rangemaster: `10.101.0.5` (hostname `rangemaster`) - For troubleshooting
-    - (WIP) Frontend: `10.101.0.6` (hostname `frontend`)
+    - VPN Server: `10.101.1.1` (hostname `vpn`) - NAT Source for all traffic (players and checkers)
+    - API: `10.101.1.2` (hostname `api`)
+    - Docker Registry: `10.101.1.3` (hostname `registry`)
+    - Rangemaster: `10.101.1.5` (hostname `rangemaster`) - For troubleshooting
+    - (WIP) Frontend: `10.101.1.6` (hostname `frontend`)
   - Team subnet: `10.100.<team_id>.0/24`
     - Service host: `10.100.<team_id>.<service_id>` (hostname `team<team_id>-<service_name>` - i.e. `team1-web`)
 - Internal network: `10.102.0.0/16`
@@ -67,11 +67,11 @@ The range network is defined in [`docker-compose.yaml`](docker-compose.yaml):
 ## IPv6 Network
 - Range network: `fd00:1000::/31`
   - Infrastructure subnet: `fd00:1001::/32`
-    - VPN Server: `fd00:1001::1` (hostname `vpn`)
-    - API: `fd00:1001::2` (hostname `api`)
-    - Docker Registry: `fd00:1001::3` (hostname `registry`)
-    - Rangemaster: `fd00:1001::5` (hostname `rangemaster`)
-    - (WIP) Frontend: `fd00:1001::6` (hostname `frontend`)
+    - VPN Server: `fd00:1001:1::1` (hostname `vpn`)
+    - API: `fd00:1001:1::2` (hostname `api`)
+    - Docker Registry: `fd00:1001:1::3` (hostname `registry`)
+    - Rangemaster: `fd00:1001:1::5` (hostname `rangemaster`)
+    - (WIP) Frontend: `fd00:1001:1::6` (hostname `frontend`)
   - Team subnet: `fd00:1000:<team_id>::/48`
     - Service host: `fd00:1000:<team_id>::<service_id>`
 - Internal network: `fd00:1002::/32`
