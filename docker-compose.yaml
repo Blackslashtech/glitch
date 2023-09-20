@@ -22,11 +22,11 @@ services:
       - "${VPN_PORT}:${VPN_PORT}/udp"
     networks:
       game:
-        ipv4_address: 10.101.1.1
-        ipv6_address: fd00:1001:1::1
+        ipv4_address: 10.101.1.100
+        ipv6_address: fd00:1001:1::100
       checker:
-        ipv4_address: 10.103.1.1
-        ipv6_address: fd00:1003:1::1
+        ipv4_address: 10.103.1.100
+        ipv6_address: fd00:1003:1::100
 
 
   api:

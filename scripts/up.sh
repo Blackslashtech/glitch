@@ -102,10 +102,10 @@ for SERVICE_NAME in $SERVICE_LIST; do
         # check if ipv6 is enabled
         if [ "$IPV6_ENABLED" = "true" ]; then
             IP="fd00:1003:2::$SERVICE_ID"
-            GATEWAY="fd00:1003:1::1"
+            GATEWAY="fd00:1003:1::100"
         else
-            IP6="10.103.1.$SERVICE_ID"
-            GATEWAY="10.103.1.1"
+            IP6="10.103.2.$SERVICE_ID"
+            GATEWAY="10.103.1.100"
         fi
         echo "Starting $HOSTNAME ..."
         IP=$IP GATEWAY=$GATEWAY HOSTNAME=$HOSTNAME SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME TICK_SECONDS=$TICK_SECONDS docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null 2>&1
