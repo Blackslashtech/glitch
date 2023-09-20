@@ -36,7 +36,7 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
             HOSTNAME=$(echo "team$TEAM_ID-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
             echo "Deleting $HOSTNAME..."
             docker rm -f $HOSTNAME > /dev/null 2>&1
-            docker rmi -f $HOSTNAME-service > /dev/null 2>&1
+            docker rmi -f $HOSTNAME_service > /dev/null 2>&1
         fi
     done
 done
@@ -50,7 +50,7 @@ for SERVICE_NAME in $SERVICE_LIST; do
         HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
         echo "Deleting $HOSTNAME..."
         docker rm -f $HOSTNAME > /dev/null 2>&1
-        docker rmi -f $HOSTNAME-checker > /dev/null 2>&1
+        docker rmi -f $HOSTNAME_checker > /dev/null 2>&1
     fi
 done
 
