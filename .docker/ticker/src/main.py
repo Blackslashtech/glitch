@@ -22,6 +22,7 @@ TICK_SECONDS = int(os.environ.get('TICK_SECONDS'))
 START_TIME = int(dateutil.parser.parse(os.environ.get('START_TIME')).timestamp())
 END_TIME = int(dateutil.parser.parse(os.environ.get('END_TIME')).timestamp())
 RANDOMIZE_CHECKER_TIMES = os.environ.get('RANDOMIZE_CHECKER_TIMES') != 'false'
+IPV6_ENABLED = os.environ.get('IPV6_ENABLED') == 'true'
 
 
 # Flag format: [A-Z0-9]{31}=
@@ -50,14 +51,17 @@ def init() -> None:
     db.checks.create_index(['service_id', 'team_id'])
     db.checks.create_index(['service_id', 'team_id', 'code'])
     db.steals.create_index(['service_id', 'team_id'])
-    for i in range(1, len(SERVICES) + 1):
-        db.services.insert_one({'service_id': i, 'service_name': SERVICES[i-1], 'status': StatusCode.DOWN.value})
-        for j in range(1, TEAM_COUNT + 1):
-            ip = '10.100.' + str(j) + '.' + str(i)
-            hostname = 'team' + str(j) + '-' + SERVICES[i-1].lower()
-            db.hosts.insert_one({'service_name': SERVICES[i-1], 'service_id': i, 'team_id': j, 'ip': ip, 'hostname': hostname, 'score': 0})
-    for i in range(1, TEAM_COUNT + 1):
-        db.teams.insert_one({'team_id': i, 'score': 0})
+    for service_id in range(1, len(SERVICES) + 1):
+        db.services.insert_one({'service_id': service_id, 'service_name': SERVICES[service_id-1], 'status': StatusCode.DOWN.value})
+        for team_id in range(1, TEAM_COUNT + 1):
+            if IPV6_ENABLED:
+                ip = 'fd00:1000:' + str(team_id) + '::' + str(service_id)
+            else:
+                ip = '10.100.' + str(team_id) + '.' + str(service_id)
+            hostname = 'team' + str(team_id) + '-' + SERVICES[service_id-1].lower()
+            db.hosts.insert_one({'service_name': SERVICES[service_id-1], 'service_id': service_id, 'team_id': team_id, 'ip': ip, 'hostname': hostname, 'score': 0})
+    for service_id in range(1, TEAM_COUNT + 1):
+        db.teams.insert_one({'team_id': service_id, 'score': 0})
 
 def check_callback(result: dict) -> None:
     # print('Callback: ' + str(result), flush=True)
@@ -92,7 +96,10 @@ def run_checks(service_name: str, target_ips: list, tick: int) -> None:
     for target_ip, put_flag, get_flag in zip(target_ips.copy(), put_flags.copy(), get_flags.copy()):
         try:
             # def __init__(self, checker: str, service: str, callback, tick: int = 0, randomize: bool = False, ticklen: int = 0) -> None:
-            checker = RemoteChecker('10.103.2.' + service_id, service_name, check_callback, tick, RANDOMIZE_CHECKER_TIMES, lock)
+            if IPV6_ENABLED:
+                checker = RemoteChecker('fd00:1003:2::' + service_id, service_name, check_callback, tick, RANDOMIZE_CHECKER_TIMES, lock)
+            else:
+                checker = RemoteChecker('10.103.2.' + service_id, service_name, check_callback, tick, RANDOMIZE_CHECKER_TIMES, lock)
             threading.Thread(target=checker.run_all, args=(target_ip,put_flag,get_flag,TICK_SECONDS)).start()
         except OSError:
             print('Failed to connect to checker', flush=True)

@@ -10,7 +10,7 @@ services:
       - api
     environment:
     - PEERS=${PEERS}
-    - ALLOWEDIPS=10.100.0.0/15
+    - ALLOWEDIPS="10.100.0.0/15,fd00:1000::/31"
     - SERVERURL=${SERVER_URL}
     - SERVERPORT=${VPN_PORT}
     - PEERDNS=${VPN_DNS}
@@ -23,8 +23,11 @@ services:
     networks:
       game:
         ipv4_address: 10.101.0.1
+        ipv6_address: fd00:1001::1
       checker:
         ipv4_address: 10.103.1.1
+        ipv6_address: fd00:1003:1::1
+
 
   api:
     build:
@@ -52,8 +55,10 @@ services:
     networks:
       game:
         ipv4_address: 10.101.0.2
+        ipv6_address: fd00:1001::2
       infra:
         ipv4_address: 10.102.0.2
+        ipv6_address: fd00:1002::2
 
   registry:
     image: registry:latest
@@ -68,8 +73,10 @@ services:
     networks:
       game:
         ipv4_address: 10.101.0.3
+        ipv6_address: fd00:1001::3
       checker:
         ipv4_address: 10.103.1.3
+        ipv6_address: fd00:1003:1::3
 
   rangemaster:
     build:
@@ -83,10 +90,13 @@ services:
     networks:
       game:
         ipv4_address: 10.101.0.5
+        ipv6_address: fd00:1001::5
       infra:
         ipv4_address: 10.102.1.5
+        ipv6_address: fd00:1002:1::5
       checker:
         ipv4_address: 10.103.1.5
+        ipv6_address: fd00:1003:1::5
 
   ticker:
     build:
@@ -101,13 +111,16 @@ services:
       - TICK_SECONDS=${TICK_SECONDS}
       - START_TIME=${START_TIME}
       - END_TIME=${END_TIME}
+      - IPV6_ENABLED=${IPV6_ENABLED}
     volumes:
       - ./.docker/ticker/src:/code
     networks:
       infra:
-        ipv4_address: 10.102.0.4
+        ipv4_address: 10.102.1.4
+        ipv6_address: fd00:1002:1::4
       checker:
         ipv4_address: 10.103.1.4
+        ipv6_address: fd00:1003:1::4
 
   db:
     image: mongo:latest
@@ -118,7 +131,8 @@ services:
       - db:/data/db
     networks:
       infra:
-        ipv4_address: 10.102.0.3
+        ipv4_address: 10.102.1.3
+        ipv6_address: fd00:1002:1::3
 
 
 volumes:
@@ -128,16 +142,22 @@ volumes:
 networks:
   game:
     driver: bridge
+    enable_ipv6: true
     ipam:
       config:
         - subnet: 10.100.0.0/15
+        - subnet: fd00:1000::/31
   infra:
     driver: bridge
+    enable_ipv6: true
     ipam:
       config:
         - subnet: 10.102.0.0/16
+        - subnet: fd00:1002::/32
   checker:
     driver: bridge
+    enable_ipv6: true
     ipam:
       config:
         - subnet: 10.103.0.0/16
+        - subnet: fd00:1003::/32

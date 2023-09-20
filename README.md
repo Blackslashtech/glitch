@@ -48,20 +48,43 @@ The range network is defined in [`docker-compose.yaml`](docker-compose.yaml):
     - API: `10.101.0.2` (hostname `api`)
     - Docker Registry: `10.101.0.3` (hostname `registry`)
     - Rangemaster: `10.101.0.5` (hostname `rangemaster`) - For troubleshooting
-    - (WIP) Frontend: `10.101.0.5` (hostname `frontend`)
+    - (WIP) Frontend: `10.101.0.6` (hostname `frontend`)
   - Team subnet: `10.100.<team_id>.0/24`
     - Service host: `10.100.<team_id>.<service_id>` (hostname `team<team_id>-<service_name>` - i.e. `team1-web`)
 - Internal network: `10.102.0.0/16`
-  - Ticker: `10.102.0.1` (hostname `ticker`)
-  - API: `10.102.0.2` (hostname `api`)
-  - DB: `10.102.0.3` (hostname `db`)
-  - Rangemaster: `10.102.0.5` (hostname `rangemaster`)
+  - Ticker: `10.102.1.1` (hostname `ticker`)
+  - API: `10.102.1.2` (hostname `api`)
+  - DB: `10.102.1.3` (hostname `db`)
+  - Rangemaster: `10.102.1.5` (hostname `rangemaster`)
 - Checker network: `10.103.0.0/16`
   - VPN Server: `10.103.1.1` (hostname `vpn`)
   - Ticker: `10.103.1.2` (hostname `ticker`)
   - Docker Registry: `10.103.1.3` (hostname `registry`)
   - Rangemaster: `10.103.1.5` (hostname `rangemaster`)
   - Checker: `10.103.2.<service_id` (hostname `checker-<service_name>` - i.e. `checker-web`)
+
+
+## IPv6 Network
+- Range network: `fd00:1000::/31`
+  - Infrastructure subnet: `fd00:1001::/32`
+    - VPN Server: `fd00:1001::1` (hostname `vpn`)
+    - API: `fd00:1001::2` (hostname `api`)
+    - Docker Registry: `fd00:1001::3` (hostname `registry`)
+    - Rangemaster: `fd00:1001::5` (hostname `rangemaster`)
+    - (WIP) Frontend: `fd00:1001::6` (hostname `frontend`)
+  - Team subnet: `fd00:1000:<team_id>::/48`
+    - Service host: `fd00:1000:<team_id>::<service_id>`
+- Internal network: `fd00:1002::/32`
+  - Ticker: `fd00:1002:1::1` (hostname `ticker`)
+  - API: `fd00:1002:1::2` (hostname `api`)
+  - DB: `fd00:1002:1::3` (hostname `db`)
+  - Rangemaster: `fd00:1002::5` (hostname `rangemaster`)
+- Checker network: `fd00:1003::/32`
+  - VPN Server: `fd00:1003:1::1` (hostname `vpn`)
+  - Ticker: `fd00:1003:1::2` (hostname `ticker`)
+  - Docker Registry: `fd00:1003:1::3` (hostname `registry`)
+  - Rangemaster: `fd00:1003:1::5` (hostname `rangemaster`)
+  - Checker: `fd00:1003:2::<service_id>` (hostname `checker-<service_name>` - i.e. `checker-web`)
 
 
 

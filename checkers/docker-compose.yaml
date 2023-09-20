@@ -22,6 +22,7 @@ services:
     networks:
      range_checker:
         ipv4_address: ${IP}
+        ipv6_address: ${IP6}
 
 
 networks:

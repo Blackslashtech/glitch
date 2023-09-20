@@ -28,6 +28,7 @@ services:
     networks:
      range_game:
         ipv4_address: ${IP}
+        ipv6_address: ${IP6}
 
 networks:
   range_game:

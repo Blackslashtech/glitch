@@ -6,4 +6,4 @@ if [[ ! -d "./checkers" && -d "./services" && -d "./.docker" ]]; then
     exit 1
 fi
 
-docker exec -it rangemaster /bin/bash
+docker exec -it rangemaster /bin/sh
