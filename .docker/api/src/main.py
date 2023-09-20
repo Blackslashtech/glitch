@@ -56,9 +56,10 @@ def steal_flag(flag: str, token: str):
     existing = db.steals.find_one({'flag': flag})
     if existing:
         return 'error: duplicate'
-    if correct['team_id'] == TEAM_TOKENS.index(token) + 1:
+    stealing_team = TEAM_TOKENS.index(token) + 1
+    if correct['team_id'] == stealing_team:
         return 'error: self'
-    db.steals.insert_one({'service_id': correct['service_id'], 'team_id': correct['team_id'], 'flag_id': correct['flag_id'], 'flag': flag})
+    db.steals.insert_one({'service_id': correct['service_id'], 'team_id': correct['team_id'], 'stealing_team': stealing_team, 'flag_id': correct['flag_id'], 'flag': flag})
     return 'success'
 
 @app.get('/teamdata/{team_token}/rangedata.zip')
