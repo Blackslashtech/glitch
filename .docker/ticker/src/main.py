@@ -121,24 +121,25 @@ def calculate_scores(tick: int = 0) -> None:
         team_score = 0
         for service in db.services.find():
             # Checks that are OK or ERROR
-            good_checks = db.checks.count_documents({'tick': tick, 'service_id': service['service_id'], 'team_id': team['team_id'], 'code': int(StatusCode.OK)})
-            flags_stolen = db.steals.count_documents({'tick': tick, 'service_id': service['service_id'], 'team_id': team['team_id']})
-            service_score = good_checks + flags_stolen
+            sla_score = db.checks.count_documents({'service_id': service['service_id'], 'team_id': team['team_id'], 'code': int(StatusCode.OK)})
+            offense_score = db.steals.count_documents({'service_id': service['service_id'], 'stealing_team': team['team_id']})
+            defense_score = db.steals.count_documents({'service_id': service['service_id'], 'team_id': team['team_id']})
+            service_score = sla_score + (offense_score - defense_score)
             team_score += service_score
-            db.hosts.update_one({'service_id': service['service_id'], 'team_id': team['team_id']}, {'$inc': {'score': service_score}})
-            check_status = db.checks.find_one({'tick': tick, 'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'check'})
-            put_status = db.checks.find_one({'tick': tick, 'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'put'})
-            get_status = db.checks.find_one({'tick': tick, 'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'get'})
-            check_code, put_code, get_code = 105, 105, 105
-            comments = ''
-            if check_status is not None:
-                check_code = check_status['code']
-            if put_status is not None:
-                put_code = put_status['code']
-            if get_status is not None:
-                get_code = get_status['code']
-            print(str(team['team_id']).ljust(4) + ' ' + service['service_name'].ljust(17) + str(check_code).ljust(6) + str(put_code).ljust(4) + str(get_code).ljust(4) + comments, flush=True)
-        db.teams.update_one({'team_id': team['team_id']}, {'$inc': {'score': team_score}})
+            db.hosts.update_one({'service_id': service['service_id'], 'team_id': team['team_id']}, {'$set': {'score': service_score}})
+            # check_status = db.checks.find_one({'tick': tick, 'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'check'})
+            # put_status = db.checks.find_one({'tick': tick, 'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'put'})
+            # get_status = db.checks.find_one({'tick': tick, 'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'get'})
+            # check_code, put_code, get_code = 105, 105, 105
+            # comments = ''
+            # if check_status is not None:
+            #     check_code = check_status['code']
+            # if put_status is not None:
+            #     put_code = put_status['code']
+            # if get_status is not None:
+            #     get_code = get_status['code']
+            # print(str(team['team_id']).ljust(4) + ' ' + service['service_name'].ljust(17) + str(check_code).ljust(6) + str(put_code).ljust(4) + str(get_code).ljust(4) + comments, flush=True)
+        db.teams.update_one({'team_id': team['team_id']}, {'$set': {'score': team_score}})
         print('-----------------------------------')
         # print('  Team ' + str(team['team_id']) + ' tick score: ' + str(team_score), flush=True)
 
