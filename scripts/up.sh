@@ -102,6 +102,6 @@ done
 
 # Print teamdata download links
 echo "*******************************************************"
-echo "\nAdmin API KEY: $API_KEY\n"
+echo -e "\nAdmin API KEY: $API_KEY\n"
 cat ./teamdata.txt
-echo "\n(Team data stored in ./teamdata.txt)"
+echo -e "\n(Team data stored in ./teamdata.txt)"
