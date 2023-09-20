@@ -3,26 +3,10 @@ import json
 import time
 import http.server
 import socket
-import multiprocessing
 import subprocess
 import threading
 import xmlrpc.server
 import enum
-from socketserver import ThreadingMixIn
-
-# Because the checklib expects to send flagids back to a server, we have to run that server locally to avoid needing to modify the checklib
-# os.environ['FLAGID_SERVICE'] = 'http://127.0.0.1'
-# os.environ['ACTION'] = 'check'
-# os.environ['TEAM_ID'] = '0'
-# os.environ['VULNBOX_ID'] = '0'
-# os.environ['ROUND'] = '0'
-# os.environ['FLAGID_TOKEN'] = ''
-
-# import checker
-
-
-class SimpleThreadedXMLRPCServer(ThreadingMixIn, xmlrpc.server.SimpleXMLRPCServer):
-    pass
 
 class StatusCode(enum.Enum):
     OK = 101
@@ -57,7 +41,7 @@ class FlagEndpoint:
         FlagEndpoint.port_counter += 1
         self.port_number = FlagEndpoint.port_counter
         server = http.server.HTTPServer(('127.0.0.1', self.port_number), Handler)
-        self.server_thread = threading.Thread(target=server.serve_forever)
+        self.server_thread = threading.Thread(target=server.handle_request)
         self.server_thread.start()
         self.data = {}
 
@@ -69,104 +53,91 @@ class FlagEndpoint:
             return str(Handler.data[self.port_number]['flagId'])
         except Exception:
             return ''
+        
+    def destroy(self):
+        self.server_thread.join(0)
 
 
-class Checker:
-    def __init__(self):
-        self.flag_endpoint = FlagEndpoint()
 
-    def check(self, host: str, timeout: int) -> dict:
-        start = time.time()
-        print("[CHECK] Starting against " + host)
-        comment = ''
+def check(host: str, timeout: int) -> dict:
+    start = time.time()
+    print("[CHECK] Starting against " + host)
+    comment = ''
+    exitcode = StatusCode.ERROR
+    try:
+        comment = subprocess.check_output("python3 adapter.py check " + host, shell=True, stderr=subprocess.STDOUT, timeout=timeout)
+        exitcode = StatusCode.OK
+    except subprocess.CalledProcessError as e:
+        comment = e.output
+        exitcode = e.returncode
+    except subprocess.TimeoutExpired as e:
+        comment = e.output
         exitcode = StatusCode.ERROR
-        try:
-            comment = subprocess.check_output("python3 adapter.py check " + host, shell=True, stderr=subprocess.STDOUT, timeout=timeout)
-            exitcode = StatusCode.OK
-        except subprocess.CalledProcessError as e:
-            comment = e.output
-            exitcode = e.returncode
-        except subprocess.TimeoutExpired as e:
-            comment = e.output
-            exitcode = StatusCode.ERROR
-        except Exception as e:
-            comment = 'exception ' + str(e)
-            exitcode = StatusCode.ERROR
-        try:
-            comment = comment.decode('latin-1')
-        except:
-            comment = ''
-        print("[CHECK] Finished against " + str(host) + " after " + str(int((time.time() - start) * 1000)) + " with exitcode " + str(exitcode))
-        status = {'action': 'check', 'host': host, 'code': int(exitcode), 'comment': str(comment), 'latency': int((time.time() - start) * 1000)}
-        print('Status: ' + str(status), flush=True)
-        return status
-
-    def put(self, host: str, flag: str, flag_id: str, timeout: int) -> dict:
-        start = time.time()
-        print("[CHECK] Starting against " + host)
-        comment = ''
+    except Exception as e:
+        comment = 'exception ' + str(e)
         exitcode = StatusCode.ERROR
-        try:
-            comment = subprocess.check_output("python3 adapter.py put " + host + " " + flag + " " + flag_id + " " + self.flag_endpoint.get_endpoint(), shell=True, stderr=subprocess.STDOUT, timeout=timeout)
-            exitcode = StatusCode.OK
-        except subprocess.CalledProcessError as e:
-            comment = e.output
-            exitcode = e.returncode
-        except subprocess.TimeoutExpired as e:
-            comment = e.output
-            exitcode = StatusCode.ERROR
-        except Exception as e:
-            comment = 'exception ' + str(e)
-            exitcode = StatusCode.ERROR
-        try:
-            comment = comment.decode('latin-1')
-        except:
-            comment = ''
-        print("[PUT] Finished against " + str(host) + " after " + str(int((time.time() - start) * 1000)) + " with exitcode " + str(exitcode))
-        status = {'action': 'put', 'host': host, 'code': int(exitcode), 'comment': str(comment), 'latency': int((time.time() - start) * 1000), 'flag': flag, 'flag_id': self.flag_endpoint.get_id()}
-        print('Status: ' + str(status), flush=True)
-        return status
-
-    def get(self, host: str, flag: str, flag_id: str, timeout: int) -> dict:
-        start = time.time()
-        print("[CHECK] Starting against " + host)
+    try:
+        comment = comment.decode('latin-1')
+    except:
         comment = ''
+    print("[CHECK] Finished against " + str(host) + " after " + str(int((time.time() - start) * 1000)) + " with exitcode " + str(exitcode))
+    status = {'action': 'check', 'host': host, 'code': int(exitcode), 'comment': str(comment), 'latency': int((time.time() - start) * 1000)}
+    print('Status: ' + str(status), flush=True)
+    return status
+
+def put(host: str, flag: str, flag_id: str, timeout: int) -> dict:
+    flag_endpoint = FlagEndpoint()
+    start = time.time()
+    print("[CHECK] Starting against " + host)
+    comment = ''
+    exitcode = StatusCode.ERROR
+    try:
+        comment = subprocess.check_output("python3 adapter.py put " + host + " " + flag + " " + flag_id + " " + flag_endpoint.get_endpoint(), shell=True, stderr=subprocess.STDOUT, timeout=timeout)
+        exitcode = StatusCode.OK
+    except subprocess.CalledProcessError as e:
+        comment = e.output
+        exitcode = e.returncode
+    except subprocess.TimeoutExpired as e:
+        comment = e.output
         exitcode = StatusCode.ERROR
-        try:
-            comment = subprocess.check_output("python3 adapter.py get " + host + " " + flag + " " + flag_id, shell=True, stderr=subprocess.STDOUT, timeout=timeout)
-            exitcode = StatusCode.OK
-        except subprocess.CalledProcessError as e:
-            comment = e.output
-            exitcode = e.returncode
-        except subprocess.TimeoutExpired as e:
-            comment = e.output
-            exitcode = StatusCode.ERROR
-        except Exception as e:
-            comment = 'exception ' + str(e)
-            exitcode = StatusCode.ERROR
-        try:
-            comment = comment.decode('latin-1')
-        except:
-            comment = ''
-        print("[GET] Finished against " + str(host) + " after " + str(int((time.time() - start) * 1000)) + " with exitcode " + str(exitcode))
-        status = {'action': 'get', 'host': host, 'code': int(exitcode), 'comment': str(comment), 'latency': int((time.time() - start) * 1000), 'flag': flag, 'flag_id': flag_id}
-        print('Status: ' + str(status), flush=True)
-        return status
+    except Exception as e:
+        comment = 'exception ' + str(e)
+        exitcode = StatusCode.ERROR
+    try:
+        comment = comment.decode('latin-1')
+    except:
+        comment = ''
+    flag_endpoint.destroy()
+    print("[PUT] Finished against " + str(host) + " after " + str(int((time.time() - start) * 1000)) + " with exitcode " + str(exitcode))
+    status = {'action': 'put', 'host': host, 'code': int(exitcode), 'comment': str(comment), 'latency': int((time.time() - start) * 1000), 'flag': flag, 'flag_id': flag_endpoint.get_id()}
+    print('Status: ' + str(status), flush=True)
+    return status
 
-
-objects = {}
-
-def create(classname, *args):
-    cls = globals()[classname]
-    obj = cls(*args)
-    objects[str(id(obj))] = obj
-    return str(id(obj))
-
-def call(objid, methodname, *args):
-    obj = objects[objid]
-    method = getattr(obj, methodname)
-    result = method(*args)
-    return result
+def get(host: str, flag: str, flag_id: str, timeout: int) -> dict:
+    start = time.time()
+    print("[CHECK] Starting against " + host)
+    comment = ''
+    exitcode = StatusCode.ERROR
+    try:
+        comment = subprocess.check_output("python3 adapter.py get " + host + " " + flag + " " + flag_id, shell=True, stderr=subprocess.STDOUT, timeout=timeout)
+        exitcode = StatusCode.OK
+    except subprocess.CalledProcessError as e:
+        comment = e.output
+        exitcode = e.returncode
+    except subprocess.TimeoutExpired as e:
+        comment = e.output
+        exitcode = StatusCode.ERROR
+    except Exception as e:
+        comment = 'exception ' + str(e)
+        exitcode = StatusCode.ERROR
+    try:
+        comment = comment.decode('latin-1')
+    except:
+        comment = ''
+    print("[GET] Finished against " + str(host) + " after " + str(int((time.time() - start) * 1000)) + " with exitcode " + str(exitcode))
+    status = {'action': 'get', 'host': host, 'code': int(exitcode), 'comment': str(comment), 'latency': int((time.time() - start) * 1000), 'flag': flag, 'flag_id': flag_id}
+    print('Status: ' + str(status), flush=True)
+    return status
 
 
 # Set up routing correctly
@@ -174,8 +145,11 @@ if os.environ.get('GATEWAY'):
     os.system('ip route delete default')
     os.system('ip route add default via ' + os.environ.get('GATEWAY'))
 
-socket.setdefaulttimeout(600)
-server = SimpleThreadedXMLRPCServer(('0.0.0.0', 5000), allow_none=True)
-server.register_function(create, 'create')
-server.register_function(call, 'call')
+TICK_SECONDS = int(os.environ.get('TICK_SECONDS'))
+
+socket.setdefaulttimeout(TICK_SECONDS)
+server = xmlrpc.server.SimpleXMLRPCServer(('0.0.0.0', 5000), allow_none=True)
+server.register_function(check, 'check')
+server.register_function(put, 'put')
+server.register_function(get, 'get')
 server.serve_forever()
