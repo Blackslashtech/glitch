@@ -18,6 +18,7 @@ services:
       - HOSTNAME=${HOSTNAME}
       - SERVICE_ID=${SERVICE_ID}
       - SERVICE_NAME=${SERVICE_NAME}
+      - TICK_SECONDS=${TICK_SECONDS}
     networks:
      range_checker:
         ipv4_address: ${IP}

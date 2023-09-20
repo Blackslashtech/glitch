@@ -50,7 +50,7 @@ done
 TEAM_TOKENS="${TEAM_TOKENS:1}"
 
 echo "Starting range services..."
-API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT FLAG_LIFETIME=$FLAG_LIFETIME SERVERURL=$SERVER_URL API_PORT=$API_PORT VPN_PORT=$VPN_PORT VPN_DNS=$VPN_DNS TEAM_TOKENS=$TEAM_TOKENS docker-compose up -d --force-recreate > /dev/null
+API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT FLAG_LIFETIME=$FLAG_LIFETIME TICK_SECONDS=$TICK_SECONDS SERVERURL=$SERVER_URL API_PORT=$API_PORT VPN_PORT=$VPN_PORT VPN_DNS=$VPN_DNS TEAM_TOKENS=$TEAM_TOKENS docker-compose up -d --force-recreate > /dev/null
 
 echo "Waiting 5 seconds for VPN to start..."
 sleep 5
@@ -95,7 +95,7 @@ for SERVICE_NAME in $SERVICE_LIST; do
         HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
         IP=$(echo "10.103.2.$SERVICE_ID" | tr '[:upper:]' '[:lower:]')
         echo "Starting $HOSTNAME ..."
-        IP=$IP GATEWAY="10.103.1.1" HOSTNAME=$HOSTNAME SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null 2>&1
+        IP=$IP GATEWAY="10.103.1.1" HOSTNAME=$HOSTNAME SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME TICK_SECONDS=$TICK_SECONDS docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null 2>&1
         SERVICE_ID=$(expr $SERVICE_ID + 1)
     fi
 done

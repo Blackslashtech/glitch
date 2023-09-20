@@ -165,7 +165,9 @@ if os.environ.get('GATEWAY'):
     os.system('ip route delete default')
     os.system('ip route add default via ' + os.environ.get('GATEWAY'))
 
-socket.setdefaulttimeout(600)
+TICK_SECONDS = int(os.environ.get('TICK_SECONDS'))
+
+socket.setdefaulttimeout(TICK_SECONDS)
 server = SimpleThreadedXMLRPCServer(('0.0.0.0', 5000), allow_none=True)
 server.register_function(create, 'create')
 server.register_function(call, 'call')
