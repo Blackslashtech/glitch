@@ -6,10 +6,9 @@ import pymongo
 import secrets
 import dateutil.parser
 import threading
-import multiprocessing
 import traceback
 
-from checkerclient import RemoteChecker, Status, StatusCode, Flag
+from checkerclient import RemoteChecker, StatusCode, Flag
 
 
 client = pymongo.MongoClient('mongodb://db:27017/')
