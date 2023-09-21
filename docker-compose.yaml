@@ -1,5 +1,30 @@
 version: '3.8'
 
+volumes:
+  db:
+
+
+networks:
+  game:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: ${GAME_SUBNET}
+  infra:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: ${INFRA_SUBNET}
+  checker:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: ${CHECKER_SUBNET}
+
+
 services:
   vpn:
     image: linuxserver/wireguard:latest
@@ -133,28 +158,3 @@ services:
       infra:
         ipv4_address: ${DB_INFRA_IPV4}
         ipv6_address: ${DB_INFRA_IPV6}
-
-
-volumes:
-  db:
-
-
-networks:
-  game:
-    driver: bridge
-    enable_ipv6: true
-    ipam:
-      config:
-        - subnet: ${GAME_SUBNET}
-  infra:
-    driver: bridge
-    enable_ipv6: true
-    ipam:
-      config:
-        - subnet: ${INFRA_SUBNET}
-  checker:
-    driver: bridge
-    enable_ipv6: true
-    ipam:
-      config:
-        - subnet: ${CHECKER_SUBNET}
