@@ -30,7 +30,9 @@ networks:
 
 services:
   vpn:
-    image: linuxserver/wireguard:latest
+    build:
+      context: ./.docker/vpn
+      dockerfile: Dockerfile
     hostname: vpn
     container_name: vpn
     restart: unless-stopped
