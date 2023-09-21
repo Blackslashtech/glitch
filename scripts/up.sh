@@ -220,18 +220,14 @@ for TEAM_ID in $(seq 2 $(expr $TEAM_COUNT + 1)); do
     popd > /dev/null
 done
 
+export GATEWAY_IPV4=$VPN_CHECKER_IPV4
+export GATEWAY_IPV6=$VPN_CHECKER_IPV6
 export SERVICE_ID=2
 for SERVICE_NAME in $SERVICE_LIST; do
     dir="./checkers/$SERVICE_NAME/"
     # If the file is a directory
     if [ -d "$dir" ]; then
         export HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
-        # check if ipv6 is enabled
-        if [ "$IPV6_ENABLED" = "true" ]; then
-            export GATEWAY=$VPN_CHECKER_IPV6
-        else
-            export GATEWAY=$VPN_CHECKER_IPV4
-        fi
         export IPV4="10.103.2.$SERVICE_ID"
         export IPV6="fd10:103::2:$SERVICE_ID"
         echo "Starting $HOSTNAME ..."

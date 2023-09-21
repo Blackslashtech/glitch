@@ -14,7 +14,8 @@ services:
     stop_signal: SIGINT
     working_dir: /checker
     environment:
-      - GATEWAY=${GATEWAY}
+      - GATEWAY_IPV4=${GATEWAY_IPV4}
+      - GATEWAY_IPV6=${GATEWAY_IPV6}
       - HOSTNAME=${HOSTNAME}
       - SERVICE_ID=${SERVICE_ID}
       - SERVICE_NAME=${SERVICE_NAME}

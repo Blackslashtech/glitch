@@ -65,9 +65,12 @@ def get(host: str, flag: str, flag_id: str, timeout: int) -> dict:
 
 
 # Set up routing correctly
-if os.environ.get('GATEWAY'):
+if os.environ.get('GATEWAY_IPV4'):
     os.system('ip route delete default')
-    os.system('ip route add default via ' + os.environ.get('GATEWAY'))
+    os.system('ip route add default via ' + os.environ.get('GATEWAY_IPV4'))
+if os.environ.get('GATEWAY_IPV6'):
+    os.system('ip -6 route delete default')
+    os.system('ip -6 route add default via ' + os.environ.get('GATEWAY_IPV6'))
 
 # Start the xmlrpc server
 socket.setdefaulttimeout(600)

@@ -95,10 +95,7 @@ def run_checks(service_name: str, service_id: int, target_ips: list, tick: int) 
     for target_ip, put_flag, get_flag in zip(target_ips.copy(), put_flags.copy(), get_flags.copy()):
         try:
             # def __init__(self, checker: str, service: str, callback, tick: int = 0, randomize: bool = False, ticklen: int = 0) -> None:
-            if IPV6_ENABLED:
-                checker = RemoteChecker('fd10:103::2:' + service_id, service_name, check_callback, tick, RANDOMIZE_CHECKER_TIMES, lock)
-            else:
-                checker = RemoteChecker('10.103.2.' + service_id, service_name, check_callback, tick, RANDOMIZE_CHECKER_TIMES, lock)
+            checker = RemoteChecker('10.103.2.' + service_id, service_name, check_callback, tick, RANDOMIZE_CHECKER_TIMES, lock)
             threading.Thread(target=checker.run_all, args=(target_ip,put_flag,get_flag,TICK_SECONDS)).start()
         except OSError:
             print('Failed to connect to checker', flush=True)

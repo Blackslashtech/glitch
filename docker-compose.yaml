@@ -45,7 +45,7 @@ services:
     cap_add:
       - NET_ADMIN
     volumes:
-      - ./.docker/vpn:/config
+      - ./.docker/vpn/config:/config
     ports:
       - "${VPN_PORT}:${VPN_PORT}/udp"
     networks:
