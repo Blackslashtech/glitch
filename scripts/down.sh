@@ -8,6 +8,7 @@ fi
 
 
 # Set default values
+export TEAM_TOKENS=""
 export API_KEY=""
 export TEAM_COUNT=2
 export VPN_PER_TEAM=1
