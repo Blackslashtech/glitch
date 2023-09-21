@@ -228,9 +228,9 @@ for SERVICE_NAME in $SERVICE_LIST; do
         export HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
         # check if ipv6 is enabled
         if [ "$IPV6_ENABLED" = "true" ]; then
-            export GATEWAY=VPN_CHECKER_IPV6
+            export GATEWAY=$VPN_CHECKER_IPV6
         else
-            export GATEWAY=VPN_CHECKER_IPV4
+            export GATEWAY=$VPN_CHECKER_IPV4
         fi
         export IPV4="10.103.2.$SERVICE_ID"
         export IPV6="fd10:103::2:$SERVICE_ID"
