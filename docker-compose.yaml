@@ -22,11 +22,11 @@ services:
       - "${VPN_PORT}:${VPN_PORT}/udp"
     networks:
       game:
-        ipv4_address: VPN_GAME_IPV4
-        ipv6_address: VPN_GAME_IPV6
+        ipv4_address: ${VPN_GAME_IPV4}
+        ipv6_address: ${VPN_GAME_IPV6}
       checker:
-        ipv4_address: VPN_CHECKER_IPV4
-        ipv6_address: VPN_CHECKER_IPV6
+        ipv4_address: ${VPN_CHECKER_IPV4}
+        ipv6_address: ${VPN_CHECKER_IPV6}
 
 
   api:
@@ -54,11 +54,11 @@ services:
       - "${API_PORT}:80"
     networks:
       game:
-        ipv4_address: API_GAME_IPV4
-        ipv6_address: API_GAME_IPV6
+        ipv4_address: ${API_GAME_IPV4}
+        ipv6_address: ${API_GAME_IPV6}
       infra:
-        ipv4_address: API_INFRA_IPV4
-        ipv6_address: API_INFRA_IPV6
+        ipv4_address: ${API_INFRA_IPV4}
+        ipv6_address: ${API_INFRA_IPV6}
 
   registry:
     image: registry:latest
@@ -72,11 +72,11 @@ services:
       REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /cache
     networks:
       game:
-        ipv4_address: REGISTRY_GAME_IPV4
-        ipv6_address: REGISTRY_GAME_IPV6
+        ipv4_address: ${REGISTRY_GAME_IPV4}
+        ipv6_address: ${REGISTRY_GAME_IPV6}
       checker:
-        ipv4_address: REGISTRY_CHECKER_IPV4
-        ipv6_address: REGISTRY_CHECKER_IPV6
+        ipv4_address: ${REGISTRY_CHECKER_IPV4}
+        ipv6_address: ${REGISTRY_CHECKER_IPV6}
 
   rangemaster:
     build:
@@ -89,14 +89,14 @@ services:
     entrypoint: sleep infinity
     networks:
       game:
-        ipv4_address: RANGEMASTER_GAME_IPV4
-        ipv6_address: RANGEMASTER_GAME_IPV6
+        ipv4_address: ${RANGEMASTER_GAME_IPV4}
+        ipv6_address: ${RANGEMASTER_GAME_IPV6}
       infra:
-        ipv4_address: RANGEMASTER_INFRA_IPV4
-        ipv6_address: RANGEMASTER_INFRA_IPV6
+        ipv4_address: ${RANGEMASTER_INFRA_IPV4}
+        ipv6_address: ${RANGEMASTER_INFRA_IPV6}
       checker:
-        ipv4_address: RANGEMASTER_CHECKER_IPV4
-        ipv6_address: RANGEMASTER_CHECKER_IPV6
+        ipv4_address: ${RANGEMASTER_CHECKER_IPV4}
+        ipv6_address: ${RANGEMASTER_CHECKER_IPV6}
 
   ticker:
     build:
@@ -116,11 +116,11 @@ services:
       - ./.docker/ticker/src:/code
     networks:
       infra:
-        ipv4_address: TICKER_INFRA_IPV4
-        ipv6_address: TICKER_INFRA_IPV6
+        ipv4_address: ${TICKER_INFRA_IPV4}
+        ipv6_address: ${TICKER_INFRA_IPV6}
       checker:
-        ipv4_address: TICKER_CHECKER_IPV4
-        ipv6_address: TICKER_CHECKER_IPV6
+        ipv4_address: ${TICKER_CHECKER_IPV4}
+        ipv6_address: ${TICKER_CHECKER_IPV6}
 
   db:
     image: mongo:latest
@@ -131,8 +131,8 @@ services:
       - db:/data/db
     networks:
       infra:
-        ipv4_address: DB_INFRA_IPV4
-        ipv6_address: DB_INFRA_IPV6
+        ipv4_address: ${DB_INFRA_IPV4}
+        ipv6_address: ${DB_INFRA_IPV6}
 
 
 volumes:
@@ -145,16 +145,16 @@ networks:
     enable_ipv6: true
     ipam:
       config:
-        - subnet: GAME_SUBNET
+        - subnet: ${GAME_SUBNET}
   infra:
     driver: bridge
     enable_ipv6: true
     ipam:
       config:
-        - subnet: INFRA_SUBNET
+        - subnet: ${INFRA_SUBNET}
   checker:
     driver: bridge
     enable_ipv6: true
     ipam:
       config:
-        - subnet: CHECKER_SUBNET
+        - subnet: ${CHECKER_SUBNET}
