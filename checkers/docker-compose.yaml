@@ -21,8 +21,8 @@ services:
       - TICK_SECONDS=${TICK_SECONDS}
     networks:
      range_checker:
-        ipv4_address: ${IP}
-        ipv6_address: ${IP6}
+        ipv4_address: ${IPV4}
+        ipv6_address: ${IPV6}
 
 
 networks:

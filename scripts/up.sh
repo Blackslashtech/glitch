@@ -24,83 +24,48 @@ export END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ" -d "+$(expr $TICK_SECONDS \* 100
 export MEM_LIMIT="1G"
 export CPU_LIMIT="1"
 
-source .env set
 
-export VPN_COUNT=$(expr $TEAM_COUNT \* $VPN_PER_TEAM)
-export SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
+export GAME_SUBNET_IPV6="fd10:100::/31"
+export GAME_SUBNET_IPV4="10.100.0.0/15"
+export INFRA_SUBNET_IPV6="fd10:102::/32"
+export INFRA_SUBNET_IPV4="10.102.0.0/16"
+export CHECKER_SUBNET_IPV6="fd10:103::/32"
+export CHECKER_SUBNET_IPV4="10.103.0.0/16"
 
-# Prep ipv4 or ipv6 for range services
-if [ "$IPV6_ENABLED" = "true" ]; then
-    export GAME_SUBNET="fd10:100::/31"
-    export INFRA_SUBNET="fd10:102::/32"
-    export CHECKER_SUBNET="fd10:103::/32"
+export VPN_GAME_IPV4="10.101.1.2"
+export VPN_GAME_IPV6="fd10:101::1:2"
+export VPN_CHECKER_IPV4="10.103.1.2"
+export VPN_CHECKER_IPV6="fd10:103::1:2"
 
-    export VPN_GAME_IPV4=""
-    export VPN_GAME_IPV6="fd10:101::1:2"
-    export VPN_CHECKER_IPV4=""
-    export VPN_CHECKER_IPV6="fd10:103::1:2"
+export API_GAME_IPV4="10.101.1.3"
+export API_GAME_IPV6="fd10:101::1:3"
+export API_INFRA_IPV4="10.102.1.3"
+export API_INFRA_IPV6="fd10:102::1:3"
 
-    export API_GAME_IPV4=""
-    export API_GAME_IPV6="fd10:101::1:3"
-    export API_INFRA_IPV4=""
-    export API_INFRA_IPV6="fd10:102::1:3"
+export REGISTRY_GAME_IPV4="10.101.1.4"
+export REGISTRY_GAME_IPV6="fd10:101::1:4"
+export REGISTRY_CHECKER_IPV4="10.103.1.4"
+export REGISTRY_CHECKER_IPV6="fd10:103::1:4"
 
-    export REGISTRY_GAME_IPV4=""
-    export REGISTRY_GAME_IPV6="fd10:101::1:4"
-    export REGISTRY_CHECKER_IPV4=""
-    export REGISTRY_CHECKER_IPV6="fd10:103::1:4"
+export RANGEMASTER_GAME_IPV4="10.101.1.6"
+export RANGEMASTER_GAME_IPV6="fd10:101::1:6"
+export RANGEMASTER_INFRA_IPV4="10.102.1.6"
+export RANGEMASTER_INFRA_IPV6="fd10:102::1:6"
+export RANGEMASTER_CHECKER_IPV4="10.103.1.6"
+export RANGEMASTER_CHECKER_IPV6="fd10:103::1:6"
 
-    export RANGEMASTER_GAME_IPV4=""
-    export RANGEMASTER_GAME_IPV6="fd10:101::1:6"
-    export RANGEMASTER_INFRA_IPV4=""
-    export RANGEMASTER_INFRA_IPV6="fd10:102::1:6"
-    export RANGEMASTER_CHECKER_IPV4=""
-    export RANGEMASTER_CHECKER_IPV6="fd10:103::1:6"
+export TICKER_INFRA_IPV4="10.102.1.5"
+export TICKER_INFRA_IPV6="fd10:102::1:5"
+export TICKER_CHECKER_IPV4="10.103.1.5"
+export TICKER_CHECKER_IPV6="fd10:103::1:5"
 
-    export TICKER_INFRA_IPV4=""
-    export TICKER_INFRA_IPV6="fd10:102::1:5"
-    export TICKER_CHECKER_IPV4=""
-    export TICKER_CHECKER_IPV6="fd10:103::1:5"
+export DB_INFRA_IPV4="10.102.1.4"
+export DB_INFRA_IPV6="fd10:102::1:4"
 
-    export DB_INFRA_IPV4=""
-    export DB_INFRA_IPV6="fd10:102::1:4"
-else
-    export GAME_SUBNET="10.100.0.0/15"
-    export INFRA_SUBNET="10.102.0.0/16"
-    export CHECKER_SUBNET="10.103.0.0/16"
 
-    export VPN_GAME_IPV4="10.101.1.2"
-    export VPN_GAME_IPV6=""
-    export VPN_CHECKER_IPV4="10.103.1.2"
-    export VPN_CHECKER_IPV6=""
-
-    export API_GAME_IPV4="10.101.1.3"
-    export API_GAME_IPV6=""
-    export API_INFRA_IPV4="10.102.1.3"
-    export API_INFRA_IPV6=""
-
-    export REGISTRY_GAME_IPV4="10.101.1.4"
-    export REGISTRY_GAME_IPV6=""
-    export REGISTRY_CHECKER_IPV4="10.103.1.4"
-    export REGISTRY_CHECKER_IPV6=""
-
-    export RANGEMASTER_GAME_IPV4="10.101.1.6"
-    export RANGEMASTER_GAME_IPV6=""
-    export RANGEMASTER_INFRA_IPV4="10.102.1.6"
-    export RANGEMASTER_INFRA_IPV6=""
-    export RANGEMASTER_CHECKER_IPV4="10.103.1.6"
-    export RANGEMASTER_CHECKER_IPV6=""
-
-    export TICKER_INFRA_IPV4="10.102.1.5"
-    export TICKER_INFRA_IPV6=""
-    export TICKER_CHECKER_IPV4="10.103.1.5"
-    export ICKER_CHECKER_IPV6=""
-
-    export DB_INFRA_IPV4="10.102.1.4"
-    export DB_INFRA_IPV6=""
-fi
 
 source .env set
+
 
 export API_KEY
 # Set default values
@@ -146,6 +111,44 @@ export RANGEMASTER_CHECKER_IPV4
 export TICKER_INFRA_IPV4
 export TICKER_CHECKER_IPV4
 export DB_INFRA_IPV4
+
+
+export GAME_SUBNET_IPV6
+export GAME_SUBNET_IPV4
+export INFRA_SUBNET_IPV6
+export INFRA_SUBNET_IPV4
+export CHECKER_SUBNET_IPV6
+export CHECKER_SUBNET_IPV4
+
+export VPN_GAME_IPV4
+export VPN_GAME_IPV6
+export VPN_CHECKER_IPV4
+export VPN_CHECKER_IPV6
+
+export API_GAME_IPV4
+export API_GAME_IPV6
+export API_INFRA_IPV4
+export API_INFRA_IPV6
+
+export REGISTRY_GAME_IPV4
+export REGISTRY_GAME_IPV6
+export REGISTRY_CHECKER_IPV4
+export REGISTRY_CHECKER_IPV6
+
+export RANGEMASTER_GAME_IPV4
+export RANGEMASTER_GAME_IPV6
+export RANGEMASTER_INFRA_IPV4
+export RANGEMASTER_INFRA_IPV6
+export RANGEMASTER_CHECKER_IPV4
+export RANGEMASTER_CHECKER_IPV6
+
+export TICKER_INFRA_IPV4
+export TICKER_INFRA_IPV6
+export TICKER_CHECKER_IPV4
+export TICKER_CHECKER_IPV6
+
+export DB_INFRA_IPV4
+export DB_INFRA_IPV6
 
 
 # Create empty teamdata directory
@@ -194,17 +197,16 @@ for TEAM_ID in $(seq 2 $(expr $TEAM_COUNT + 1)); do
             # Generate a random root password
             export ROOT_PASSWORD="$(openssl rand -hex 16)"
             export HOSTNAME=$(echo "team$TEAM_ID-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
-            # check if ipv6 is enabled
-            if [ "$IPV6_ENABLED" = "true" ]; then
-                export IP=""
-                export IP6="fd10:100::$TEAM_ID:$SERVICE_ID"
-            else
-                export IP="10.100.$TEAM_ID.$SERVICE_ID"
-                export IP6=""
-            fi
+            export IPV4="10.100.$TEAM_ID.$SERVICE_ID"
+            export IPV6="fd10:100::$TEAM_ID:$SERVICE_ID"
             # Write creds to creds.txt
-            echo "$IP$IP6 ($SERVICE_NAME) - root : $ROOT_PASSWORD" >> ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
-            echo "Starting $HOSTNAME at $IP$IP6..."
+            if [ "$IPV6_ENABLED" = "true" ]; then
+                echo "$IPV6 ($SERVICE_NAME) - root : $ROOT_PASSWORD" >> ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
+                echo "Starting $HOSTNAME at $IPV6..."
+            else
+                echo "$IPV4 ($SERVICE_NAME) - root : $ROOT_PASSWORD" >> ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
+                echo "Starting $HOSTNAME at $IPV4..."
+            fi
             export TEAM_ID=$TEAM_ID
             export SERVICE_NAME=$SERVICE_NAME
             docker-compose -f ./services/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null
@@ -225,14 +227,12 @@ for SERVICE_NAME in $SERVICE_LIST; do
         export HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
         # check if ipv6 is enabled
         if [ "$IPV6_ENABLED" = "true" ]; then
-            export IP=""
-            export IP6="fd10:103::2:$SERVICE_ID"
             export GATEWAY=VPN_CHECKER_IPV6
         else
-            export IP="10.103.2.$SERVICE_ID"
-            export IP6=""
             export GATEWAY=VPN_CHECKER_IPV4
         fi
+        export IPV4="10.103.2.$SERVICE_ID"
+        export IPV6="fd10:103::2:$SERVICE_ID"
         echo "Starting $HOSTNAME ..."
         docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null
         export SERVICE_ID=$(expr $SERVICE_ID + 1)

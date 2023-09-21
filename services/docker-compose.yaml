@@ -26,8 +26,8 @@ services:
           memory: $MEM_LIMIT
     networks:
      range_game:
-        ipv4_address: ${IP}
-        ipv6_address: ${IP6}
+        ipv4_address: ${IPV4}
+        ipv6_address: ${IPV6}
 
 networks:
   range_game:

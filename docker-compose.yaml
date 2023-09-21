@@ -10,19 +10,22 @@ networks:
     enable_ipv6: true
     ipam:
       config:
-        - subnet: ${GAME_SUBNET}
+        - subnet: ${GAME_SUBNET_IPV4}
+        - subnet: ${GAME_SUBNET_IPV6}
   infra:
     driver: bridge
     enable_ipv6: true
     ipam:
       config:
-        - subnet: ${INFRA_SUBNET}
+        - subnet: ${INFRA_SUBNET_IPV4}
+        - subnet: ${INFRA_SUBNET_IPV6}
   checker:
     driver: bridge
     enable_ipv6: true
     ipam:
       config:
-        - subnet: ${CHECKER_SUBNET}
+        - subnet: ${CHECKER_SUBNET_IPV4}
+        - subnet: ${CHECKER_SUBNET_IPV6}
 
 
 services:
