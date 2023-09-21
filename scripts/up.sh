@@ -228,8 +228,10 @@ for SERVICE_NAME in $SERVICE_LIST; do
     # If the file is a directory
     if [ -d "$dir" ]; then
         export HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
-        export IPV4="10.103.2.$SERVICE_ID"
-        export IPV6="fd10:103::2:$SERVICE_ID"
+        export CHECKER_IPV4="10.103.2.$SERVICE_ID"
+        export CHECKER_IPV6="fd10:103::2:$SERVICE_ID"
+        export GAME_IPV4="10.101.2.$SERVICE_ID"
+        export GAME_IPV6="fd10:101::2:$SERVICE_ID"
         echo "Starting $HOSTNAME ..."
         docker-compose --log-level ERROR -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null
         export SERVICE_ID=$(expr $SERVICE_ID + 1)

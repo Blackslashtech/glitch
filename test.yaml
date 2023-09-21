@@ -1,9 +1,0 @@
-version: '3.8'
-
-services:
-  service:
-    image: alpine
-    networks:
-     default:
-        ipv4_address: ${IP}
-        ipv6_address: ${IP6}

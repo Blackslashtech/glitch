@@ -22,11 +22,18 @@ services:
       - TICK_SECONDS=${TICK_SECONDS}
     networks:
      range_checker:
-        ipv4_address: ${IPV4}
-        ipv6_address: ${IPV6}
+        ipv4_address: ${CHECKER_IPV4}
+        ipv6_address: ${CHECKER_IPV6}
+     range_game:
+        ipv4_address: ${GAME_IPV4}
+        ipv6_address: ${GAME_IPV6}
+
 
 
 networks:
   range_checker:
+    driver: bridge
+    external: true
+  range_game:
     driver: bridge
     external: true
