@@ -77,9 +77,11 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
             HOSTNAME=$(echo "team$TEAM_ID-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
             # check if ipv6 is enabled
             if [ "$IPV6_ENABLED" = "true" ]; then
+                IP=""
                 IP6="fd00:1000:$TEAM_ID::$SERVICE_ID"
             else
                 IP="10.100.$TEAM_ID.$SERVICE_ID"
+                IP6=""
             fi
             # Write creds to creds.txt
             echo "$IP$IP6 ($SERVICE_NAME) - root : $ROOT_PASSWORD" >> ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
@@ -101,14 +103,16 @@ for SERVICE_NAME in $SERVICE_LIST; do
         HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
         # check if ipv6 is enabled
         if [ "$IPV6_ENABLED" = "true" ]; then
-            IP="fd00:1003:2::$SERVICE_ID"
+            IP=""
+            IP6="fd00:1003:2::$SERVICE_ID"
             GATEWAY="fd00:1003:1::100"
         else
             IP="10.103.2.$SERVICE_ID"
+            IP6=""
             GATEWAY="10.103.1.100"
         fi
         echo "Starting $HOSTNAME ..."
-        IP=$IP GATEWAY=$GATEWAY HOSTNAME=$HOSTNAME SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME TICK_SECONDS=$TICK_SECONDS docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null
+        IP=$IP IP6=$IP6 GATEWAY=$GATEWAY HOSTNAME=$HOSTNAME SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME TICK_SECONDS=$TICK_SECONDS docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null
         SERVICE_ID=$(expr $SERVICE_ID + 1)
     fi
 done
