@@ -6,9 +6,9 @@ if [[ ! -d "./checkers" && -d "./services" && -d "./.docker" ]]; then
     exit 1
 fi
 
-# Create randomized api key
-export API_KEY="$(openssl rand -hex 16)"
+
 # Set default values
+export API_KEY=""
 export TEAM_COUNT=2
 export VPN_PER_TEAM=1
 export FLAG_LIFETIME=5
@@ -179,4 +179,4 @@ done
 sleep 2
 
 echo "Stopping range services..."
-API_KEY="" PEERS="" TEAM_TOKENS="" docker-compose down -t 2 > /dev/null
+docker-compose down -t 2 > /dev/null

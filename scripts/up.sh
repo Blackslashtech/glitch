@@ -174,7 +174,7 @@ done
 export TEAM_TOKENS="${TEAM_TOKENS:1}"
 
 echo "Starting range services..."
-API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT FLAG_LIFETIME=$FLAG_LIFETIME TICK_SECONDS=$TICK_SECONDS SERVERURL=$SERVER_URL API_PORT=$API_PORT VPN_PORT=$VPN_PORT VPN_DNS=$VPN_DNS IPV6_ENABLED=$IPV6_ENABLED TEAM_TOKENS=$TEAM_TOKENS docker-compose up -d --force-recreate > /dev/null
+docker-compose --log-level ERROR up -d --force-recreate > /dev/null
 
 echo "Waiting 5 seconds for VPN to start..."
 sleep 5
@@ -210,7 +210,7 @@ for TEAM_ID in $(seq 2 $(expr $TEAM_COUNT + 1)); do
             fi
             export TEAM_ID=$TEAM_ID
             export SERVICE_NAME=$SERVICE_NAME
-            docker-compose -f ./services/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null
+            docker-compose --log-level ERROR -f ./services/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null
             export SERVICE_ID=$(expr $SERVICE_ID + 1)
         fi
     done
@@ -235,7 +235,7 @@ for SERVICE_NAME in $SERVICE_LIST; do
         export IPV4="10.103.2.$SERVICE_ID"
         export IPV6="fd10:103::2:$SERVICE_ID"
         echo "Starting $HOSTNAME ..."
-        docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null
+        docker-compose --log-level ERROR -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null
         export SERVICE_ID=$(expr $SERVICE_ID + 1)
     fi
 done
