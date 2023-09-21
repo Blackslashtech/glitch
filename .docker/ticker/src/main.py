@@ -74,9 +74,8 @@ def check_callback(result: dict) -> None:
 
 
 # Run all checks on a service for a given tick
-def run_checks(service_name: str, target_ips: list, tick: int) -> None:
+def run_checks(service_name: str, service_id: int, target_ips: list, tick: int) -> None:
     # print('Running checks on ' + service_name + ' for tick ' + str(tick), flush=True)
-    service_id = target_ips[0].split('.')[3]
     # Randomize the order of target_ips
     random.shuffle(target_ips)
     # Generate flag objects to be placed on the targets
@@ -165,10 +164,10 @@ def loop() -> None:
         print('### TICK ' + str(tick) + ' ###', flush=True)
         calculate_scores(tick-2)
         # Run checks
-        for service in SERVICES:
+        for service in db.services.find():
             target_ips = db.hosts.find({'service_name': service})
             # Run the checks for this service in a new thread
-            threading.Thread(target=run_checks, args=(service, [target_ip['ip'] for target_ip in target_ips], tick)).start()
+            threading.Thread(target=run_checks, args=(service['service_name'], service['service_id'], [target_ip['ip'] for target_ip in target_ips], tick)).start()
         print()
 
 
