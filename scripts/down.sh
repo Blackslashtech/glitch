@@ -6,17 +6,128 @@ if [[ ! -d "./checkers" && -d "./services" && -d "./.docker" ]]; then
     exit 1
 fi
 
-API_KEY=""
-TEAM_COUNT=2
-VPN_PER_TEAM=1
-SERVER_URL="localhost"
-VPN_PORT=0
-API_PORT=0
-TEAM_TOKENS=""
+source .env set
+
+export VPN_COUNT=$(expr $TEAM_COUNT \* $VPN_PER_TEAM)
+export SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
+
+# Prep ipv4 or ipv6 for range services
+if [ "$IPV6_ENABLED" = "true" ]; then
+    export GAME_SUBNET="fd10:100::/31"
+    export INFRA_SUBNET="fd10:102::/32"
+    export CHECKER_SUBNET="fd10:103::/32"
+
+    export VPN_GAME_IPV4=""
+    export VPN_GAME_IPV6="fd10:101::1:2"
+    export VPN_CHECKER_IPV4=""
+    export VPN_CHECKER_IPV6="fd10:103::1:2"
+
+    export API_GAME_IPV4=""
+    export API_GAME_IPV6="fd10:101::1:3"
+    export API_INFRA_IPV4=""
+    export API_INFRA_IPV6="fd10:102::1:3"
+
+    export REGISTRY_GAME_IPV4=""
+    export REGISTRY_GAME_IPV6="fd10:101::1:4"
+    export REGISTRY_CHECKER_IPV4=""
+    export REGISTRY_CHECKER_IPV6="fd10:103::1:4"
+
+    export RANGEMASTER_GAME_IPV4=""
+    export RANGEMASTER_GAME_IPV6="fd10:101::1:6"
+    export RANGEMASTER_INFRA_IPV4=""
+    export RANGEMASTER_INFRA_IPV6="fd10:102::1:6"
+    export RANGEMASTER_CHECKER_IPV4=""
+    export RANGEMASTER_CHECKER_IPV6="fd10:103::1:6"
+
+    export TICKER_INFRA_IPV4=""
+    export TICKER_INFRA_IPV6="fd10:102::1:5"
+    export TICKER_CHECKER_IPV4=""
+    export TICKER_CHECKER_IPV6="fd10:103::1:5"
+
+    export DB_INFRA_IPV4=""
+    export DB_INFRA_IPV6="fd10:102::1:4"
+else
+    export GAME_SUBNET="10.100.0.0/15"
+    export INFRA_SUBNET="10.102.0.0/16"
+    export CHECKER_SUBNET="10.103.0.0/16"
+
+    export VPN_GAME_IPV4="10.101.1.2"
+    export VPN_GAME_IPV6=""
+    export VPN_CHECKER_IPV4="10.103.1.2"
+    export VPN_CHECKER_IPV6=""
+
+    export API_GAME_IPV4="10.101.1.3"
+    export API_GAME_IPV6=""
+    export API_INFRA_IPV4="10.102.1.3"
+    export API_INFRA_IPV6=""
+
+    export REGISTRY_GAME_IPV4="10.101.1.4"
+    export REGISTRY_GAME_IPV6=""
+    export REGISTRY_CHECKER_IPV4="10.103.1.4"
+    export REGISTRY_CHECKER_IPV6=""
+
+    export RANGEMASTER_GAME_IPV4="10.101.1.6"
+    export RANGEMASTER_GAME_IPV6=""
+    export RANGEMASTER_INFRA_IPV4="10.102.1.6"
+    export RANGEMASTER_INFRA_IPV6=""
+    export RANGEMASTER_CHECKER_IPV4="10.103.1.6"
+    export RANGEMASTER_CHECKER_IPV6=""
+
+    export TICKER_INFRA_IPV4="10.102.1.5"
+    export TICKER_INFRA_IPV6=""
+    export TICKER_CHECKER_IPV4="10.103.1.5"
+    export ICKER_CHECKER_IPV6=""
+
+    export DB_INFRA_IPV4="10.102.1.4"
+    export DB_INFRA_IPV6=""
+fi
 
 source .env set
 
-SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
+export API_KEY
+# Set default values
+export TEAM_COUNT
+export VPN_PER_TEAM
+export FLAG_LIFETIME
+export SERVER_URL
+export VPN_PORT
+export API_PORT
+export VPN_DNS
+export IPV6_ENABLED
+export SERVICES
+export TICK_SECONDS
+export START_TIME
+export END_TIME
+export MEM_LIMIT
+export CPU_LIMIT
+
+export GAME_SUBNET
+export INFRA_SUBNET
+export CHECKER_SUBNET
+export VPN_GAME_IPV6
+export VPN_CHECKER_IPV6
+export API_GAME_IPV6
+export API_INFRA_IPV6
+export REGISTRY_GAME_IPV6
+export REGISTRY_CHECKER_IPV6
+export RANGEMASTER_GAME_IPV6
+export RANGEMASTER_INFRA_IPV6
+export RANGEMASTER_CHECKER_IPV6
+export TICKER_INFRA_IPV6
+export TICKER_CHECKER_IPV6
+export DB_INFRA_IPV6
+export VPN_GAME_IPV4
+export VPN_CHECKER_IPV4
+export API_GAME_IPV4
+export API_INFRA_IPV4
+export REGISTRY_GAME_IPV4
+export REGISTRY_CHECKER_IPV4
+export RANGEMASTER_GAME_IPV4
+export RANGEMASTER_INFRA_IPV4
+export RANGEMASTER_CHECKER_IPV4
+export TICKER_INFRA_IPV4
+export TICKER_CHECKER_IPV4
+export DB_INFRA_IPV4
 
 for SERVICE_NAME in $SERVICE_LIST; do
     dir="./checkers/$SERVICE_NAME"
