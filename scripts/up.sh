@@ -85,7 +85,7 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
             fi
             # Write creds to creds.txt
             echo "$IP$IP6 ($SERVICE_NAME) - root : $ROOT_PASSWORD" >> ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
-            IP=$IP IP6=$IP6 HOSTNAME=$HOSTNAME TEAM_ID=$TEAM_ID SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME ROOT_PASSWORD=$ROOT_PASSWORD CPU_LIMIT=$CPU_LIMIT MEM_LIMIT=$MEM_LIMIT docker-compose -f ./services/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null 2>&1
+            IP=$IP IP6=$IP6 HOSTNAME=$HOSTNAME TEAM_ID=$TEAM_ID SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME ROOT_PASSWORD=$ROOT_PASSWORD CPU_LIMIT=$CPU_LIMIT MEM_LIMIT=$MEM_LIMIT docker-compose -f ./services/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null
             SERVICE_ID=$(expr $SERVICE_ID + 1)
         fi
     done
