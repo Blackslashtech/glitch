@@ -227,11 +227,11 @@ for SERVICE_NAME in $SERVICE_LIST; do
         if [ "$IPV6_ENABLED" = "true" ]; then
             export IP=""
             export IP6="fd10:103::2:$SERVICE_ID"
-            export GATEWAY="fd10:103::1:1"
+            export GATEWAY=VPN_CHECKER_IPV6
         else
             export IP="10.103.2.$SERVICE_ID"
             export IP6=""
-            export GATEWAY="10.103.1.1"
+            export GATEWAY=VPN_CHECKER_IPV4
         fi
         echo "Starting $HOSTNAME ..."
         docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null
