@@ -2,7 +2,7 @@
 
 # Configure docker daemon
 mkdir /etc/docker
-echo -e '{ "experimental": true, "ip6tables": true, "dns" : [ "8.8.8.8" , "8.8.4.4" ] }' > /etc/docker/daemon.json
+echo -e '{ "dns" : [ "8.8.8.8" , "8.8.4.4" ] }' > /etc/docker/daemon.json
 
 # Start docker daemon
 echo "Starting docker daemon..."
