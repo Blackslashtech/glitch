@@ -20,8 +20,8 @@ echo "Deleting all containers..."
 
 docker rm -f range-api > /dev/null
 docker rm -f range-ticker > /dev/null
-docker rmi -f range-api > /dev/null
-docker rmi -f range-ticker > /dev/null
+docker rmi -f range_api > /dev/null
+docker rmi -f range_ticker > /dev/null
 
 SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
 
