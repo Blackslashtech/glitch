@@ -51,7 +51,7 @@ def init() -> None:
     db.checks.create_index(['service_id', 'team_id'])
     db.checks.create_index(['service_id', 'team_id', 'code'])
     db.steals.create_index(['service_id', 'team_id'])
-    for service_id in range(2, len(SERVICES) + 2):
+    for service_id in range(1, len(SERVICES) + 1):
         db.services.insert_one({'service_id': service_id, 'service_name': SERVICES[service_id-1], 'status': StatusCode.DOWN.value})
         for team_id in range(2, TEAM_COUNT + 2):
             if IPV6_ENABLED:
