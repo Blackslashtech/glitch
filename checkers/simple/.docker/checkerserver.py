@@ -71,6 +71,7 @@ if os.environ.get('GATEWAY_IPV4'):
 if os.environ.get('GATEWAY_IPV6'):
     os.system('ip -6 route delete default')
     os.system('ip -6 route add default via ' + os.environ.get('GATEWAY_IPV6'))
+    os.system('ip -6 neigh add proxy ' +  os.environ.get('GATEWAY_IPV6') + ' dev eth0')
 
 # Start the xmlrpc server
 socket.setdefaulttimeout(600)
