@@ -66,9 +66,10 @@ export DB_INFRA_IPV6="fd10:102::1:4"
 
 source .env set
 
+export VPN_COUNT=$(expr $TEAM_COUNT \* $VPN_PER_TEAM)
+export SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
 
 export API_KEY
-# Set default values
 export TEAM_COUNT
 export VPN_PER_TEAM
 export FLAG_LIFETIME
