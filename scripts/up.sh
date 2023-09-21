@@ -59,7 +59,7 @@ sleep 5
 # Loop from 1 to $TEAM_COUNT - 1
 for TEAM_ID in $(seq 2 $(expr $TEAM_COUNT + 1)); do
     echo "Starting team $TEAM_ID..."
-    TEAM_TOKEN="$(echo $TEAM_TOKENS | cut -d',' -f$TEAM_ID)"
+    TEAM_TOKEN="$(echo $TEAM_TOKENS | cut -d',' -f$(expr $TEAM_ID - 1))"
     # Copy vpn files
     for VPN_ID in $(seq 1 $VPN_PER_TEAM); do
         VPN_NAME="peer$(expr $VPN_ID + $(expr $(expr $TEAM_ID - 2) \* $VPN_PER_TEAM))"
