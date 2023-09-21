@@ -78,7 +78,7 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
             # check if ipv6 is enabled
             if [ "$IPV6_ENABLED" = "true" ]; then
                 IP=""
-                IP6="fd00:1000:$TEAM_ID::$SERVICE_ID"
+                IP6="fd10:100::$TEAM_ID:$SERVICE_ID"
             else
                 IP="10.100.$TEAM_ID.$SERVICE_ID"
                 IP6=""
@@ -104,12 +104,12 @@ for SERVICE_NAME in $SERVICE_LIST; do
         # check if ipv6 is enabled
         if [ "$IPV6_ENABLED" = "true" ]; then
             IP=""
-            IP6="fd00:1003:2::$SERVICE_ID"
-            GATEWAY="fd00:1003:1::100"
+            IP6="fd10:103::2:$SERVICE_ID"
+            GATEWAY="fd10:103::1:1"
         else
             IP="10.103.2.$SERVICE_ID"
             IP6=""
-            GATEWAY="10.103.1.100"
+            GATEWAY="10.103.1.1"
         fi
         echo "Starting $HOSTNAME ..."
         IP=$IP IP6=$IP6 GATEWAY=$GATEWAY HOSTNAME=$HOSTNAME SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME TICK_SECONDS=$TICK_SECONDS docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null

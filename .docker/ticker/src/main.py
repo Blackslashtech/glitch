@@ -55,7 +55,7 @@ def init() -> None:
         db.services.insert_one({'service_id': service_id, 'service_name': SERVICES[service_id-1], 'status': StatusCode.DOWN.value})
         for team_id in range(1, TEAM_COUNT + 1):
             if IPV6_ENABLED:
-                ip = 'fd00:1000:' + str(team_id) + '::' + str(service_id)
+                ip = 'fd10:100::' + str(team_id) + ':' + str(service_id)
             else:
                 ip = '10.100.' + str(team_id) + '.' + str(service_id)
             hostname = 'team' + str(team_id) + '-' + SERVICES[service_id-1].lower()
@@ -97,7 +97,7 @@ def run_checks(service_name: str, target_ips: list, tick: int) -> None:
         try:
             # def __init__(self, checker: str, service: str, callback, tick: int = 0, randomize: bool = False, ticklen: int = 0) -> None:
             if IPV6_ENABLED:
-                checker = RemoteChecker('fd00:1003:2::' + service_id, service_name, check_callback, tick, RANDOMIZE_CHECKER_TIMES, lock)
+                checker = RemoteChecker('fd10:103::2:' + service_id, service_name, check_callback, tick, RANDOMIZE_CHECKER_TIMES, lock)
             else:
                 checker = RemoteChecker('10.103.2.' + service_id, service_name, check_callback, tick, RANDOMIZE_CHECKER_TIMES, lock)
             threading.Thread(target=checker.run_all, args=(target_ip,put_flag,get_flag,TICK_SECONDS)).start()

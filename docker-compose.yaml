@@ -22,11 +22,11 @@ services:
       - "${VPN_PORT}:${VPN_PORT}/udp"
     networks:
       game:
-        ipv4_address: 10.101.1.100
-        ipv6_address: fd00:1001:1::100
+        ipv4_address: 10.101.1.1
+        ipv6_address: fd10:101::1:1
       checker:
-        ipv4_address: 10.103.1.100
-        ipv6_address: fd00:1003:1::100
+        ipv4_address: 10.103.1.1
+        ipv6_address: fd10:103::1:1
 
 
   api:
@@ -55,10 +55,10 @@ services:
     networks:
       game:
         ipv4_address: 10.101.1.2
-        ipv6_address: fd00:1001:1::2
+        ipv6_address: fd10:101::1:2
       infra:
         ipv4_address: 10.102.1.2
-        ipv6_address: fd00:1002:1::2
+        ipv6_address: fd10:102::1:2
 
   registry:
     image: registry:latest
@@ -73,10 +73,10 @@ services:
     networks:
       game:
         ipv4_address: 10.101.1.3
-        ipv6_address: fd00:1001::3
+        ipv6_address: fd10:101::1:3
       checker:
         ipv4_address: 10.103.1.3
-        ipv6_address: fd00:1003:1::3
+        ipv6_address: fd10:103::1:3
 
   rangemaster:
     build:
@@ -90,13 +90,13 @@ services:
     networks:
       game:
         ipv4_address: 10.101.1.5
-        ipv6_address: fd00:1001::5
+        ipv6_address: fd10:101::1:5
       infra:
         ipv4_address: 10.102.1.5
-        ipv6_address: fd00:1002:1::5
+        ipv6_address: fd10:102::1:5
       checker:
         ipv4_address: 10.103.1.5
-        ipv6_address: fd00:1003:1::5
+        ipv6_address: fd10:103::1:5
 
   ticker:
     build:
@@ -117,10 +117,10 @@ services:
     networks:
       infra:
         ipv4_address: 10.102.1.4
-        ipv6_address: fd00:1002:1::4
+        ipv6_address: fd10:102::1:4
       checker:
         ipv4_address: 10.103.1.4
-        ipv6_address: fd00:1003:1::4
+        ipv6_address: fd10:103::1:4
 
   db:
     image: mongo:latest
@@ -132,7 +132,7 @@ services:
     networks:
       infra:
         ipv4_address: 10.102.1.3
-        ipv6_address: fd00:1002:1::3
+        ipv6_address: fd10:102::1:3
 
 
 volumes:
@@ -146,18 +146,18 @@ networks:
     ipam:
       config:
         - subnet: 10.100.0.0/15
-        - subnet: fd00:1000::/31
+        - subnet: fd10:100::/31
   infra:
     driver: bridge
     enable_ipv6: true
     ipam:
       config:
         - subnet: 10.102.0.0/16
-        - subnet: fd00:1002::/32
+        - subnet: fd10:102::/32
   checker:
     driver: bridge
     enable_ipv6: true
     ipam:
       config:
         - subnet: 10.103.0.0/16
-        - subnet: fd00:1003::/32
+        - subnet: fd10:103::/32
