@@ -30,7 +30,7 @@ for SERVICE_NAME in $SERVICE_LIST; do
 done
 
 # Loop from 1 to $TEAM_COUNT
-for TEAM_ID in $(seq 1 $TEAM_COUNT); do
+for TEAM_ID in $(seq 2 $(expr $TEAM_COUNT + 1)); do
     for SERVICE_NAME in $SERVICE_LIST; do
         dir="./services/$SERVICE_NAME"
         # If the file is a directory

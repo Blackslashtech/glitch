@@ -36,7 +36,7 @@ echo "Team data download links (distribute one link to each team):" > ./teamdata
 
 # Generate team tokens
 TEAM_TOKENS=""
-for TEAM_ID in $(seq 1 $TEAM_COUNT); do
+for TEAM_ID in $(seq 2 $(expr $TEAM_COUNT + 1)); do
     # Generate team token
     TEAM_TOKEN="$(openssl rand -hex 16)"
     TEAM_TOKENS="$TEAM_TOKENS,$TEAM_TOKEN"

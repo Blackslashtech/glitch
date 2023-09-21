@@ -26,7 +26,7 @@ docker rmi -f range-ticker > /dev/null
 SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
 
 # Loop from 1 to $TEAM_COUNT
-for TEAM_ID in $(seq 1 $TEAM_COUNT); do
+for TEAM_ID in $(seq 2 $(expr $TEAM_COUNT + 1)); do
     # Loop over every service
     echo "Deleting team $TEAM_ID..."
     for SERVICE_NAME in $SERVICE_LIST; do
