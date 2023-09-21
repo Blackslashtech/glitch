@@ -10,7 +10,7 @@ RUN echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
 # Enable ipv6 forwarding
 RUN echo "net.ipv6.conf.all.accept_ra=2" >> /etc/sysctl.conf
 RUN echo "net.ipv6.conf.all.forwarding=1" >> /etc/sysctl.conf
-RUN echo "net.ipv6.conf.eth0.proxy_ndp=1" >> /etc/sysctl.conf
+RUN echo "net.ipv6.conf.all.proxy_ndp=1" >> /etc/sysctl.conf
 RUN echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
 
 
