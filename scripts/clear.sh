@@ -61,5 +61,14 @@ rm -rf ./.docker/vpn/* > /dev/null
 rm ./teamdata.txt
 rm -rf ./.docker/api/teamdata/* > /dev/null
 
+# Prune docker containers
+docker container prune -f > /dev/null
+
+# Prune docker images
+docker image prune -f > /dev/null
+
+# Prune docker volumes
+docker volume prune -f > /dev/null
+
 # Prune docker networks
 docker network prune -f > /dev/null
