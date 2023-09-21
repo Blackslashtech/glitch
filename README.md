@@ -25,7 +25,7 @@ As long as the `SERVER_URL` is properly set and port forwarding is enabled for U
 Wireguard configs are stored in the [`.docker/vpn`](..docker/vpn) directory, or can be downloaded from the API at `http://api/vpn/<team_id>/wg<vpn_id>.conf`. (i.e. `http://api/vpn/1/wg1.conf`)
 
 > [!NOTE]
-> Team IDs, Service IDs, and VPN IDs are all 1-indexed.  This is to avoid subnetting/IP confusion.
+> Team IDs, and Service IDs are both 2-indexed.  This is to avoid subnetting/IP confusion and gateway allocation issues.
 
 ## API Quickstart
 The API is at `http://10.101.0.2:8000` inside the range and `http://<server>:8000` from outside the range.
@@ -40,7 +40,6 @@ For full API documentation, visit `http://10.101.0.2:8000/docs`
 
 
 # Network
-
 The range network is defined in [`docker-compose.yaml`](docker-compose.yaml):
 - Range network: `10.100.0.0/15`
   - Infrastructure subnet: `10.101.0.0/16`

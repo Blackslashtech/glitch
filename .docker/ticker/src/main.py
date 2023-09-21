@@ -51,17 +51,17 @@ def init() -> None:
     db.checks.create_index(['service_id', 'team_id'])
     db.checks.create_index(['service_id', 'team_id', 'code'])
     db.steals.create_index(['service_id', 'team_id'])
-    for service_id in range(1, len(SERVICES) + 1):
+    for service_id in range(2, len(SERVICES) + 2):
         db.services.insert_one({'service_id': service_id, 'service_name': SERVICES[service_id-1], 'status': StatusCode.DOWN.value})
-        for team_id in range(1, TEAM_COUNT + 1):
+        for team_id in range(2, TEAM_COUNT + 2):
             if IPV6_ENABLED:
                 ip = 'fd10:100::' + str(team_id) + ':' + str(service_id)
             else:
                 ip = '10.100.' + str(team_id) + '.' + str(service_id)
             hostname = 'team' + str(team_id) + '-' + SERVICES[service_id-1].lower()
             db.hosts.insert_one({'service_name': SERVICES[service_id-1], 'service_id': service_id, 'team_id': team_id, 'ip': ip, 'hostname': hostname, 'score': 0})
-    for service_id in range(1, TEAM_COUNT + 1):
-        db.teams.insert_one({'team_id': service_id, 'score': 0})
+    for team_id in range(2, TEAM_COUNT + 2):
+        db.teams.insert_one({'team_id': team_id, 'score': 0})
 
 def check_callback(result: dict) -> None:
     # print('Callback: ' + str(result), flush=True)

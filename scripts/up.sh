@@ -57,16 +57,16 @@ echo "Waiting 5 seconds for VPN to start..."
 sleep 5
 
 # Loop from 1 to $TEAM_COUNT - 1
-for TEAM_ID in $(seq 1 $TEAM_COUNT); do
+for TEAM_ID in $(seq 2 $(expr $TEAM_COUNT + 1)); do
     echo "Starting team $TEAM_ID..."
     TEAM_TOKEN="$(echo $TEAM_TOKENS | cut -d',' -f$TEAM_ID)"
     # Copy vpn files
     for VPN_ID in $(seq 1 $VPN_PER_TEAM); do
-        VPN_NAME="peer$(expr $VPN_ID + $(expr $(expr $TEAM_ID - 1) \* $VPN_PER_TEAM))"
+        VPN_NAME="peer$(expr $VPN_ID + $(expr $(expr $TEAM_ID - 2) \* $VPN_PER_TEAM))"
         cp ./.docker/vpn/$VPN_NAME/$VPN_NAME.conf ./.docker/api/teamdata/$TEAM_TOKEN/vpn/wg$VPN_ID.conf
     done
     # Create a counter for service IDs starting at 1
-    SERVICE_ID=1
+    SERVICE_ID=2
     for SERVICE_NAME in $SERVICE_LIST; do
         dir="./services/$SERVICE/"
         # If the file is a directory
@@ -85,6 +85,7 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
             fi
             # Write creds to creds.txt
             echo "$IP$IP6 ($SERVICE_NAME) - root : $ROOT_PASSWORD" >> ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
+            echo "Starting $HOSTNAME at $IP$IP6..."
             IP=$IP IP6=$IP6 HOSTNAME=$HOSTNAME TEAM_ID=$TEAM_ID SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME ROOT_PASSWORD=$ROOT_PASSWORD CPU_LIMIT=$CPU_LIMIT MEM_LIMIT=$MEM_LIMIT docker-compose -f ./services/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null
             SERVICE_ID=$(expr $SERVICE_ID + 1)
         fi
@@ -95,7 +96,7 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
     popd > /dev/null
 done
 
-SERVICE_ID=1
+SERVICE_ID=2
 for SERVICE_NAME in $SERVICE_LIST; do
     dir="./checkers/$SERVICE_NAME/"
     # If the file is a directory
