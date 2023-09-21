@@ -39,7 +39,7 @@ services:
     depends_on:
       - api
     environment:
-    - PEERS=${PEERS}
+    - PEERS=${VPN_COUNT}
     - ALLOWEDIPS="10.100.0.0/15,fd10:100::/31"
     - SERVERURL=${SERVER_URL}
     - SERVERPORT=${VPN_PORT}
@@ -73,7 +73,7 @@ services:
       - FLAG_LIFETIME=${FLAG_LIFETIME}
       - API_KEY=${API_KEY}
       - TEAM_COUNT=${TEAM_COUNT}
-      - PEERS=${PEERS}
+      - PEERS=${VPN_COUNT}
       - SERVICES=${SERVICES}
       - TEAM_TOKENS=${TEAM_TOKENS}
     volumes:
