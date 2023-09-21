@@ -76,7 +76,7 @@ services:
       - TEAM_TOKENS=${TEAM_TOKENS}
     volumes:
       - ./.docker/api/src:/code
-      - ./.docker/vpn:/vpn
+      - ./.docker/vpn/config:/vpn
       - ./.docker/api/teamdata:/teamdata
     ports:
       - "${API_PORT}:80"
