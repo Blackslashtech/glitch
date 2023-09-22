@@ -23,6 +23,9 @@ class StatusCode(enum.Enum):
 def check(host: str, timeout: int) -> dict:
     status = {'action': 'check', 'host': host, 'code': int(StatusCode.DOWN), 'comment': '', 'latency': 0}
     print('Start CHECK: ' + str(status), flush=True)
+    # Check if host is an ipv6 address
+    if ':' in host:
+        host = '[' + host + ']'
     start_time = time.time()
     try:
         response = requests.get(f'http://{host}', timeout=timeout)
@@ -37,6 +40,9 @@ def check(host: str, timeout: int) -> dict:
 def put(host: str, flag: str, flag_id: str, timeout: int) -> dict:
     status = {'action': 'put', 'host': host, 'code': int(StatusCode.DOWN), 'comment': '', 'latency': 0, 'flag': flag, 'flag_id': flag_id}
     print('Start PUT: ' + str(status), flush=True)
+    # Check if host is an ipv6 address
+    if ':' in host:
+        host = '[' + host + ']'
     start_time = time.time()
     try:
         response = requests.post(f'http://{host}/items/{flag_id}/{flag}', timeout=timeout)
@@ -51,6 +57,9 @@ def put(host: str, flag: str, flag_id: str, timeout: int) -> dict:
 def get(host: str, flag: str, flag_id: str, timeout: int) -> dict:
     status = {'action': 'get', 'host': host, 'code': int(StatusCode.DOWN), 'comment': '', 'latency':0, 'flag': flag, 'flag_id': flag_id}
     print('Start GET: ' + str(status), flush=True)
+    # Check if host is an ipv6 address
+    if ':' in host:
+        host = '[' + host + ']'
     start_time = time.time()
     try:
         response = requests.get(f'http://{host}/items/{flag_id}', timeout=timeout)
@@ -71,6 +80,7 @@ if os.environ.get('GATEWAY_IPV4'):
 if os.environ.get('GATEWAY_IPV6'):
     os.system('ip -6 route delete default')
     os.system('ip -6 route add default via ' + os.environ.get('GATEWAY_IPV6'))
+    os.system('ip -6 neigh add proxy ' +  os.environ.get('GATEWAY_IPV6') + ' dev eth0')
 
 # Start the xmlrpc server
 socket.setdefaulttimeout(600)
