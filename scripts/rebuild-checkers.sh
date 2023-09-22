@@ -170,4 +170,7 @@ for SERVICE_NAME in $SERVICE_LIST; do
     fi
 done
 
-docker-compose restart ticker > /dev/null
+docker-compose stop ticker > /dev/null
+docker-compose rm -f ticker > /dev/null
+docker rmi -f ticker > /dev/null
+docker-compose start ticker > /dev/null
