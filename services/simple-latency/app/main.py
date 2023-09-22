@@ -13,7 +13,7 @@ def read_root():
 
 @app.get("/items/{item_id}")
 def read_item(item_id: str):
-    time.sleep(5)
+    time.sleep(2)
     try:
         return {"item": items[item_id]}
     except KeyError:
@@ -21,6 +21,6 @@ def read_item(item_id: str):
 
 @app.post("/items/{item_id}/{item}")
 def create_item(item_id: str, item: str):
-    time.sleep(5)
+    time.sleep(2)
     items[item_id] = item
     return {"item": item}
