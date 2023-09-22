@@ -38,7 +38,7 @@ services:
       - api
     environment:
     - PEERS=${VPN_COUNT}
-    - ALLOWEDIPS="10.100.0.0/15,fd10:100::/31"
+    - ALLOWEDIPS="10.100.0.0/15,fd10::100:/31"
     - SERVERURL=${SERVER_URL}
     - SERVERPORT=${VPN_PORT}
     - PEERDNS=${VPN_DNS}

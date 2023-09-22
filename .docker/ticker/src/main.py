@@ -55,7 +55,7 @@ def init() -> None:
         db.services.insert_one({'service_id': service_id, 'service_name': SERVICES[service_id-1], 'status': StatusCode.DOWN.value})
         for team_id in range(2, TEAM_COUNT + 2):
             if IPV6_ENABLED:
-                ip = 'fd10:100::' + str(team_id) + ':' + str(service_id)
+                ip = 'fd10::100:' + str(team_id) + ':' + str(service_id)
             else:
                 ip = '10.100.' + str(team_id) + '.' + str(service_id)
             hostname = 'team' + str(team_id) + '-' + SERVICES[service_id-1].lower()

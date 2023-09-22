@@ -26,42 +26,42 @@ export MEM_LIMIT="1G"
 export CPU_LIMIT="1"
 
 
-export GAME_SUBNET_IPV6="fd10:100::/31"
+export GAME_SUBNET_IPV6="fd10::100:/31"
 export GAME_SUBNET_IPV4="10.100.0.0/15"
-export INFRA_SUBNET_IPV6="fd10:102::/32"
+export INFRA_SUBNET_IPV6="fd10::102:/96"
 export INFRA_SUBNET_IPV4="10.102.0.0/16"
-export CHECKER_SUBNET_IPV6="fd10:103::/32"
+export CHECKER_SUBNET_IPV6="fd10::103:/96"
 export CHECKER_SUBNET_IPV4="10.103.0.0/16"
 
 export VPN_GAME_IPV4="10.101.1.2"
-export VPN_GAME_IPV6="fd10:101::1:2"
+export VPN_GAME_IPV6="fd10::101:1:2"
 export VPN_CHECKER_IPV4="10.103.1.2"
-export VPN_CHECKER_IPV6="fd10:103::1:2"
+export VPN_CHECKER_IPV6="fd10::103:1:2"
 
 export API_GAME_IPV4="10.101.1.3"
-export API_GAME_IPV6="fd10:101::1:3"
+export API_GAME_IPV6="fd10::101:1:3"
 export API_INFRA_IPV4="10.102.1.3"
-export API_INFRA_IPV6="fd10:102::1:3"
+export API_INFRA_IPV6="fd10::102:1:3"
 
 export REGISTRY_GAME_IPV4="10.101.1.4"
-export REGISTRY_GAME_IPV6="fd10:101::1:4"
+export REGISTRY_GAME_IPV6="fd10::101:1:4"
 export REGISTRY_CHECKER_IPV4="10.103.1.4"
-export REGISTRY_CHECKER_IPV6="fd10:103::1:4"
+export REGISTRY_CHECKER_IPV6="fd10::103:1:4"
 
 export RANGEMASTER_GAME_IPV4="10.101.1.6"
-export RANGEMASTER_GAME_IPV6="fd10:101::1:6"
+export RANGEMASTER_GAME_IPV6="fd10::101:1:6"
 export RANGEMASTER_INFRA_IPV4="10.102.1.6"
-export RANGEMASTER_INFRA_IPV6="fd10:102::1:6"
+export RANGEMASTER_INFRA_IPV6="fd10::102:1:6"
 export RANGEMASTER_CHECKER_IPV4="10.103.1.6"
-export RANGEMASTER_CHECKER_IPV6="fd10:103::1:6"
+export RANGEMASTER_CHECKER_IPV6="fd10::103:1:6"
 
 export TICKER_INFRA_IPV4="10.102.1.5"
-export TICKER_INFRA_IPV6="fd10:102::1:5"
+export TICKER_INFRA_IPV6="fd10::102:1:5"
 export TICKER_CHECKER_IPV4="10.103.1.5"
-export TICKER_CHECKER_IPV6="fd10:103::1:5"
+export TICKER_CHECKER_IPV6="fd10::103:1:5"
 
 export DB_INFRA_IPV4="10.102.1.4"
-export DB_INFRA_IPV6="fd10:102::1:4"
+export DB_INFRA_IPV6="fd10::102:1:4"
 
 
 
@@ -159,7 +159,7 @@ for SERVICE_NAME in $SERVICE_LIST; do
     if [ -d "$dir" ]; then
         export HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
         export IPV4="10.103.2.$SERVICE_ID"
-        export IPV6="fd10:103::2:$SERVICE_ID"
+        export IPV6="fd10::103:2:$SERVICE_ID"
         EXPORT SERVICE_NAME
         echo "Restarting $HOSTNAME ..."
         docker stop $HOSTNAME > /dev/null 2>&1

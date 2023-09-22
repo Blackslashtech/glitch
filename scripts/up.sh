@@ -25,42 +25,42 @@ export MEM_LIMIT="1G"
 export CPU_LIMIT="1"
 
 
-export GAME_SUBNET_IPV6="fd10:100::/31"
+export GAME_SUBNET_IPV6="fd10::100:/95"
 export GAME_SUBNET_IPV4="10.100.0.0/15"
-export INFRA_SUBNET_IPV6="fd10:102::/32"
+export INFRA_SUBNET_IPV6="fd10::102:/96"
 export INFRA_SUBNET_IPV4="10.102.0.0/16"
-export CHECKER_SUBNET_IPV6="fd10:103::/32"
+export CHECKER_SUBNET_IPV6="fd10::103:/96"
 export CHECKER_SUBNET_IPV4="10.103.0.0/16"
 
 export VPN_GAME_IPV4="10.101.1.2"
-export VPN_GAME_IPV6="fd10:101::1:2"
+export VPN_GAME_IPV6="fd10::101:1:2"
 export VPN_CHECKER_IPV4="10.103.1.2"
-export VPN_CHECKER_IPV6="fd10:103::1:2"
+export VPN_CHECKER_IPV6="fd10::103:1:2"
 
 export API_GAME_IPV4="10.101.1.3"
-export API_GAME_IPV6="fd10:101::1:3"
+export API_GAME_IPV6="fd10::101:1:3"
 export API_INFRA_IPV4="10.102.1.3"
-export API_INFRA_IPV6="fd10:102::1:3"
+export API_INFRA_IPV6="fd10::102:1:3"
 
 export REGISTRY_GAME_IPV4="10.101.1.4"
-export REGISTRY_GAME_IPV6="fd10:101::1:4"
+export REGISTRY_GAME_IPV6="fd10::101:1:4"
 export REGISTRY_CHECKER_IPV4="10.103.1.4"
-export REGISTRY_CHECKER_IPV6="fd10:103::1:4"
+export REGISTRY_CHECKER_IPV6="fd10::103:1:4"
 
 export RANGEMASTER_GAME_IPV4="10.101.1.6"
-export RANGEMASTER_GAME_IPV6="fd10:101::1:6"
+export RANGEMASTER_GAME_IPV6="fd10::101:1:6"
 export RANGEMASTER_INFRA_IPV4="10.102.1.6"
-export RANGEMASTER_INFRA_IPV6="fd10:102::1:6"
+export RANGEMASTER_INFRA_IPV6="fd10::102:1:6"
 export RANGEMASTER_CHECKER_IPV4="10.103.1.6"
-export RANGEMASTER_CHECKER_IPV6="fd10:103::1:6"
+export RANGEMASTER_CHECKER_IPV6="fd10::103:1:6"
 
 export TICKER_INFRA_IPV4="10.102.1.5"
-export TICKER_INFRA_IPV6="fd10:102::1:5"
+export TICKER_INFRA_IPV6="fd10::102:1:5"
 export TICKER_CHECKER_IPV4="10.103.1.5"
-export TICKER_CHECKER_IPV6="fd10:103::1:5"
+export TICKER_CHECKER_IPV6="fd10::103:1:5"
 
 export DB_INFRA_IPV4="10.102.1.4"
-export DB_INFRA_IPV6="fd10:102::1:4"
+export DB_INFRA_IPV6="fd10::102:1:4"
 
 
 
@@ -226,7 +226,7 @@ for TEAM_ID in $(seq 2 $(expr $TEAM_COUNT + 1)); do
             export ROOT_PASSWORD="$(openssl rand -hex 16)"
             export HOSTNAME=$(echo "team$TEAM_ID-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
             export IPV4="10.100.$TEAM_ID.$SERVICE_ID"
-            export IPV6="fd10:100::$TEAM_ID:$SERVICE_ID"
+            export IPV6="fd10::100:$TEAM_ID:$SERVICE_ID"
             # Write creds to creds.txt
             if [ "$IPV6_ENABLED" = "true" ]; then
                 echo "$IPV6 ($SERVICE_NAME) - root : $ROOT_PASSWORD" >> ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
@@ -256,9 +256,9 @@ for SERVICE_NAME in $SERVICE_LIST; do
     if [ -d "$dir" ]; then
         export HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
         export CHECKER_IPV4="10.103.2.$SERVICE_ID"
-        export CHECKER_IPV6="fd10:103::2:$SERVICE_ID"
+        export CHECKER_IPV6="fd10::103:2:$SERVICE_ID"
         export GAME_IPV4="10.101.2.$SERVICE_ID"
-        export GAME_IPV6="fd10:101::2:$SERVICE_ID"
+        export GAME_IPV6="fd10::101:2:$SERVICE_ID"
         echo "Starting $HOSTNAME ..."
         docker-compose --log-level ERROR -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d > /dev/null
         export SERVICE_ID=$(expr $SERVICE_ID + 1)
