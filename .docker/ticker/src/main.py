@@ -70,7 +70,7 @@ def check_callback(result: dict) -> None:
         print('Late callback: ' + str(result), flush=True)
     db.checks.insert_one({'service': result['service'], 'service_id': int(result['host'].split('.')[3]), 'team_id': int(result['host'].split('.')[2]), 'tick': result['tick'], 'host': result['host'], 'action': result['action'], 'code': result['code'], 'comment': result['comment'], 'latency': result['latency']})
     if result['action'] == 'put' and result['code'] == int(StatusCode.OK):
-        db.flags.insert_one({'service':  result['service'], 'service_id': int(result['host']['service_id']), 'team_id': int(result['host']['team_id']), 'tick': result['tick'] + 1, 'host': result['host']['ip'], 'flag': result['flag'], 'flag_id':  result['flag_id']})
+        db.flags.insert_one({'service':  result['service_name'], 'service_id': int(result['host']['service_id']), 'team_id': int(result['host']['team_id']), 'tick': result['tick'] + 1, 'host': result['host']['ip'], 'flag': result['flag'], 'flag_id':  result['flag_id']})
 
 
 # Run all checks on a service for a given tick
