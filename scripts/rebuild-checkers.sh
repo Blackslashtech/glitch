@@ -21,6 +21,7 @@ START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 END_TIME=$(gdate -u +"%Y-%m-%dT%H:%M:%SZ" -d "+$(expr $TICK_SECONDS \* 100) seconds")
 MEM_LIMIT="1G"
 CPU_LIMIT="1"
+PEERS=""
 
 source .env set
 

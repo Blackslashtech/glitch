@@ -10,8 +10,6 @@ app = FastAPI()
 
 API_KEY = os.environ.get('API_KEY')
 TEAM_COUNT = int(os.environ.get('TEAM_COUNT'))
-VPN_COUNT = int(os.environ.get('PEERS'))
-VPN_PER_TEAM = VPN_COUNT / TEAM_COUNT
 SERVICES = os.environ.get('SERVICES').split(',')
 TEAM_TOKENS = os.environ.get('TEAM_TOKENS').split(',')
 FLAG_LIFETIME = int(os.environ.get('FLAG_LIFETIME'))
