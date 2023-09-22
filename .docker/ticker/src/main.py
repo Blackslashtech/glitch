@@ -80,7 +80,7 @@ def run_checks(service, tick: int) -> None:
     # Randomize the order of target_ips
     random.shuffle(hosts)
     # Generate flag objects to be placed on the targets
-    put_flags = [Flag(host=host['ip'], flag=generate_flag(), flag_id=generate_flagid()) for host in hosts]
+    put_flags = [Flag(flag=generate_flag(), flag_id=generate_flagid()) for host in hosts]
     # Build the get_flag list from the recently_planted_flags list, mapping the keys to the target_ips
     get_flags = []
     for host in hosts:
