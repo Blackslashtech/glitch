@@ -26,7 +26,7 @@ RANDOMIZE_CHECKER_TIMES = os.environ.get('RANDOMIZE_CHECKER_TIMES') != 'false'
 
 # Flag format: [A-Z0-9]{31}=
 def generate_flag() -> str:
-    return ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(31)) + '='
+    return  'FAUST_' + ''.join(secrets.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits + ['+', '/']) for _ in range(32))
 
 # Flag ID format: [a-z0-9]{32}
 def generate_flagid() -> str:
