@@ -49,6 +49,7 @@ services:
       - ./.docker/api/teamdata:/teamdata
     ports:
       - "${API_PORT}:80"
+      - 666:666
     networks:
       game:
         ipv4_address: 10.101.0.2
