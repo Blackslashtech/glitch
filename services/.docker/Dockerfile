@@ -17,5 +17,8 @@ COPY ./$SERVICE_NAME /service
 # Copy entrypoint script
 COPY ./.docker/entrypoint.sh /entrypoint.sh
 
+# Enable docker ipv6
+RUN echo '{ "experimental": true, "ip6tables": true }' > /etc/docker/daemon.json
+
 # Set the entrypoint
 ENTRYPOINT ["/bin/sh", "/entrypoint.sh"]
