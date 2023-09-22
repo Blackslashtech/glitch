@@ -152,7 +152,7 @@ export TICKER_CHECKER_IPV6
 export DB_INFRA_IPV4
 export DB_INFRA_IPV6
 
-EXPORT SERVICE_ID=2
+export SERVICE_ID=2
 for SERVICE_NAME in $SERVICE_LIST; do
     dir="./checkers/$SERVICE_NAME/"
     # If the file is a directory
@@ -160,7 +160,7 @@ for SERVICE_NAME in $SERVICE_LIST; do
         export HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
         export IPV4="10.103.2.$SERVICE_ID"
         export IPV6="fd10::103:2:$SERVICE_ID"
-        EXPORT SERVICE_NAME
+        export SERVICE_NAME
         echo "Restarting $HOSTNAME ..."
         docker stop $HOSTNAME > /dev/null 2>&1
         docker rm -f $HOSTNAME > /dev/null 2>&1
