@@ -10,7 +10,7 @@ db = client['range']
 
 # Function to process a submitted flag
 def process_flag(flag):
-    if not flag.startswith('FAUST_') or not len(flag) == 39:
+    if not flag.startswith('FAUST_') or not len(flag) == 38:
         return "INV bad flag format"
     if db.flags.find_one({'flag': flag}):
         return "OK"
