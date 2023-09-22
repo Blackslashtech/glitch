@@ -87,10 +87,10 @@ def run_checks(service, tick: int) -> None:
         # Get most recent flag for this service and target_ip
         recent_flags = list(db.flags.find({'host': host['ip']}).sort('tick',-1).limit(1))
         if len(recent_flags) > 0:
-            get_flags.append(Flag(host=host['ip'], flag=recent_flags[0]['flag'], flag_id=recent_flags[0]['flag_id']))
+            get_flags.append(Flag(flag=recent_flags[0]['flag'], flag_id=recent_flags[0]['flag_id']))
             # print('GET flag: ' + str(get_flags[-1]), flush=True)
         else:
-            get_flags.append(Flag(host=host['ip']))
+            get_flags.append(Flag())
     # Run the checks in parallel
     lock = threading.Lock()
     for host, put_flag, get_flag in zip(hosts.copy(), put_flags.copy(), get_flags.copy()):
