@@ -64,8 +64,8 @@ The range network is defined in [`docker-compose.yaml`](docker-compose.yaml):
 
 
 ## IPv6 Network
-- Range network: `fd10::100:/31`
-  - Infrastructure subnet: `fd10::101:/32`
+- Range network: `fd10::100:/95`
+  - Infrastructure subnet: `fd10::101:/96`
     - VPN Server: `fd10::101:1:1` (hostname `vpn`)
     - API: `fd10::101:1:2` (hostname `api`)
     - Docker Registry: `fd10::101:1:3` (hostname `registry`)
@@ -73,12 +73,12 @@ The range network is defined in [`docker-compose.yaml`](docker-compose.yaml):
     - (WIP) Frontend: `fd10::101:1:6` (hostname `frontend`)
   - Team subnet: `fd10::100:<team_id>::/48`
     - Service host: `fd10::100:<team_id>:<service_id>`
-- Internal network: `fd10::102:/32`
+- Internal network: `fd10::102:/96`
   - Ticker: `fd10::102:1:1` (hostname `ticker`)
   - API: `fd10::102:1:2` (hostname `api`)
   - DB: `fd10::102:1:3` (hostname `db`)
   - Rangemaster: `fd10::102:1:5` (hostname `rangemaster`)
-- Checker network: `fd10::103:/32`
+- Checker network: `fd10::103:/96`
   - VPN Server: `fd10::103:1:1` (hostname `vpn`)
   - Ticker: `fd10::103:1:2` (hostname `ticker`)
   - Docker Registry: `fd10::103:1:3` (hostname `registry`)
