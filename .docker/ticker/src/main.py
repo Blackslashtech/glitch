@@ -118,7 +118,7 @@ def calculate_scores(tick: int = 0) -> None:
         else:
             print('Pending initialization, skipping score calculation...', flush=True)
             # Clear any existing data
-            #db.checks.delete_many({'tick': tick})
+            db.checks.delete_many({'tick': tick})
             return
     print('Team Service          CHECK PUT GET  ', flush=True)
     for team in db.teams.find():
@@ -162,7 +162,8 @@ def loop() -> None:
         calculate_scores(tick-2)
         # Run checks
         for service in db.services.find():
-            target_ips = db.hosts.find({'service_name': service})
+            print("Running checks for " + service['service_name'], flush=True)
+            target_ips = db.hosts.find({'service_name': service['service_name']})
             # Run the checks for this service in a new thread
             threading.Thread(target=run_checks, args=(service['service_name'], service['service_id'], [target_ip['ip'] for target_ip in target_ips], tick)).start()
         print()
