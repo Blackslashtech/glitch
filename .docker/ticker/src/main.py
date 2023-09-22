@@ -96,6 +96,7 @@ def run_checks(service, tick: int) -> None:
     for host, put_flag, get_flag in zip(hosts.copy(), put_flags.copy(), get_flags.copy()):
         try:
             # def __init__(self, checker: str, service: str, callback, tick: int = 0, randomize: bool = False, ticklen: int = 0) -> None:
+            print("Running checks on " + host['ip'] + " using checker 10.103.2." + str(host['service_id']), flush=True)
             checker = RemoteChecker('10.103.2.' + str(host['service_id']), host, check_callback, tick, RANDOMIZE_CHECKER_TIMES, lock)
             threading.Thread(target=checker.run_all, args=(put_flag,get_flag,TICK_SECONDS)).start()
         except OSError:
