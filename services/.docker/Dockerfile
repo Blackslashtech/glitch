@@ -16,7 +16,7 @@ RUN ssh-keygen -A
 RUN apt install -y curl
 
 # Configure docker
-RUN echo -e '\
+RUN echo '\
 {\
     "experimental": true,\
     "ip6tables": true,\
@@ -31,6 +31,8 @@ RUN echo -e '\
     ]\
 }\
 ' > /etc/docker/daemon.json
+
+
 
 ARG SERVICE_NAME
 
