@@ -97,7 +97,7 @@ def run_checks(service, tick: int) -> None:
         try:
             # def __init__(self, checker: str, service: str, callback, tick: int = 0, randomize: bool = False, ticklen: int = 0) -> None:
             checker = RemoteChecker('10.103.2.' + str(host['service_id']), host, check_callback, tick, RANDOMIZE_CHECKER_TIMES, lock)
-            threading.Thread(target=checker.run_all, args=(host['ip'],put_flag,get_flag,TICK_SECONDS)).start()
+            threading.Thread(target=checker.run_all, args=(put_flag,get_flag,TICK_SECONDS)).start()
         except OSError:
             print('Failed to connect to checker', flush=True)
             return
