@@ -173,4 +173,5 @@ done
 docker-compose stop ticker > /dev/null
 docker-compose rm -f ticker > /dev/null
 docker rmi -f ticker > /dev/null
+docker-compose build ticker > /dev/null
 docker-compose start ticker > /dev/null
