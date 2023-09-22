@@ -7,10 +7,10 @@ echo -e '
     "experimental": true,
     "ip6tables": true,
     "fixed-cidr-v6": "2001:db8:d0ca:d0ca::/64",
-    "default-address-pools":[
+    "default-address-pools": [
         {"base": "172.31.0.0/16", "size": 24},
         {"base": "2001:db8:d0ca::/49", "size": 64}
-    ]
+    ],
     "dns" : [
         "8.8.8.8",
         "8.8.4.4"
