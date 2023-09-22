@@ -70,33 +70,34 @@ def check_callback(result: dict) -> None:
         print('Late callback: ' + str(result), flush=True)
     db.checks.insert_one({'service': result['service'], 'service_id': int(result['host'].split('.')[3]), 'team_id': int(result['host'].split('.')[2]), 'tick': result['tick'], 'host': result['host'], 'action': result['action'], 'code': result['code'], 'comment': result['comment'], 'latency': result['latency']})
     if result['action'] == 'put' and result['code'] == int(StatusCode.OK):
-        db.flags.insert_one({'service':  result['service'], 'service_id': int(result['host'].split('.')[3]), 'team_id': int(result['host'].split('.')[2]), 'tick': result['tick'] + 1, 'host': result['host'], 'flag': result['flag'], 'flag_id':  result['flag_id']})
+        db.flags.insert_one({'service':  result['service'], 'service_id': int(result['host']['service_id']), 'team_id': int(result['host']['team_id']), 'tick': result['tick'] + 1, 'host': result['host']['ip'], 'flag': result['flag'], 'flag_id':  result['flag_id']})
 
 
 # Run all checks on a service for a given tick
-def run_checks(service_name: str, service_id: int, target_ips: list, tick: int) -> None:
+def run_checks(service, tick: int) -> None:
     # print('Running checks on ' + service_name + ' for tick ' + str(tick), flush=True)
+    hosts = list(db.hosts.find({'service_name': service['service_name']}))
     # Randomize the order of target_ips
-    random.shuffle(target_ips)
+    random.shuffle(hosts)
     # Generate flag objects to be placed on the targets
-    put_flags = [Flag(host=target_ip, flag=generate_flag(), flag_id=generate_flagid()) for target_ip in target_ips]
+    put_flags = [Flag(host=host['ip'], flag=generate_flag(), flag_id=generate_flagid()) for host in hosts]
     # Build the get_flag list from the recently_planted_flags list, mapping the keys to the target_ips
     get_flags = []
-    for target_ip in target_ips:
+    for host in hosts:
         # Get most recent flag for this service and target_ip
-        recent_flags = list(db.flags.find({'host': target_ip}).sort('tick',-1).limit(1))
+        recent_flags = list(db.flags.find({'host': host['ip']}).sort('tick',-1).limit(1))
         if len(recent_flags) > 0:
-            get_flags.append(Flag(host=target_ip, flag=recent_flags[0]['flag'], flag_id=recent_flags[0]['flag_id']))
+            get_flags.append(Flag(host=host['ip'], flag=recent_flags[0]['flag'], flag_id=recent_flags[0]['flag_id']))
             # print('GET flag: ' + str(get_flags[-1]), flush=True)
         else:
-            get_flags.append(Flag(host=target_ip))
+            get_flags.append(Flag(host=host['ip']))
     # Run the checks in parallel
     lock = threading.Lock()
-    for target_ip, put_flag, get_flag in zip(target_ips.copy(), put_flags.copy(), get_flags.copy()):
+    for host, put_flag, get_flag in zip(hosts.copy(), put_flags.copy(), get_flags.copy()):
         try:
             # def __init__(self, checker: str, service: str, callback, tick: int = 0, randomize: bool = False, ticklen: int = 0) -> None:
-            checker = RemoteChecker('10.103.2.' + str(service_id), service_name, check_callback, tick, RANDOMIZE_CHECKER_TIMES, lock)
-            threading.Thread(target=checker.run_all, args=(target_ip,put_flag,get_flag,TICK_SECONDS)).start()
+            checker = RemoteChecker('10.103.2.' + str(host['service_id']), host, check_callback, tick, RANDOMIZE_CHECKER_TIMES, lock)
+            threading.Thread(target=checker.run_all, args=(host['ip'],put_flag,get_flag,TICK_SECONDS)).start()
         except OSError:
             print('Failed to connect to checker', flush=True)
             return
@@ -163,9 +164,8 @@ def loop() -> None:
         # Run checks
         for service in db.services.find():
             print("Running checks for " + service['service_name'], flush=True)
-            target_ips = db.hosts.find({'service_name': service['service_name']})
             # Run the checks for this service in a new thread
-            threading.Thread(target=run_checks, args=(service['service_name'], service['service_id'], [target_ip['ip'] for target_ip in target_ips], tick)).start()
+            threading.Thread(target=run_checks, args=(service, tick)).start()
         print()
 
 
