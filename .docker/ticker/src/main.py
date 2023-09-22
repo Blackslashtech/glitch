@@ -59,7 +59,7 @@ def init() -> None:
             else:
                 ip = '10.100.' + str(team_id) + '.' + str(service_id)
             hostname = 'team' + str(team_id) + '-' + SERVICES[service_id-1].lower()
-            db.hosts.insert_one({'service_name': SERVICES[service_id-1], 'service_id': service_id, 'team_id': team_id, 'ip': ip, 'hostname': hostname, 'score': 0})
+            db.hosts.insert_one({'service_name': SERVICES[service_id-2], 'service_id': service_id, 'team_id': team_id, 'ip': ip, 'hostname': hostname, 'score': 0})
     for team_id in range(2, TEAM_COUNT + 2):
         db.teams.insert_one({'team_id': team_id, 'score': 0})
 
