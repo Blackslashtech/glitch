@@ -118,7 +118,7 @@ def calculate_scores(tick: int = 0) -> None:
         else:
             print('Pending initialization, skipping score calculation...', flush=True)
             # Clear any existing data
-            db.checks.delete_many({'tick': tick})
+            #db.checks.delete_many({'tick': tick})
             return
     print('Team Service          CHECK PUT GET  ', flush=True)
     for team in db.teams.find():
