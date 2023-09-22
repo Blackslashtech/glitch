@@ -53,7 +53,8 @@ def steal_flag(flag: str, token: str):
     correct = db.flags.find_one({'flag': flag})
     if not correct:
         return 'error: invalid'
-    existing = db.steals.find_one({'flag': flag})
+    stealing_team = TEAM_TOKENS.index(token) + 1
+    existing = db.steals.find_one({'flag': flag, 'stealing_team': stealing_team})
     if existing:
         return 'error: duplicate'
     stealing_team = TEAM_TOKENS.index(token) + 1
