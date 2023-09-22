@@ -3,6 +3,8 @@ from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse, FileResponse
 import os
 
+import faust
+
 app = FastAPI()
 
 
@@ -19,13 +21,31 @@ client = pymongo.MongoClient('mongodb://db:27017/')
 db = client['range']
 
 
+faust.run()
+
+
 @app.get('/')
 def hello():
     return {'Hello': 'World'}
 
-@app.get('/hosts')
+@app.get('/teams.json')
 def get_hosts():
-    return list(db.hosts.find({}, {'ip': 1, 'team_id': 1, 'service_id': 1, 'service_name': 1, '_id': 0}))
+    data = {}
+    data['teams'] = []
+    data['flag_ids'] = {}
+    teams = list(db.teams.find({}, {'_id': 0}))
+    services = list(db.services.find({}, {'_id': 0}))
+    flags = list(db.flags.find({}, {'_id': 0}))
+    for team in teams:
+        data['teams'].append(team['team_id'])
+    data['flag_ids'] = {}
+    for service in services:
+        data['flag_ids'][service['service_name']] = {}
+        for team in teams:
+            data['flag_ids'][service['service_name']][team['team_id']] = []
+            for flag in [flag for flag in flags if flag['service_id'] == service['service_id'] and flag['team_id'] == team['team_id']]:
+                data['flag_ids'][service['service_name']][team['team_id']].append(flag['flag_id'])
+    return data
 
 @app.get('/scores')
 def get_scores():
