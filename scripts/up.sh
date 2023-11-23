@@ -19,7 +19,7 @@ VPN_DNS="8.8.8.8"
 SERVICES=""
 TICK_SECONDS=60
 START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-END_TIME=$(gdate -u +"%Y-%m-%dT%H:%M:%SZ" -d "+$(expr $TICK_SECONDS \* 100) seconds")
+END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ" -d "+$(expr $TICK_SECONDS \* 100) seconds")
 MEM_LIMIT="1G"
 CPU_LIMIT="1"
 
