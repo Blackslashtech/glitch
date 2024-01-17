@@ -1,5 +1,9 @@
 FROM docker:latest
 
+# Update apk
+RUN apk update
+RUN apk upgrade
+
 # Install ssh server
 RUN apk add openssh-server
 

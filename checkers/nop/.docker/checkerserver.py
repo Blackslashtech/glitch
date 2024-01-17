@@ -1,5 +1,6 @@
 import os
 import enum
+import socket
 import xmlrpc.server
 
 
@@ -18,37 +19,21 @@ class StatusCode(enum.Enum):
 
 
 
-class Checker:
-    def check(self, host: str, timeout: int) -> dict:
-        status = {'action': 'check', 'host': host, 'code': int(StatusCode.OK), 'comment': '', 'latency': 0}
-        print(status, flush=True)
-        return status
+def check(host: str, timeout: int) -> dict:
+    status = {'action': 'check', 'host': host, 'code': int(StatusCode.OK), 'comment': '', 'latency': 0}
+    print(status, flush=True)
+    return status
 
-    def put(self, host: str, flag: str, flag_id: str, timeout: int) -> dict:
-        status = {'action': 'put', 'host': host, 'code': int(StatusCode.OK), 'comment': '', 'latency': 0, 'flag': flag, 'flag_id': flag_id}
-        print(status, flush=True)
-        return status
+def put(host: str, flag: str, flag_id: str, timeout: int) -> dict:
+    status = {'action': 'put', 'host': host, 'code': int(StatusCode.OK), 'comment': '', 'latency': 0, 'flag': flag, 'flag_id': flag_id}
+    print(status, flush=True)
+    return status
 
-    def get(self, host: str, flag: str, flag_id: str, timeout: int) -> dict:
-        status = {'action': 'get', 'host': host, 'code': int(StatusCode.OK), 'comment': '', 'latency':0, 'flag': flag, 'flag_id': flag_id}
-        print(status, flush=True)
-        return status
+def get(host: str, flag: str, flag_id: str, private: str, timeout: int) -> dict:
+    status = {'action': 'get', 'host': host, 'code': int(StatusCode.OK), 'comment': '', 'latency':0, 'flag': flag, 'flag_id': flag_id}
+    print(status, flush=True)
+    return status
 
-
-
-
-objects = {}
-
-def create(classname, *args):
-    cls = globals()[classname]
-    obj = cls(*args)
-    objects[str(id(obj))] = obj
-    return str(id(obj))
-
-def call(objid, methodname, *args):
-    obj = objects[objid]
-    method = getattr(obj, methodname)
-    return method(*args)
 
 
 # Set up routing correctly
@@ -57,7 +42,9 @@ if os.environ.get('GATEWAY'):
     os.system('ip route add default via ' + os.environ.get('GATEWAY'))
 
 # Start the xmlrpc server
-server = xmlrpc.server.SimpleXMLRPCServer(('0.0.0.0', 5000), allow_none=True)
-server.register_function(create, 'create')
-server.register_function(call, 'call')
+socket.setdefaulttimeout(600)
+server = xmlrpc.server.SimpleXMLRPCServer(('0.0.0.0', 5000), allow_none=True, logRequests=False)
+server.register_function(check, 'check')
+server.register_function(put, 'put')
+server.register_function(get, 'get')
 server.serve_forever()

@@ -49,17 +49,20 @@ class Flag:
     host = ''
     flag = ''
     flag_id = ''
+    private = ''
 
-    def __init__(self, host = '', flag: str = '', flag_id: str = '') -> None:
+    def __init__(self, host = '', flag: str = '', flag_id: str = '', private: str = '') -> None:
         self.host = host
         self.flag = flag
         self.flag_id = flag_id
+        self.private = private
 
     def __dict__(self):
         return {
             'host': self.host,
             'flag': self.flag,
             'flag_id': self.flag_id,
+            'private': self.private
         }
     
     def __str__(self):
@@ -95,6 +98,8 @@ class RemoteChecker:
             result = server.put(flag.host, flag.flag, flag.flag_id, timeout)
             result['service'] = self.service
             result['tick'] = self.tick
+            if 'private' not in result:
+                result['private'] = ''
             self.callback(result)
         return result
 
@@ -103,7 +108,7 @@ class RemoteChecker:
             time.sleep(secrets.randbelow(timeout))
         with self.lock:
             server = xmlrpc.client.ServerProxy(f'http://{self.checker}:5000', allow_none=True)
-            result = server.get(flag.host, flag.flag, flag.flag_id, timeout)
+            result = server.get(flag.host, flag.flag, flag.flag_id, flag.private, timeout)
             result['service'] = self.service
             result['tick'] = self.tick
             self.callback(result)

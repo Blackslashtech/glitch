@@ -66,7 +66,7 @@ def check_callback(result: dict) -> None:
         print('Late callback: ' + str(result), flush=True)
     db.checks.insert_one({'service': result['service'], 'service_id': int(result['host'].split('.')[3]), 'team_id': int(result['host'].split('.')[2]), 'tick': result['tick'], 'host': result['host'], 'action': result['action'], 'code': result['code'], 'comment': result['comment'], 'latency': result['latency']})
     if result['action'] == 'put' and result['code'] == int(StatusCode.OK):
-        db.flags.insert_one({'service':  result['service'], 'service_id': int(result['host'].split('.')[3]), 'team_id': int(result['host'].split('.')[2]), 'tick': result['tick'] + 1, 'host': result['host'], 'flag': result['flag'], 'flag_id':  result['flag_id']})
+        db.flags.insert_one({'service':  result['service'], 'service_id': int(result['host'].split('.')[3]), 'team_id': int(result['host'].split('.')[2]), 'tick': result['tick'] + 1, 'host': result['host'], 'flag': result['flag'], 'flag_id':  result['flag_id'], 'private': result['private']})
 
 
 # Run all checks on a service for a given tick
@@ -83,7 +83,8 @@ def run_checks(service_name: str, target_ips: list, tick: int) -> None:
         # Get most recent flag for this service and target_ip
         recent_flags = list(db.flags.find({'host': target_ip}).sort('tick',-1).limit(1))
         if len(recent_flags) > 0:
-            get_flags.append(Flag(host=target_ip, flag=recent_flags[0]['flag'], flag_id=recent_flags[0]['flag_id']))
+            flag = Flag(host=target_ip, flag=recent_flags[0]['flag'], flag_id=recent_flags[0]['flag_id'], private=recent_flags[0]['private'])
+            get_flags.append(flag)
             # print('GET flag: ' + str(get_flags[-1]), flush=True)
         else:
             get_flags.append(Flag(host=target_ip))

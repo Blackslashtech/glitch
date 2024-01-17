@@ -61,7 +61,6 @@ class FlagEndpoint:
 
 def check(host: str, timeout: int) -> dict:
     start = time.time()
-    print("[CHECK] Starting against " + host)
     comment = ''
     exitcode = StatusCode.ERROR
     try:
@@ -80,15 +79,13 @@ def check(host: str, timeout: int) -> dict:
         comment = comment.decode('latin-1')
     except:
         comment = ''
-    print("[CHECK] Finished against " + str(host) + " after " + str(int((time.time() - start) * 1000)) + " with exitcode " + str(exitcode))
     status = {'action': 'check', 'host': host, 'code': int(exitcode), 'comment': str(comment), 'latency': int((time.time() - start) * 1000)}
-    print('Status: ' + str(status), flush=True)
+    print('[CHECK] Status: ' + str(status), flush=True)
     return status
 
 def put(host: str, flag: str, flag_id: str, timeout: int) -> dict:
     flag_endpoint = FlagEndpoint()
     start = time.time()
-    print("[CHECK] Starting against " + host)
     comment = ''
     exitcode = StatusCode.ERROR
     try:
@@ -108,14 +105,12 @@ def put(host: str, flag: str, flag_id: str, timeout: int) -> dict:
     except:
         comment = ''
     flag_endpoint.destroy()
-    print("[PUT] Finished against " + str(host) + " after " + str(int((time.time() - start) * 1000)) + " with exitcode " + str(exitcode))
     status = {'action': 'put', 'host': host, 'code': int(exitcode), 'comment': str(comment), 'latency': int((time.time() - start) * 1000), 'flag': flag, 'flag_id': flag_endpoint.get_id()}
-    print('Status: ' + str(status), flush=True)
+    print('[PUT] Status: ' + str(status), flush=True)
     return status
 
-def get(host: str, flag: str, flag_id: str, timeout: int) -> dict:
+def get(host: str, flag: str, flag_id: str, private: str, timeout: int) -> dict:
     start = time.time()
-    print("[CHECK] Starting against " + host)
     comment = ''
     exitcode = StatusCode.ERROR
     try:
@@ -134,9 +129,8 @@ def get(host: str, flag: str, flag_id: str, timeout: int) -> dict:
         comment = comment.decode('latin-1')
     except:
         comment = ''
-    print("[GET] Finished against " + str(host) + " after " + str(int((time.time() - start) * 1000)) + " with exitcode " + str(exitcode))
     status = {'action': 'get', 'host': host, 'code': int(exitcode), 'comment': str(comment), 'latency': int((time.time() - start) * 1000), 'flag': flag, 'flag_id': flag_id}
-    print('Status: ' + str(status), flush=True)
+    print('[GET] Status: ' + str(status), flush=True)
     return status
 
 
@@ -148,7 +142,7 @@ if os.environ.get('GATEWAY'):
 TICK_SECONDS = int(os.environ.get('TICK_SECONDS'))
 
 socket.setdefaulttimeout(TICK_SECONDS)
-server = xmlrpc.server.SimpleXMLRPCServer(('0.0.0.0', 5000), allow_none=True)
+server = xmlrpc.server.SimpleXMLRPCServer(('0.0.0.0', 5000), allow_none=True, logRequests=False)
 server.register_function(check, 'check')
 server.register_function(put, 'put')
 server.register_function(get, 'get')

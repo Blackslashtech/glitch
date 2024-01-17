@@ -1,0 +1,21 @@
+version: '2.4'
+
+services:
+  mongo:
+    image: mongo:latest
+    volumes:
+      - ./data/:/data/db
+    restart: on-failure
+    mem_limit: 512M
+    cpus: 0.25
+
+  exoplanet:
+    build: .
+    restart: on-failure
+    depends_on:
+      - mongo
+    ports:
+      - 17171:5000
+    pids_limit: 256
+    mem_limit: 512M
+    cpus: 0.25

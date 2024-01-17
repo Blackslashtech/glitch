@@ -68,6 +68,7 @@ docker container prune -f > /dev/null
 docker image prune -f > /dev/null
 
 # Prune docker volumes
+docker volume rm range_db > /dev/null
 docker volume prune -f > /dev/null
 
 # Prune docker networks

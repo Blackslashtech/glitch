@@ -1,0 +1,102 @@
+@import url(https://fonts.googleapis.com/css?family=Inconsolata:400,700);
+html {
+  background: #eee;
+  overflow-y: scroll;
+}
+
+body {
+  font: .875em/1.6 'Inconsolata', monospace;
+  color: #181818;
+  font-weight: 400;
+  max-width: 600px;
+  padding: 1em;
+  margin: 1% 0; 
+}
+::selection{
+  background: #eee
+}
+::-webkit-selection{
+  background: #eee
+}
+::-moz-selection{
+  background: #eee
+}
+a{
+  color: #181818;
+}
+a:hover,a:focus{
+  background: #181818;
+  color:#eee;
+}
+h2{
+  font-size: 1em;
+  font-weight: 400;
+}
+p{
+  margin-bottom:1em;
+}
+abbr{
+  cursor: help;
+}
+ul{
+  list-style: none;
+  padding: 0;
+}
+li{
+  margin:.25em 0 0;
+}
+span{
+  color:#666;
+  line-height:1;
+  margin-right: 5px;
+}
+.kek{
+  font: .875em/1.6 'Inconsolata', monospace;
+  font-size: 1em;
+  COLOR: #000;
+  padding-left: 5px;
+}
+pre{
+  display: block;
+  color:#666;
+  line-height:1;
+}
+
+kbd{
+  font-family: 'Inconsolata', monospace;
+  border:1px solid #999;
+  text-transform: uppercase;
+  padding:0 .2em;
+}
+input[type="text"]{
+  width: 400px;
+  border: none;
+  font-family: inherit;
+  background: #eee;
+  padding:0 .5em;
+}
+input[type="text"]:focus{
+  background: #eee;
+  color: #000;
+  outline:none;
+}
+.command{
+  display: block;
+  color: #181818;
+  font-weight: 700;
+  margin: 2em 0;
+}
+.command2{
+  display: block;
+  color: #181818;
+  font-weight: 700;
+  margin: 2em 0;
+}
+
+
+section{
+  display: none;
+}
+.open{
+  display: block;
+}

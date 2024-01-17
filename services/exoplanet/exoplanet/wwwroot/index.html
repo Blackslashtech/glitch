@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Exoplanet CLI</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script type="text/javascript" src="/scripts.js"></script>
+        <link rel="stylesheet" type="text/css" href="/styles.css" />
+    </head>
+    <body>
+        <span class="command2">root@exoplanet:~/$<span class="kek" id="kek"></span></span>
+        
+        <main>
+            <section id="clear">
+                <h2>Exoplanet CLI</h2>
+                <p><span>Type 'help' + <kbd>Enter</kbd> -- for available commands.</span></p>
+            </section>
+
+            <section id="error">
+                <p>Command not found!<p> 
+                <p><span>Type 'help' + <kbd>Enter</kbd> -- for available commands.</span></p>
+            </section>
+            
+            <section id="help">
+                <h2><span>&raquo;Help?</span></h2>
+                <p><span>Type [command] + <kbd>Enter</kbd></span></p>
+                <ul>
+                    <li>'last [n=10]' -- display last n stars</li>
+                    <li>'get star &lt;id&gt;' -- display single star</li>
+                    <li>'get planet &lt;id&gt;' -- display single planet</li>
+                    <li>'add star &lt;name&gt; &lt;location&gt;' -- add new star</li>
+                    <li>'add planet &lt;name&gt; &lt;location&gt; [type=Unknown] [public=true]' -- add new planet to star</li>
+                    <li>'help' -- display help</li>
+                    <li>'types' -- display available planet types</li>
+                    <li>'clear' -- clear console</li>
+                </ul>
+            </section>
+
+            <section id="types">
+                <p><span>Available planet types:</span></p>
+                <ul>
+                    <li>Unknown</li>
+                    <li>Terrestrial</li>
+                    <li>Protoplanet</li>
+                    <li>GasGiant</li>
+                </ul>
+            </section>
+
+            <section id="content">
+            </section>
+            
+            <span class="command">root@exoplanet:~/$<input type="text"></span>
+        </main>
+    </body>
+</html>
