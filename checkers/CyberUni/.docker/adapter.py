@@ -16,7 +16,6 @@ import checker
 def check(params: list):
     host = params[0]
     checker.team_addr = host
-    os.environ['ACTION'] = 'CHECK_FLAG'
     checker.check_sla()
 
 def put(params: list):
@@ -24,16 +23,14 @@ def put(params: list):
     flag = params[1]
     flag_id = params[2]
     checker.team_addr = host
-    os.environ['ACTION'] = 'PUT_FLAG'
-    os.environ['FLAG'] = flag
+    checker.data['flag'] = flag
     checker.put_flag()
 
 def get(params: list):
     host = params[0]
     flag = params[1]
     checker.team_addr = host
-    os.environ['ACTION'] = 'GET_FLAG'
-    os.environ['FLAG'] = flag
+    checker.data['flag'] = flag
     checker.get_flag()
 
 
