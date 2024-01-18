@@ -17,8 +17,14 @@ API_PORT=8000
 VPN_DNS="8.8.8.8"
 SERVICES=""
 TICK_SECONDS=60
-START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-END_TIME=$(gdate -u +"%Y-%m-%dT%H:%M:%SZ" -d "+$(expr $TICK_SECONDS \* 100) seconds")
+# Use date if on unix, use gdate if on mac
+if [[ "$(uname)" == "Darwin" ]]; then
+    START_TIME=$(gdate -u +"%Y-%m-%dT%H:%M:%SZ")
+    END_TIME=$(gdate -u +"%Y-%m-%dT%H:%M:%SZ" -d "+$(expr $TICK_SECONDS \* 100) seconds")
+else
+    START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ" -d "+$(expr $TICK_SECONDS \* 100) seconds")
+fi
 MEM_LIMIT="1G"
 CPU_LIMIT="1"
 

@@ -43,7 +43,7 @@ def quit(exit_code, comment='', debug=''):
 
 
 def post_flag_id(service_id, team_id, flag_id):
-    requests.post('http://127.0.0.1:8081/postFlagId', json={
+    requests.post('http://127.0.0.1:6000/postFlagId', json={
         'token': TOKEN,
         'serviceId': service_id,
         'teamId': team_id,
