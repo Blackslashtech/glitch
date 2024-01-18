@@ -18,6 +18,7 @@ range_initialized = False
 
 TEAM_COUNT = int(os.environ.get('TEAM_COUNT'))
 SERVICES = os.environ.get('SERVICES').lower().split(',')
+CHECKERS = os.environ.get('CHECKERS').split(',')
 TICK_SECONDS = int(os.environ.get('TICK_SECONDS'))
 START_TIME = int(dateutil.parser.parse(os.environ.get('START_TIME')).timestamp())
 END_TIME = int(dateutil.parser.parse(os.environ.get('END_TIME')).timestamp())
@@ -50,12 +51,15 @@ def init() -> None:
     db.checks.create_index(['service_id', 'team_id'])
     db.checks.create_index(['service_id', 'team_id', 'code'])
     db.steals.create_index(['service_id', 'team_id'])
+    host_id = 1
     for i in range(1, len(SERVICES) + 1):
-        db.services.insert_one({'service_id': i, 'service_name': SERVICES[i-1], 'status': StatusCode.DOWN.value})
+        db.services.insert_one({'service_id': i, 'service_name': CHECKERS[i-1], 'status': StatusCode.DOWN.value})
         for j in range(1, TEAM_COUNT + 1):
-            ip = '10.100.' + str(j) + '.' + str(i)
+            ip = '10.100.' + str(j) + '.' + str(host_id)
             hostname = 'team' + str(j) + '-' + SERVICES[i-1].lower()
-            db.hosts.insert_one({'service_name': SERVICES[i-1], 'service_id': i, 'team_id': j, 'ip': ip, 'hostname': hostname, 'score': 0})
+            db.hosts.insert_one({'service_name': CHECKERS[i-1], 'service_id': i, 'team_id': j, 'ip': ip, 'hostname': hostname, 'score': 0})
+        if host_id < len(SERVICES) and SERVICES[host_id-1] != SERVICES[host_id]:
+            host_id += 1
     for i in range(1, TEAM_COUNT + 1):
         db.teams.insert_one({'team_id': i, 'score': 0})
 
@@ -64,15 +68,14 @@ def check_callback(result: dict) -> None:
     tick = round((time.time() - START_TIME) // TICK_SECONDS)
     if tick - result['tick'] > 1:
         print('Late callback: ' + str(result), flush=True)
-    db.checks.insert_one({'service': result['service'], 'service_id': int(result['host'].split('.')[3]), 'team_id': int(result['host'].split('.')[2]), 'tick': result['tick'], 'host': result['host'], 'action': result['action'], 'code': result['code'], 'comment': result['comment'], 'latency': result['latency']})
+    db.checks.insert_one({'service': result['service_name'], 'service_id': int(result['service_id']), 'team_id': int(result['host'].split('.')[2]), 'tick': result['tick'], 'host': result['host'], 'action': result['action'], 'code': result['code'], 'comment': result['comment'], 'latency': result['latency']})
     if result['action'] == 'put' and result['code'] == int(StatusCode.OK):
-        db.flags.insert_one({'service':  result['service'], 'service_id': int(result['host'].split('.')[3]), 'team_id': int(result['host'].split('.')[2]), 'tick': result['tick'] + 1, 'host': result['host'], 'flag': result['flag'], 'flag_id':  result['flag_id'], 'private': result['private']})
+        db.flags.insert_one({'service':  result['service_name'], 'service_id': int(result['service_id']), 'team_id': int(result['host'].split('.')[2]), 'tick': result['tick'] + 1, 'host': result['host'], 'flag': result['flag'], 'flag_id':  result['flag_id'], 'private': result['private']})
 
 
 # Run all checks on a service for a given tick
-def run_checks(service_name: str, target_ips: list, tick: int) -> None:
+def run_checks(service_id: int, service_name: str, target_ips: list, tick: int) -> None:
     # print('Running checks on ' + service_name + ' for tick ' + str(tick), flush=True)
-    service_id = target_ips[0].split('.')[3]
     # Randomize the order of target_ips
     random.shuffle(target_ips)
     # Generate flag objects to be placed on the targets
@@ -81,7 +84,7 @@ def run_checks(service_name: str, target_ips: list, tick: int) -> None:
     get_flags = []
     for target_ip in target_ips:
         # Get most recent flag for this service and target_ip
-        recent_flags = list(db.flags.find({'host': target_ip}).sort('tick',-1).limit(1))
+        recent_flags = list(db.flags.find({'host': target_ip, 'service_id': service_id}).sort('tick',-1).limit(1))
         if len(recent_flags) > 0:
             flag = Flag(host=target_ip, flag=recent_flags[0]['flag'], flag_id=recent_flags[0]['flag_id'], private=recent_flags[0]['private'])
             get_flags.append(flag)
@@ -93,7 +96,7 @@ def run_checks(service_name: str, target_ips: list, tick: int) -> None:
     for target_ip, put_flag, get_flag in zip(target_ips.copy(), put_flags.copy(), get_flags.copy()):
         try:
             # def __init__(self, checker: str, service: str, callback, tick: int = 0, randomize: bool = False, ticklen: int = 0) -> None:
-            checker = RemoteChecker('10.103.2.' + service_id, service_name, check_callback, tick, RANDOMIZE_CHECKER_TIMES, lock)
+            checker = RemoteChecker('10.103.2.' + str(service_id), service_id, service_name, check_callback, tick, RANDOMIZE_CHECKER_TIMES, lock)
             threading.Thread(target=checker.run_all, args=(target_ip,put_flag,get_flag,TICK_SECONDS)).start()
         except OSError:
             print('Failed to connect to checker', flush=True)
@@ -159,10 +162,12 @@ def loop() -> None:
         print('### TICK ' + str(tick) + ' ###', flush=True)
         calculate_scores(tick-2)
         # Run checks
-        for service in SERVICES:
-            target_ips = db.hosts.find({'service_name': service})
+        checker_id = 1
+        for checker_name in CHECKERS:
+            target_ips = db.hosts.find({'service_id': checker_id})
             # Run the checks for this service in a new thread
-            threading.Thread(target=run_checks, args=(service, [target_ip['ip'] for target_ip in target_ips], tick)).start()
+            threading.Thread(target=run_checks, args=(checker_id, checker_name, [target_ip['ip'] for target_ip in target_ips], tick)).start()
+            checker_id += 1
         print()
 
 

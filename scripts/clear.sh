@@ -9,6 +9,7 @@ fi
 TEAM_TOKENS=""
 
 source .env set
+source .env.live set
 
 echo "Stopping all containers..."
 bash scripts/down.sh
@@ -24,6 +25,13 @@ docker rmi -f range-api > /dev/null
 docker rmi -f range-ticker > /dev/null
 
 SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
+CHECKER_LIST=$(echo $CHECKERS | tr ',' '\n')
+
+# If checker list is empty, default to all services
+if [ -z "$CHECKERS" ]; then
+    CHECKERS=$SERVICES
+    CHECKER_LIST=$SERVICE_LIST
+fi
 
 # Loop from 1 to $TEAM_COUNT
 for TEAM_ID in $(seq 1 $TEAM_COUNT); do
@@ -43,7 +51,7 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
 done
 
 # Loop over every checker
-for SERVICE_NAME in $SERVICE_LIST; do
+for SERVICE_NAME in $CHECKER_LIST; do
     dir="./checkers/$SERVICE_NAME"
     # If the file is a directory
     if [ -d "$dir" ]; then
@@ -77,4 +85,7 @@ docker volume prune -f > /dev/null
 docker network prune -f > /dev/null
 
 # Clear debug log
-rm ./debug.log
+rm ./debug.log > /dev/null 2>&1
+
+# Clear .env.live
+rm .env.live > /dev/null 2>&1

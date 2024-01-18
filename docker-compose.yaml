@@ -41,7 +41,7 @@ services:
       - API_KEY=${API_KEY}
       - TEAM_COUNT=${TEAM_COUNT}
       - PEERS=${PEERS}
-      - SERVICES=${SERVICES}
+      - SERVICES=${CHECKERS}
       - TEAM_TOKENS=${TEAM_TOKENS}
     volumes:
       - ./.docker/api/src:/code
@@ -97,6 +97,7 @@ services:
     restart: unless-stopped
     environment:
       - SERVICES=${SERVICES}
+      - CHECKERS=${CHECKERS}
       - TEAM_COUNT=${TEAM_COUNT}
       - TICK_SECONDS=${TICK_SECONDS}
       - START_TIME=${START_TIME}

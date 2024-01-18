@@ -71,9 +71,10 @@ class Flag:
 
 
 class RemoteChecker:
-    def __init__(self, checker: str, service: str, callback, tick: int = 0, randomize: bool = False, lock: threading.Lock = threading.Lock()) -> None:
+    def __init__(self, checker: str, service_id: int, service_name: str, callback, tick: int = 0, randomize: bool = False, lock: threading.Lock = threading.Lock()) -> None:
         self.checker = checker
-        self.service = service
+        self.service_id = service_id
+        self.service_name = service_name
         self.callback = callback
         self.randomize = randomize
         self.tick = tick
@@ -85,7 +86,8 @@ class RemoteChecker:
         with self.lock:
             server = xmlrpc.client.ServerProxy(f'http://{self.checker}:5000', allow_none=True)
             result = server.check(host, timeout)
-            result['service'] = self.service
+            result['service_id'] = self.service_id
+            result['service_name'] = self.service_name
             result['tick'] = self.tick
             self.callback(result)
         return result
@@ -96,7 +98,8 @@ class RemoteChecker:
         with self.lock:
             server = xmlrpc.client.ServerProxy(f'http://{self.checker}:5000', allow_none=True)
             result = server.put(flag.host, flag.flag, flag.flag_id, timeout)
-            result['service'] = self.service
+            result['service_id'] = self.service_id
+            result['service_name'] = self.service_name
             result['tick'] = self.tick
             if 'private' not in result:
                 result['private'] = ''
@@ -109,7 +112,8 @@ class RemoteChecker:
         with self.lock:
             server = xmlrpc.client.ServerProxy(f'http://{self.checker}:5000', allow_none=True)
             result = server.get(flag.host, flag.flag, flag.flag_id, flag.private, timeout)
-            result['service'] = self.service
+            result['service_id'] = self.service_id
+            result['service_name'] = self.service_name
             result['tick'] = self.tick
             self.callback(result)
         return result

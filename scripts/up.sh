@@ -29,10 +29,24 @@ fi
 MEM_LIMIT="1G"
 CPU_LIMIT="1"
 
+cp .env .env.live
 source .env set
 
 VPN_COUNT=$(expr $TEAM_COUNT \* $VPN_PER_TEAM)
 SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
+CHECKER_LIST=$(echo $CHECKERS | tr ',' '\n')
+
+# If checker list is empty, default to all services
+if [ -z "$CHECKERS" ]; then
+    CHECKERS=$SERVICES
+    CHECKER_LIST=$SERVICE_LIST
+fi
+
+# Check if the length of the checker list is equal to the length of the service list
+if [ "$(echo $SERVICE_LIST | wc -w)" != "$(echo $CHECKER_LIST | wc -w)" ]; then
+    echo "Error: The number of checkers must be equal to the number of services."
+    exit 1
+fi
 
 # Create empty teamdata directory
 rm -rf ./.docker/api/teamdata
@@ -56,9 +70,9 @@ done
 TEAM_TOKENS="${TEAM_TOKENS:1}"
 
 echo "Starting range services..."
-API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT FLAG_LIFETIME=$FLAG_LIFETIME TICK_SECONDS=$TICK_SECONDS SERVERURL=$SERVER_URL API_PORT=$API_PORT VPN_PORT=$VPN_PORT VPN_DNS=$VPN_DNS TEAM_TOKENS=$TEAM_TOKENS docker-compose up -d --force-recreate >> ./debug.log 2>&1
+API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT FLAG_LIFETIME=$FLAG_LIFETIME TICK_SECONDS=$TICK_SECONDS SERVERURL=$SERVER_URL API_PORT=$API_PORT VPN_PORT=$VPN_PORT VPN_DNS=$VPN_DNS TEAM_TOKENS=$TEAM_TOKENS SERVICES=$SERVICES CHECKERS=$CHECKERS docker-compose up -d --force-recreate >> ./debug.log 2>&1
 
-echo "Waiting 5 seconds for VPN to start..."
+echo "Waiting for VPN to start..."
 sleep 5
 
 # Loop from 1 to $TEAM_COUNT - 1
@@ -71,8 +85,14 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
         cp ./.docker/vpn/$VPN_NAME/$VPN_NAME.conf ./.docker/api/teamdata/$TEAM_TOKEN/vpn/wg$VPN_ID.conf
     done
     # Create a counter for service IDs starting at 1
-    SERVICE_ID=1
+    SERVICE_ID=0
+    SERVICE_INDEX=0
     for SERVICE_NAME in $SERVICE_LIST; do
+        SERVICE_INDEX=$(expr $SERVICE_INDEX + 1)
+        if [ "$(echo $SERVICES | cut -d, -f$SERVICE_INDEX)" == "$(echo $SERVICES, | cut -d, -f$(expr $SERVICE_INDEX + 1))" ]; then
+            continue
+        fi
+        SERVICE_ID=$(expr $SERVICE_ID + 1)
         dir="./services/$SERVICE/"
         # If the file is a directory
         if [ -d "$dir" ]; then
@@ -84,7 +104,6 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
             # Write creds to creds.txt
             echo "$IP ($SERVICE_NAME) - root : $ROOT_PASSWORD" >> ./.docker/api/teamdata/$TEAM_TOKEN/creds.txt
             IP=$IP HOSTNAME=$HOSTNAME TEAM_ID=$TEAM_ID SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME ROOT_PASSWORD=$ROOT_PASSWORD CPU_LIMIT=$CPU_LIMIT MEM_LIMIT=$MEM_LIMIT docker-compose -f ./services/docker-compose.yaml --project-name $HOSTNAME up -d >> ./debug.log 2>&1
-            SERVICE_ID=$(expr $SERVICE_ID + 1)
         fi
     done
     # Zip teamdata directory
@@ -94,15 +113,19 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
 done
 
 SERVICE_ID=1
-for SERVICE_NAME in $SERVICE_LIST; do
+CHECKER_ID=1
+for SERVICE_NAME in $CHECKER_LIST; do
     dir="./checkers/$SERVICE_NAME/"
     # If the file is a directory
     if [ -d "$dir" ]; then
         HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
-        IP=$(echo "10.103.2.$SERVICE_ID" | tr '[:upper:]' '[:lower:]')
-        echo "Starting $HOSTNAME ..."
+        IP=$(echo "10.103.2.$CHECKER_ID" | tr '[:upper:]' '[:lower:]')
+        echo "Starting $HOSTNAME, connecting checker $CHECKER_ID to service $SERVICE_ID..."
         IP=$IP GATEWAY="10.103.1.1" HOSTNAME=$HOSTNAME SERVICE_ID=$SERVICE_ID SERVICE_NAME=$SERVICE_NAME TICK_SECONDS=$TICK_SECONDS docker-compose -f ./checkers/docker-compose.yaml --project-name $HOSTNAME up -d  >> ./debug.log 2>&1
-        SERVICE_ID=$(expr $SERVICE_ID + 1)
+        if [ "$(echo $SERVICES | cut -d, -f$CHECKER_ID)" != "$(echo $SERVICES | cut -d, -f$(expr $CHECKER_ID + 1))" ]; then
+            SERVICE_ID=$(expr $SERVICE_ID + 1)
+        fi
+        CHECKER_ID=$(expr $CHECKER_ID + 1)
     fi
 done
 
