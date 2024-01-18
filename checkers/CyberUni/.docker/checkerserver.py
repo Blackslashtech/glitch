@@ -89,7 +89,7 @@ def put(host: str, flag: str, flag_id: str, timeout: int) -> dict:
     comment = ''
     exitcode = StatusCode.ERROR
     try:
-        comment = subprocess.check_output("python3 checker.py put", shell=True, stderr=subprocess.STDOUT, timeout=timeout, env={"ACTION": "PUT_FLAG", "HOST": host, "FLAG": flag})
+        comment = subprocess.check_output("python3 checker.py put", shell=True, stderr=subprocess.STDOUT, timeout=timeout, env={"ACTION": "PUT_FLAG", "HOST": host, "FLAG": flag, "FLAGID_SERVICE": flag_endpoint.get_endpoint()})
         exitcode = StatusCode.OK
     except subprocess.CalledProcessError as e:
         comment = e.output
