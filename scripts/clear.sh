@@ -73,3 +73,6 @@ docker volume prune -f > /dev/null
 
 # Prune docker networks
 docker network prune -f > /dev/null
+
+# Clear debug log
+rm ./debug.log
