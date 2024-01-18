@@ -25,7 +25,6 @@ def get_data():
     data = {
         'action': os.environ['ACTION'],
         'host': os.environ['HOST'],
-        'round': os.environ['ROUND']
     }
 
     if data['action'] == Action.PUT_FLAG.name or data['action'] == Action.GET_FLAG.name:
@@ -48,6 +47,5 @@ def post_flag_id(service_id, team_id, flag_id):
         'token': TOKEN,
         'serviceId': service_id,
         'teamId': team_id,
-        'round': int(os.environ['ROUND']),
         'flagId': flag_id
     })
