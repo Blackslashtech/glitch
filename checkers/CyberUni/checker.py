@@ -20,8 +20,7 @@ auth_port = 1234
 store1_port = 1235
 service_name = 'ExamNotes'
 
-team_id = data['teamId']
-team_addr = '10.60.' + team_id + '.1'
+team_addr = data['host']
 
 
 def get_random_string(n):

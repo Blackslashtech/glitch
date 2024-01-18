@@ -64,7 +64,7 @@ def check(host: str, timeout: int) -> dict:
     comment = ''
     exitcode = StatusCode.ERROR
     try:
-        comment = subprocess.check_output("python3 adapter.py check " + host, shell=True, stderr=subprocess.STDOUT, timeout=timeout)
+        comment = subprocess.check_output("python3 checker.py", shell=True, stderr=subprocess.STDOUT, timeout=timeout, env={"ACTION": "CHECK_SLA", "HOST": host})
         exitcode = StatusCode.OK
     except subprocess.CalledProcessError as e:
         comment = e.output
@@ -89,7 +89,7 @@ def put(host: str, flag: str, flag_id: str, timeout: int) -> dict:
     comment = ''
     exitcode = StatusCode.ERROR
     try:
-        comment = subprocess.check_output("python3 adapter.py put " + host + " " + flag + " " + flag_id + " " + flag_endpoint.get_endpoint(), shell=True, stderr=subprocess.STDOUT, timeout=timeout)
+        comment = subprocess.check_output("python3 checker.py put", shell=True, stderr=subprocess.STDOUT, timeout=timeout, env={"ACTION": "PUT_FLAG", "HOST": host, "FLAG": flag})
         exitcode = StatusCode.OK
     except subprocess.CalledProcessError as e:
         comment = e.output
@@ -114,7 +114,7 @@ def get(host: str, flag: str, flag_id: str, private: str, timeout: int) -> dict:
     comment = ''
     exitcode = StatusCode.ERROR
     try:
-        comment = subprocess.check_output("python3 adapter.py get " + host + " " + flag + " " + flag_id, shell=True, stderr=subprocess.STDOUT, timeout=timeout)
+        comment = subprocess.check_output("python3 checker.py", shell=True, stderr=subprocess.STDOUT, timeout=timeout, env={"ACTION": "GET_FLAG", "HOST": host, "FLAG": flag})
         exitcode = StatusCode.OK
     except subprocess.CalledProcessError as e:
         comment = e.output

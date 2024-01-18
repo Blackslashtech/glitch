@@ -24,7 +24,7 @@ class Action(Enum):
 def get_data():
     data = {
         'action': os.environ['ACTION'],
-        'teamId': os.environ['TEAM_ID'],
+        'host': os.environ['HOST'],
         'round': os.environ['ROUND']
     }
 
@@ -44,7 +44,7 @@ def quit(exit_code, comment='', debug=''):
 
 
 def post_flag_id(service_id, team_id, flag_id):
-    requests.post('http://flagid:8081/postFlagId', json={
+    requests.post('http://127.0.0.1:8081/postFlagId', json={
         'token': TOKEN,
         'serviceId': service_id,
         'teamId': team_id,
