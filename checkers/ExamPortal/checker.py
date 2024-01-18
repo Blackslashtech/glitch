@@ -16,13 +16,12 @@ from service2_client import Client as AuthClient
 
 data = checklib.get_data()
 action = data['action']
-rd = data['round']
-team_id = data['teamId']
+team_id = data['host']
 service_name = "ExamPortal"
 
 port = 1237
 auth_port = 1234
-team_ip = f"10.60.{team_id}.1"
+team_ip = data['host']
 team_addr = f"http://{team_ip}:{port}"
 
 

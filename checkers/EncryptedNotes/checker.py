@@ -20,9 +20,7 @@ context.log_level = "error"
 
 data = checklib.get_data()
 action = data['action']
-rd = data['round']
-team_id = data['teamId']
-team_addr = '10.60.' + team_id + '.1'
+team_addr = data['host']
 port = 1236
 auth_port = 1234
 service_name = "EncryptedNotes"
