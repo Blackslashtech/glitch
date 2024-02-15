@@ -1,7 +1,7 @@
 .docker/registry/cache
 .docker/api/teamdata
 .docker/vpn/**
-pcaps/** */
+pcaps/**
 .env
 .env.live
 .DS_Store
