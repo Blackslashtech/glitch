@@ -6,8 +6,8 @@ services:
     volumes:
       - ./data/:/data/db
     restart: on-failure
-    mem_limit: 512M
-    cpus: 0.25
+    # mem_limit: 512M
+    # cpus: 0.25
 
   exoplanet:
     build: .
@@ -16,6 +16,6 @@ services:
       - mongo
     ports:
       - 17171:5000
-    pids_limit: 256
-    mem_limit: 512M
-    cpus: 0.25
+    # pids_limit: 256
+    # mem_limit: 512M
+    # cpus: 0.25
