@@ -18,7 +18,6 @@ services:
       - SERVICE_ID=${SERVICE_ID}
       - SERVICE_NAME=${SERVICE_NAME}
       - TEAM_ID=${TEAM_ID}
-      - API_KEY=${API_KEY}
     working_dir: /service
     deploy:
       resources:

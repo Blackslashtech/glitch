@@ -63,6 +63,15 @@ def steal_flag(flag: str, token: str):
     db.steals.insert_one({'service_id': correct['service_id'], 'team_id': correct['team_id'], 'stealing_team': stealing_team, 'flag_id': correct['flag_id'], 'flag': flag})
     return 'success'
 
+@app.post('/rename')
+def rename_team(name: str, token: str):
+    if token not in TEAM_TOKENS:
+        return 'error: unauthorized'
+    team_id = TEAM_TOKENS.index(token) + 1
+    db.teams.update_one({'team_id': team_id}, {'$set': {'name': name}})
+    return 'success'
+
+
 @app.get('/teamdata/{team_token}/rangedata.zip')
 def get_team_data(team_token: str):
     # Check if team token is strictly hex characters

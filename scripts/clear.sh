@@ -19,10 +19,10 @@ sleep 5
 
 echo "Deleting all containers..."
 
-docker rm -f range-api > /dev/null
-docker rm -f range-ticker > /dev/null
-docker rmi -f range-api > /dev/null
-docker rmi -f range-ticker > /dev/null
+docker rm -f api > /dev/null
+docker rm -f ticker > /dev/null
+docker rmi -f api > /dev/null
+docker rmi -f ticker > /dev/null
 
 SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
 CHECKER_LIST=$(echo $CHECKERS | tr ',' '\n')

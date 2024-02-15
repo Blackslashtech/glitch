@@ -1,6 +1,7 @@
 .docker/registry/cache
 .docker/api/teamdata
 .docker/vpn/**
+.pcaps/**
 .env
 .DS_Store
 **/__pycache__/

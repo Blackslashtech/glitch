@@ -42,6 +42,8 @@ def init() -> None:
     db.checks.delete_many({})
     db.flags.delete_many({})
     db.steals.delete_many({})
+    db.ticks.delete_many({})
+    db.scores.delete_many({})
     db.teams.create_index(['team_id'])
     db.services.create_index(['service_id'])
     db.services.create_index(['service_name'])
@@ -51,17 +53,18 @@ def init() -> None:
     db.checks.create_index(['service_id', 'team_id'])
     db.checks.create_index(['service_id', 'team_id', 'code'])
     db.steals.create_index(['service_id', 'team_id'])
+    db.hosts.create_index(['tick'])
     host_id = 1
     for i in range(1, len(SERVICES) + 1):
         db.services.insert_one({'service_id': i, 'service_name': CHECKERS[i-1], 'status': StatusCode.DOWN.value})
         for j in range(1, TEAM_COUNT + 1):
             ip = '10.100.' + str(j) + '.' + str(host_id)
             hostname = 'team' + str(j) + '-' + SERVICES[i-1].lower()
-            db.hosts.insert_one({'service_name': CHECKERS[i-1], 'service_id': i, 'team_id': j, 'ip': ip, 'hostname': hostname, 'score': 0})
+            db.hosts.insert_one({'service_name': CHECKERS[i-1], 'service_id': i, 'team_id': j, 'ip': ip, 'hostname': hostname, 'score': 0, 'scores': [], 'sla': 0, 'offense': 0, 'defense': 0, 'failed_checks_1': 0, 'failed_checks_2': 0, 'failed_checks_3': 0, 'flags_gained': 0, 'flags_lost': 0})
         if host_id < len(SERVICES) and SERVICES[host_id-1] != SERVICES[host_id]:
             host_id += 1
     for i in range(1, TEAM_COUNT + 1):
-        db.teams.insert_one({'team_id': i, 'score': 0})
+        db.teams.insert_one({'team_id': i, 'score': 0, 'scores': [], 'team_name': 'Team ' + str(i), 'sla': 0, 'offense': 0, 'defense': 0})
 
 def check_callback(result: dict) -> None:
     # print('Callback: ' + str(result), flush=True)
@@ -112,41 +115,160 @@ def calculate_scores(tick: int = 0) -> None:
     print('Calculating scores', flush=True)
     # Calculate the scores for each team
     if not range_initialized:
-        # Check if all checks from the current tick are correct
-        if db.checks.count_documents({'tick': tick, 'code': int(StatusCode.OK)}) == TEAM_COUNT * len(SERVICES) * 3:
+        # Check if all checks from the current tick are correct and all checks from the previous tick are correct
+        if db.checks.count_documents({'tick': tick, 'code': int(StatusCode.OK)}) == TEAM_COUNT * len(SERVICES) * 3 and db.checks.count_documents({'tick': tick - 1, 'code': int(StatusCode.OK)}) == TEAM_COUNT * len(SERVICES) * 3:
+            db.checks.delete_many({'tick': tick - 1})
+            db.checks.delete_many({'tick': tick})
             range_initialized = True
             print('Range Initialized! Going hot...', flush=True)
+            return
         else:
             print('Pending initialization, skipping score calculation...', flush=True)
             # Clear any existing data
-            db.checks.delete_many({'tick': tick})
+            db.checks.delete_many({'tick': tick - 1})
             return
+    tickdata = {}
+    tickdata['tick'] = tick
+    tickdata['teams'] = {}
+    tickdata['services'] = {}
     print('Team Service          CHECK PUT GET  ', flush=True)
     for team in db.teams.find():
         team_score = 0
+        old_team = db.teams.find_one({'team_id': team['team_id']})
+        team_sla = 0
+        team_offense = 0
+        team_defense = 0
+        tickdata['teams'][str(team['team_id'])] = {
+            'data': {},
+            'hosts': {}
+        }
         for service in db.services.find():
-            # Checks that are OK or ERROR
+            # Checks that are OK
+            all_service_data = {}
+            old_host = db.hosts.find_one({'service_id': service['service_id'], 'team_id': team['team_id']})
             sla_score = db.checks.count_documents({'service_id': service['service_id'], 'team_id': team['team_id'], 'code': int(StatusCode.OK)})
             offense_score = db.steals.count_documents({'service_id': service['service_id'], 'stealing_team': team['team_id']})
             defense_score = db.steals.count_documents({'service_id': service['service_id'], 'team_id': team['team_id']})
+            flags_gained = offense_score
+            flags_lost = defense_score
             service_score = sla_score + (offense_score - defense_score)
+            host_sla_delta = sla_score - old_host['sla']
+            host_offense_delta = offense_score - old_host['offense']
+            host_defense_delta = defense_score - old_host['defense']
+            flags_gained_delta = offense_score - old_host['flags_gained']
+            flags_lost_delta = defense_score - old_host['flags_lost']
+            team_offense += offense_score
+            team_defense += defense_score
+            team_sla += sla_score
             team_score += service_score
-            db.hosts.update_one({'service_id': service['service_id'], 'team_id': team['team_id']}, {'$set': {'score': service_score}})
             check_status = db.checks.find_one({'tick': tick, 'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'check'})
             put_status = db.checks.find_one({'tick': tick, 'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'put'})
             get_status = db.checks.find_one({'tick': tick, 'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'get'})
             check_code, put_code, get_code = 105, 105, 105
-            comments = ''
+            comments = []
+            status_name = 'ok'
+            failed_checks_1 = 0
             if check_status is not None:
                 check_code = check_status['code']
             if put_status is not None:
                 put_code = put_status['code']
             if get_status is not None:
                 get_code = get_status['code']
+            if check_code == int(StatusCode.OK) and put_code == int(StatusCode.OK) and get_code == int(StatusCode.OK):
+                comments = ['OK']
+            else:
+                if put_code != int(StatusCode.OK):
+                    comments.append('PUT flag failed')
+                    failed_checks_1 += 1
+                    status_name = 'flag'
+                if get_code != int(StatusCode.OK):
+                    comments.append('GET flag failed')
+                    failed_checks_1 += 1
+                    status_name = 'flag'
+                if check_code != int(StatusCode.OK):
+                    comments.append('SLA check failed')
+                    failed_checks_1 += 1
+                    status_name = 'down'
+            comments = ', '.join(comments)
+            failed_checks_2 = old_host['failed_checks_1']
+            failed_checks_3 = old_host['failed_checks_2']
+            all_host_data = {
+                'score': service_score,
+                'scores': old_host['scores'] + [service_score],
+                'sla': sla_score,
+                'offense': offense_score,
+                'defense': defense_score,
+                'sla_delta': host_sla_delta,
+                'offense_delta': host_offense_delta,
+                'defense_delta': host_defense_delta,
+                'flags_gained': flags_gained,
+                'flags_lost': flags_lost,
+                'flags_gained_delta': flags_gained_delta,
+                'flags_lost_delta': flags_lost_delta,
+                'check_status': check_code,
+                'put_status': put_code,
+                'get_status': get_code,
+                'comments': comments,
+                'status_name': status_name,
+                'failed_checks_1': failed_checks_1,
+                'failed_checks_2': failed_checks_2,
+                'failed_checks_3': failed_checks_3
+            }
+            db.hosts.update_one({'service_id': service['service_id'], 'team_id': team['team_id']}, {'$set': all_host_data})
+            tickdata['teams'][str(team['team_id'])]['hosts'][service['service_name']] = all_host_data
             print(str(team['team_id']).ljust(4) + ' ' + service['service_name'].ljust(17) + str(check_code).ljust(6) + str(put_code).ljust(4) + str(get_code).ljust(4) + comments, flush=True)
-        db.teams.update_one({'team_id': team['team_id']}, {'$set': {'score': team_score}})
+        sla_delta = team_sla - old_team['sla']
+        offense_delta = team_offense - old_team['offense']
+        defense_delta = team_defense - old_team['defense']
+        score_delta = team_score - old_team['score']
+        all_team_data = {
+            'team_id': team['team_id'],
+            'team_name': team['team_name'],
+            'score': team_score,
+            'scores': old_team['scores'] + [team_score],
+            'score_delta': score_delta,
+            'sla': team_sla,
+            'offense': team_offense,
+            'defense': team_defense,
+            'sla_delta': sla_delta,
+            'offense_delta': offense_delta,
+            'defense_delta': defense_delta
+        }
+        db.teams.update_one({'team_id': team['team_id']}, {'$set': all_team_data})
+        tickdata['teams'][str(team['team_id'])]['data'] = all_team_data
         print('-----------------------------------')
         # print('  Team ' + str(team['team_id']) + ' tick score: ' + str(team_score), flush=True)
+    for service in db.services.find():
+        # Find the team that first blooded this service
+        first_blood = list(db.steals.find({'service_id': service['service_id']}).sort('tick', 1).limit(1))
+        first_blood_name = 'None'
+        if len(first_blood) > 0:
+            first_blood_name = db.teams.find_one({'team_id': first_blood[0]['stealing_team']})['team_name']
+        # Find how many teams have exploited this service (unique team IDs with a steal)
+        attackers = db.steals.distinct('team_id', {'service_id': service['service_id']})
+        # Find how many teams have been exploited by this service (unique team IDs with a steal)
+        victims = db.steals.distinct('stealing_team', {'service_id': service['service_id']})
+        tickdata['services'][str(service['service_id'])] = {
+            'name': service['service_name'],
+            'id': service['service_id'],
+            'firstblood': first_blood_name,
+            'attackers': len(attackers),
+            'victims': len(victims)
+        }
+    sorted_tickdata = {
+        'tick': tick,
+        'services': tickdata['services'],
+        'teams': {},
+    }
+    scoredata = []
+    sorted_teams = {}
+    rank = 1
+    for key, value in sorted(tickdata['teams'].items(), key=lambda x: (x[1]['data']['score'] + ((10000 - x[1]['data']['team_id']) / 10000)), reverse=True):
+        sorted_teams[str(rank)] = value
+        rank += 1
+    # Sort teams by score, and store them in keys corresponding to their rank
+    sorted_tickdata['teams'] = sorted_teams
+    db.ticks.update_one({'tick': tick}, {'$set': sorted_tickdata}, upsert=True)
 
 
 def loop() -> None:
@@ -159,21 +281,24 @@ def loop() -> None:
         last_run = time.time()
         tick = round((time.time() - START_TIME) // TICK_SECONDS)
         # Calculate the scores for two ticks ago (to ensure all checks have been completed)
-        print('### TICK ' + str(tick) + ' ###', flush=True)
+        print('### TICK ' + str(tick-2) + ' ###', flush=True)
         calculate_scores(tick-2)
         # Run checks
         checker_id = 1
         for checker_name in CHECKERS:
             target_ips = db.hosts.find({'service_id': checker_id})
             # Run the checks for this service in a new thread
-            threading.Thread(target=run_checks, args=(checker_id, checker_name, [target_ip['ip'] for target_ip in target_ips], tick)).start()
+            try:
+                threading.Thread(target=run_checks, args=(checker_id, checker_name, [target_ip['ip'] for target_ip in target_ips], tick)).start()
+            except Exception as e:
+                print('Error: failed to start thread for ' + checker_name, flush=True)
             checker_id += 1
         print()
 
 
 def main() -> None:
     init()
-    while time.time() < START_TIME - (TICK_SECONDS * 3):
+    while time.time() < START_TIME - (TICK_SECONDS * 10):
         time.sleep(1)
     loop()
 

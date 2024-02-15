@@ -54,4 +54,4 @@ done
 sleep 2
 
 echo "Stopping range services..."
-API_KEY="" PEERS="" TEAM_TOKENS="" CHECKERS=$CHECKERS docker-compose down -t 2 > /dev/null
+API_KEY="" PEERS="" TEAM_TOKENS="" START_TIME_PATH="" CHECKERS=$CHECKERS docker-compose down -t 2 > /dev/null

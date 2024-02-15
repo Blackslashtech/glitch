@@ -14,10 +14,13 @@ services:
     - SERVERURL=${SERVER_URL}
     - SERVERPORT=${VPN_PORT}
     - PEERDNS=${VPN_DNS}
+    - TICK_SECONDS=${TICK_SECONDS}
+    - START_TIME_PATH=${START_TIME_PATH}
     cap_add:
       - NET_ADMIN
     volumes:
       - ./.docker/vpn:/config
+      - ./pcaps:/pcaps
     ports:
       - "${VPN_PORT}:${VPN_PORT}/udp"
     networks:
@@ -109,6 +112,21 @@ services:
         ipv4_address: 10.102.0.4
       checker:
         ipv4_address: 10.103.1.4
+
+  frontend:
+    build:
+      context: ./.docker/frontend
+      dockerfile: Dockerfile
+    hostname: frontend
+    container_name: frontend
+    restart: unless-stopped
+    volumes:
+      - ./.docker/frontend/src:/app
+    ports:
+      - "${FRONTEND_PORT}:5000"
+    networks:
+      infra:
+        ipv4_address: 10.102.0.6
 
   db:
     image: mongo:latest

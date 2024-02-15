@@ -13,11 +13,13 @@ TEAM_COUNT=2
 VPN_PER_TEAM=1
 FLAG_LIFETIME=5
 SERVER_URL="localhost"
+FRONTEND_PORT=80
 VPN_PORT=51820
 API_PORT=8000
 VPN_DNS="8.8.8.8"
 SERVICES=""
 TICK_SECONDS=60
+CAPTURE_PCAPS=false
 # Use date if on unix, use gdate if on mac
 if [[ "$(uname)" == "Darwin" ]]; then
     START_TIME=$(gdate -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -35,6 +37,8 @@ source .env set
 VPN_COUNT=$(expr $TEAM_COUNT \* $VPN_PER_TEAM)
 SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
 CHECKER_LIST=$(echo $CHECKERS | tr ',' '\n')
+
+START_TIME_PATH=$(echo $START_TIME | tr ':' '-')
 
 # If checker list is empty, default to all services
 if [ -z "$CHECKERS" ]; then
@@ -70,10 +74,17 @@ done
 TEAM_TOKENS="${TEAM_TOKENS:1}"
 
 echo "Starting range services..."
-API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT FLAG_LIFETIME=$FLAG_LIFETIME TICK_SECONDS=$TICK_SECONDS SERVERURL=$SERVER_URL API_PORT=$API_PORT VPN_PORT=$VPN_PORT VPN_DNS=$VPN_DNS TEAM_TOKENS=$TEAM_TOKENS SERVICES=$SERVICES CHECKERS=$CHECKERS docker-compose up -d --force-recreate >> ./debug.log 2>&1
+API_KEY=$API_KEY TEAM_COUNT=$TEAM_COUNT PEERS=$VPN_COUNT FLAG_LIFETIME=$FLAG_LIFETIME TICK_SECONDS=$TICK_SECONDS START_TIME=$START_TIME END_TIME=$END_TIME START_TIME_PATH=$START_TIME_PATH SERVERURL=$SERVER_URL FRONTEND_PORT=$FRONTEND_PORT API_PORT=$API_PORT VPN_PORT=$VPN_PORT VPN_DNS=$VPN_DNS TEAM_TOKENS=$TEAM_TOKENS SERVICES=$SERVICES CHECKERS=$CHECKERS docker-compose up -d --force-recreate >> ./debug.log 2>&1
 
 echo "Waiting for VPN to start..."
 sleep 5
+
+# If capture pcaps is true, start tcpdump on the vpn interface for the network 10.101.0.0/16 writing to /pcaps/range_$START_TIME.pcap
+if [ "$CAPTURE_PCAPS" = true ]; then
+    echo "Starting tcpdump on vpn interface..."
+    mkdir -p ./pcaps/$START_TIME_PATH
+    docker exec -d vpn sh -c 'apk update && apk add tcpdump && tcpdump -i any -G $TICK_SECONDS -w /pcaps/$START_TIME_PATH/range_$START_TIME_%Y-%m-%dT%H-%M-%SZ.pcap -s 0 -S net 10.101.0.0/16'
+fi
 
 # Loop from 1 to $TEAM_COUNT - 1
 for TEAM_ID in $(seq 1 $TEAM_COUNT); do
