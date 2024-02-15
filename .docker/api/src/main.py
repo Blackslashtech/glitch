@@ -68,7 +68,7 @@ def rename_team(name: str, token: str):
     if token not in TEAM_TOKENS:
         return 'error: unauthorized'
     team_id = TEAM_TOKENS.index(token) + 1
-    db.teams.update_one({'team_id': team_id}, {'$set': {'name': name}})
+    db.teams.update_one({'team_id': team_id}, {'$set': {'team_name': name}})
     return 'success'
 
 
