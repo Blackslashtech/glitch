@@ -1,6 +1,6 @@
 import pymongo
 from fastapi import FastAPI
-from fastapi.responses import PlainTextResponse, FileResponse
+from fastapi.responses import PlainTextResponse, FileResponse, RedirectResponse
 import os
 
 app = FastAPI()
@@ -20,23 +20,32 @@ db = client['range']
 
 
 @app.get('/')
-def hello():
-    return {'Hello': 'World'}
+def redirect_docs():
+    # Redirect to the documentation
+    return RedirectResponse(url='/docs')
+
 
 @app.get('/hosts')
 def get_hosts():
     return list(db.hosts.find({}, {'ip': 1, 'team_id': 1, 'service_id': 1, 'service_name': 1, '_id': 0}))
 
 @app.get('/scores')
-def get_scores():
-    scores = {}
-    for team in list(db.teams.find({}, {'team_id': 1, 'score': 1, '_id': 0})):
-        scores[team['team_id']] = {}
-        scores[team['team_id']]['services'] = {}
-        for host in list(db.hosts.find({'team_id': team['team_id']}, {'service_name': 1, 'score': 1})):
-            scores[team['team_id']]['services'][host['service_name']] = host['score']
-        scores[team['team_id']]['total'] = team['score']
-    return scores
+def get_scores(tick: int = -1):
+    try:
+        max_tick = db.ticks.find_one(sort=[('tick', pymongo.DESCENDING)])['tick']
+        min_tick = db.ticks.find_one(sort=[('tick', pymongo.ASCENDING)])['tick']
+        if tick == -1:
+            tick = max_tick
+        if tick > max_tick:
+            tick = max_tick
+        if tick < min_tick:
+            tick = min_tick
+        tickdata = db.ticks.find_one({'tick': tick})
+        tickdata['min_tick'] = min_tick
+        tickdata['max_tick'] = max_tick
+        return tickdata
+    except Exception as e:
+        return {}
 
 @app.get('/checks')
 def get_checks(skip: int = 0, limit: int = 20):

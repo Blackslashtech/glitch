@@ -22,14 +22,16 @@ Credentials for all services are printed to STDOUT during the range startup.
 
 For local testing, you can get a shell inside the range environment with the command `bash scripts/rangemaster.sh`.
 
+By default, frontend is at `http://10.101.0.6:80` inside of the range and `http://<server>:80` from outside the range.
+
 As long as the `SERVER_URL` is properly set and port forwarding is enabled for UDP 51820, you can connect to the range from anywhere with the Wireguard client.
-Wireguard configs are stored in the [`.docker/vpn`](..docker/vpn) directory, or can be downloaded from the API at `http://api/vpn/<team_id>/wg<vpn_id>.conf`. (i.e. `http://api/vpn/1/wg1.conf`)
+Wireguard configs are stored in the [`.docker/vpn`](..docker/vpn) directory, or can be downloaded from the API at `http://<server>:8000/vpn/<team_id>/wg<vpn_id>.conf`. (i.e. `http://api/vpn/1/wg1.conf`)
 
 > [!NOTE]
 > Team IDs, Service IDs, and VPN IDs are all 1-indexed.  This is to avoid subnetting/IP confusion.
 
 ## API Quickstart
-The API is at `http://10.101.0.2:80` inside the range and `http://<server>:8000` from outside the range.
+By default, API is at `http://10.101.0.2:80` inside the range and `http://<server>:8000` from outside the range.
 
 - To get all targets, `GET /hosts`.
 - To get flag IDs, `GET /flagids`.
@@ -49,7 +51,7 @@ The range network is defined in [`docker-compose.yaml`](docker-compose.yaml):
     - API: `10.101.0.2` (hostname `api`)
     - Docker Registry: `10.101.0.3` (hostname `registry`)
     - Rangemaster: `10.101.0.5` (hostname `rangemaster`) - For troubleshooting
-    - (WIP) Frontend: `10.101.0.5` (hostname `frontend`)
+    - Frontend: `10.101.0.6` (hostname `frontend`)
   - Team subnet: `10.100.<team_id>.0/24`
     - Service host: `10.100.<team_id>.<service_id>` (hostname `team<team_id>-<service_name>` - i.e. `team1-web`)
 - Internal network: `10.102.0.0/16`
@@ -57,6 +59,7 @@ The range network is defined in [`docker-compose.yaml`](docker-compose.yaml):
   - API: `10.102.0.2` (hostname `api`)
   - DB: `10.102.0.3` (hostname `db`)
   - Rangemaster: `10.102.0.5` (hostname `rangemaster`)
+  - Frontend: `10.102.0.6` (hostname `frontend`)
 - Checker network: `10.103.0.0/16`
   - VPN Server: `10.103.1.1` (hostname `vpn`)
   - Ticker: `10.103.1.2` (hostname `ticker`)
