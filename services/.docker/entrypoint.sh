@@ -15,7 +15,8 @@ if [ -f ./docker-compose.yaml ]; then
     sed '/pids_limit:/s/^/#/' ./docker-compose.yaml > ./docker-compose.yaml.tmp
     sed '/mem_limit:/s/^/#/' ./docker-compose.yaml > ./docker-compose.yaml.tmp
     mv ./docker-compose.yaml.tmp ./docker-compose.yaml
-else if [ -f ./docker-compose.yml ]; then
+fi
+if [ -f ./docker-compose.yml ]; then
     sed '/cpus:/s/^/#/' ./docker-compose.yml > ./docker-compose.yml.tmp
     sed '/pids_limit:/s/^/#/' ./docker-compose.yml > ./docker-compose.yml.tmp
     sed '/mem_limit:/s/^/#/' ./docker-compose.yml > ./docker-compose.yml.tmp
