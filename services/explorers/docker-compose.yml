@@ -14,9 +14,9 @@ services:
     build: .
     restart: unless-stopped
 
-    # cpus: 2
-    # pids_limit: 256
-    # mem_limit: 1024m
+    cpus: 2
+    pids_limit: 256
+    mem_limit: 1024m
     environment:
       - NUM_WORKERS=4
 

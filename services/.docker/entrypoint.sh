@@ -9,6 +9,19 @@ echo "Waiting for docker daemon to start..."
 while ! docker info >/dev/null 2>&1; do sleep 1; done
 echo "Docker daemon started."
 
+# Check if ./docker-compose.yaml exists
+if [ -f ./docker-compose.yaml ]; then
+    sed '/cpus:/s/^/#/' ./docker-compose.yaml > ./docker-compose.yaml.tmp
+    sed '/pids_limit:/s/^/#/' ./docker-compose.yaml > ./docker-compose.yaml.tmp
+    sed '/mem_limit:/s/^/#/' ./docker-compose.yaml > ./docker-compose.yaml.tmp
+    mv ./docker-compose.yaml.tmp ./docker-compose.yaml
+else if [ -f ./docker-compose.yml ]; then
+    sed '/cpus:/s/^/#/' ./docker-compose.yml > ./docker-compose.yml.tmp
+    sed '/pids_limit:/s/^/#/' ./docker-compose.yml > ./docker-compose.yml.tmp
+    sed '/mem_limit:/s/^/#/' ./docker-compose.yml > ./docker-compose.yml.tmp
+    mv ./docker-compose.yml.tmp ./docker-compose.yml
+fi
+
 # Check if there is a deploy.sh script in the service directory
 if [ -f deploy.sh ]; then
     # If there is, run it
