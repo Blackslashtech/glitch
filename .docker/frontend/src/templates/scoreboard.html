@@ -133,7 +133,7 @@
         {% endfor %}
       </div>
     </section>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="/static/js/apexcharts.js"></script>
 
     <script>
     var teams = JSON.parse('{{data.teams|tojson}}');
@@ -153,7 +153,9 @@
             height: 350,
             type: 'line',
             zoom: {
-                enabled: false
+                type: 'x',                           
+                enabled: true,               
+                autoScaleYaxis: true                                          
             },
         },
         dataLabels: {
