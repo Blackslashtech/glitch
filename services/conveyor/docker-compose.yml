@@ -1,0 +1,51 @@
+services:
+  conveyor:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+    cpus: 2
+    mem_limit: 2G
+    pids_limit: 512
+    volumes:
+      - conveyor-data:/conveyor/data
+    environment:
+      CONVEYOR_LISTEN_PORT: 12378
+      CONVEYOR_REDIS_URL: redis://redis:6379
+      CONVEYOR_DATA_DIR: /conveyor/data
+      CONVEYOR_DATA_TTL: P0DT0H30M0S
+    ports:
+      - 12378:12378
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+  cleaner:
+    image: c4tbuts4d/dedcleaner:latest
+    cpus: 1
+    mem_limit: 128M
+    pids_limit: 128
+    volumes:
+      - conveyor-data:/data
+    environment:
+      DELETE_AFTER: 30m
+      SLEEP: 5m
+      DIRS: /data
+    restart: unless-stopped
+  redis:
+    image: redis:7.2.4-alpine3.19
+    cpus: 2
+    mem_limit: 512M
+    pids_limit: 512
+    volumes:
+      - ./deploy/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - redis-data:/data
+    command:
+      - /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: redis-cli ping
+      interval: 5s
+      timeout: 3s
+    restart: unless-stopped
+volumes:
+  conveyor-data:
+  redis-data:

@@ -1,0 +1,9 @@
+checklib
+rpyc==5.3.1
+pandas==2.2.0
+pyarrow==15.0.0
+pycryptodome
+pydantic
+openpyxl
+websocket-client
+websockets

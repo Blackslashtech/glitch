@@ -1,0 +1,27 @@
+[tool.poetry]
+authors = ["renbou"]
+description = "Conveyor for working with gold and researching its properties via ML models."
+license = "Apache-2.0"
+name = "conveyor"
+version = "1.33.7"
+
+[tool.poetry.dependencies]
+numpy = "~1.26.3"
+pandas = "~2.2.0"
+pandera = "~0.18.0"
+pyarrow = "~15.0.0"
+pydantic = "~2.5.3"
+pydantic-settings = "~2.1.0"
+python = "~3.11"
+redis = { extras = ["hiredis"], version = "~5.0.1" }
+rpyc = "5.3.1"
+scikit-learn = "~1.4.0"
+structlog = "~24.1.0"
+
+[tool.poetry.scripts]
+conveyor-client = "scripts.client:main"
+conveyor-server = "scripts.server:main"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		
+		<link rel="modulepreload" href="/_app/immutable/entry/start.74f2bc7c.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/scheduler.3f07874a.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/singletons.d880c1fc.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/index.25bfcd07.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/paths.9c20ae3a.js">
+		<link rel="modulepreload" href="/_app/immutable/entry/app.2ae83628.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/index.bce4ad42.js">
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">
+			<script>
+				{
+					__sveltekit_n825va = {
+						base: "",
+						env: {"PUBLIC_BASE_URL":"/api"}
+					};
+
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("/_app/immutable/entry/start.74f2bc7c.js"),
+						import("/_app/immutable/entry/app.2ae83628.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element);
+					});
+				}
+			</script>
+		</div>
+	</body>
+</html>

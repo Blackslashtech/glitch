@@ -1,0 +1,38 @@
+version: '3'
+rpc:
+  listen: 'tcp://0.0.0.0:6001'
+kv:
+  redis:
+    driver: redis
+    config:
+      addrs:
+        - redis:6379
+http:
+  address: '0.0.0.0:8080'
+  middleware:
+    - gzip
+    - static
+  static:
+    dir: public
+    forbid:
+      - .php
+      - .htaccess
+  pool:
+    num_workers: 2
+    supervisor:
+      max_worker_memory: 128
+server:
+  command: 'php app.php'
+  relay: pipes
+
+centrifuge:
+  proxy_address: "tcp://0.0.0.0:10001"
+  grpc_api_address: "tcp://centrifugo:10000"
+
+logs:
+  channels:
+    server:
+      level: info
+    centrifuge:
+      level: info
+

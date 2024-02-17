@@ -1,0 +1,16 @@
+version: '2.4'
+
+services:
+  nugget:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "5555:5555"
+    volumes:
+      - "./data:/app/data"
+      - "./secrets:/app/secrets"
+    environment:
+      GOMAXPROCS: 2
+    pids_limit: 512
+    mem_limit: 4G
+    cpus: 2

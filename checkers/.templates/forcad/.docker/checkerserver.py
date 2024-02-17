@@ -26,6 +26,7 @@ def check(host: str, timeout: int) -> dict:
     result = ''
     public = ''
     private = ''
+    debug = ''
     exitcode = StatusCode.ERROR
     try:
         print("Running python3 checker.py check " + host)
@@ -46,11 +47,12 @@ def check(host: str, timeout: int) -> dict:
         if len(result.split('\n')) > 1:
             private = result.split('\n')[0]
             public = result.split('\n')[1]
+            debug = ', '.join(result.split('\n')[2:])
         else:
             public = result
     except:
         pass
-    status = {'action': 'check', 'host': host, 'code': int(exitcode), 'comment': public, 'latency': int((time.time() - start) * 1000)}
+    status = {'action': 'check', 'host': host, 'code': int(exitcode), 'comment': public, 'latency': int((time.time() - start) * 1000), 'private': private, 'debug': debug}
     print('[CHECK] Status: ' + str(status), flush=True)
     return status
 
@@ -59,6 +61,7 @@ def put(host: str, flag: str, flag_id: str, timeout: int) -> dict:
     result = ''
     public = ''
     private = ''
+    debug = ''
     exitcode = StatusCode.ERROR
     try:
         result = subprocess.check_output("python3 checker.py put " + host + " " + flag_id + " " + flag + " 1", shell=True, timeout=timeout, stderr=subprocess.STDOUT)
@@ -76,6 +79,7 @@ def put(host: str, flag: str, flag_id: str, timeout: int) -> dict:
         if len(result.split('\n')) > 1:
             private = result.split('\n')[0]
             public = result.split('\n')[1]
+            debug = ', '.join(result.split('\n')[2:])
         else:
             public = result
     except:
@@ -83,7 +87,7 @@ def put(host: str, flag: str, flag_id: str, timeout: int) -> dict:
     flag_id = public
     if exitcode == StatusCode.OK:
         public = 'OK'
-    status = {'action': 'put', 'host': host, 'code': int(exitcode), 'comment': public, 'latency': int((time.time() - start) * 1000), 'flag': flag, 'flag_id': flag_id, 'private': private}
+    status = {'action': 'put', 'host': host, 'code': int(exitcode), 'comment': public, 'latency': int((time.time() - start) * 1000), 'flag': flag, 'flag_id': flag_id, 'private': private, 'debug': debug}
     print('[PUT] Finished: ' + str(status), flush=True)
     return status
 
@@ -108,11 +112,12 @@ def get(host: str, flag: str, flag_id: str, private: str, timeout: int) -> dict:
         if len(result.split('\n')) > 1:
             private = result.split('\n')[0]
             public = result.split('\n')[1]
+            debug = ', '.join(result.split('\n')[2:])
         else:
             public = result
     except:
         pass
-    status = {'action': 'get', 'host': host, 'code': int(exitcode), 'comment': public, 'latency': int((time.time() - start) * 1000), 'flag': flag, 'flag_id': flag_id}
+    status = {'action': 'get', 'host': host, 'code': int(exitcode), 'comment': public, 'latency': int((time.time() - start) * 1000), 'flag': flag, 'flag_id': flag_id, 'private': private, 'debug': debug}
     print('[GET] status: ' + str(status), flush=True)
     return status
 
