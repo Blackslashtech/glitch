@@ -14,7 +14,7 @@ FROM rust:1.72 as app
 RUN apt -y update && apt -y install parallel psmisc
 
 WORKDIR /app
-ADD app/Cargo.toml app/Cargo.lock app/rust-toolchain .
+ADD app/Cargo.toml app/Cargo.lock app/rust-toolchain ./
 RUN mkdir -p src && echo "//" > src/lib.rs
 RUN cargo build  --release
 RUN rm -rf src
