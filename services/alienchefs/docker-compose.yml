@@ -1,0 +1,25 @@
+version: '3'
+services:
+  # PHP and Apache service
+  app:
+    build:
+      context: ./app
+    container_name: alienchefs_app
+    ports:
+      - "80:80"
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - db
+
+  # MySQL service
+  db:
+    image: mysql:latest
+    container_name: alienchefs_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: alienchefs_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./.init:/docker-entrypoint-initdb.d/
