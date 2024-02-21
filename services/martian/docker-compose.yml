@@ -1,0 +1,11 @@
+version: '2.4'
+
+services:
+  martian:
+    build:
+      context: ./service
+    volumes:
+      - ./service/users:/users
+    ports:
+      - 9999:1337
+    restart: on-failure
