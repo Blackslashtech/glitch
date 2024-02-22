@@ -1,0 +1,11 @@
+0|1.5|material|sand
+1|5.0|material|iron
+2|3.5|material|petrol
+3|1.5|material|water
+4|3.0|material|ground
+5|1.5|drink|drink water
+6|2.0|drink|cola
+7|1.5|food|potato
+8|2.5|food|meat
+9|15.0|armor|spacesuit
+10|5.0|armor|expeditionary suit
