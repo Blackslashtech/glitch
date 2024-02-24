@@ -35,15 +35,7 @@ def generate_flagid() -> str:
 
 
 def init() -> None:
-    # Clear any existing data
-    db.teams.delete_many({})
-    db.services.delete_many({})
-    db.hosts.delete_many({})
-    db.checks.delete_many({})
-    db.flags.delete_many({})
-    db.steals.delete_many({})
-    db.ticks.delete_many({})
-    db.scores.delete_many({})
+    # Ensure indexes are created
     db.teams.create_index(['team_id'])
     db.services.create_index(['service_id'])
     db.services.create_index(['service_name'])
@@ -116,7 +108,7 @@ def calculate_scores(tick: int = 0) -> None:
     # Calculate the scores for each team
     if not range_initialized:
         # Check if all checks from the current tick are correct and all checks from the previous tick are correct
-        if db.checks.count_documents({'tick': tick, 'code': int(StatusCode.OK)}) == TEAM_COUNT * len(SERVICES) * 3 and db.checks.count_documents({'tick': tick - 1, 'code': int(StatusCode.OK)}) == TEAM_COUNT * len(SERVICES) * 3:
+        if db.checks.count_documents({'tick': tick, 'code': int(StatusCode.OK)}) == TEAM_COUNT * len(SERVICES) * 3:# and db.checks.count_documents({'tick': tick - 1, 'code': int(StatusCode.OK)}) == TEAM_COUNT * len(SERVICES) * 3:
             db.checks.delete_many({'tick': tick - 1})
             db.checks.delete_many({'tick': tick})
             range_initialized = True
@@ -161,9 +153,12 @@ def calculate_scores(tick: int = 0) -> None:
             team_defense += defense_score
             team_sla += sla_score
             team_score += service_score
-            check_status = db.checks.find_one({'tick': tick, 'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'check'})
-            put_status = db.checks.find_one({'tick': tick, 'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'put'})
-            get_status = db.checks.find_one({'tick': tick, 'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'get'})
+            # check_status = db.checks.find({'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'check'}).sort('tick', -1).limit(1).get(0, None)
+            check_status = db.checks.find_one({'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'check'}, sort=[('tick', pymongo.DESCENDING)])
+            # put_status = db.checks.find({'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'put'}).sort('tick', -1).limit(1).get(0, None)
+            put_status = db.checks.find_one({'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'put'}, sort=[('tick', pymongo.DESCENDING)])
+            # get_status = db.checks.find({'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'get'}).sort('tick', -1).limit(1).get(0, None)
+            get_status = db.checks.find_one({'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'get'}, sort=[('tick', pymongo.DESCENDING)])
             check_code, put_code, get_code = 105, 105, 105
             comments = []
             status_name = 'ok'
