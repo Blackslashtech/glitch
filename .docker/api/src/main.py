@@ -18,6 +18,9 @@ FLAG_LIFETIME = int(os.environ.get('FLAG_LIFETIME'))
 client = pymongo.MongoClient('mongodb://db:27017/')
 db = client['range']
 
+def get_current_tick():
+    return db.ticks.find_one(sort=[('tick', pymongo.DESCENDING)])['tick']
+
 
 @app.get('/')
 def redirect_docs():
@@ -40,7 +43,7 @@ def get_scores(tick: int = -1):
             tick = max_tick
         if tick < min_tick:
             tick = min_tick
-        tickdata = db.ticks.find_one({'tick': tick})
+        tickdata = db.ticks.find_one({'tick': tick}, {'_id': 0})
         tickdata['min_tick'] = min_tick
         tickdata['max_tick'] = max_tick
         return tickdata
@@ -53,7 +56,8 @@ def get_checks(skip: int = 0, limit: int = 20):
 
 @app.get('/flagids')
 def get_flagids():
-    return list(db.flags.find({}, {'service': 1, 'service_id': 1, 'team_id': 1, 'flag_id': 1, 'tick': 1, '_id': 0}).sort('tick', -1).limit(TEAM_COUNT * len(SERVICES) * FLAG_LIFETIME))
+    current_tick = get_current_tick()
+    return list(db.flags.find({'tick': {'$gte': current_tick - FLAG_LIFETIME}}, {'service': 1, 'service_id': 1, 'team_id': 1, 'flag_id': 1, 'tick': 1, '_id': 0})).sort('team_id', 1).sort('service_id', 1).sort('tick', -1)
 
 @app.post('/steal')
 def steal_flag(flag: str, token: str):
@@ -69,7 +73,10 @@ def steal_flag(flag: str, token: str):
     stealing_team = TEAM_TOKENS.index(token) + 1
     if correct['team_id'] == stealing_team:
         return 'error: self'
-    db.steals.insert_one({'service_id': correct['service_id'], 'team_id': correct['team_id'], 'stealing_team': stealing_team, 'flag_id': correct['flag_id'], 'flag': flag})
+    current_tick = get_current_tick()
+    if current_tick - correct['tick'] > FLAG_LIFETIME:
+        return 'error: expired'
+    db.steals.insert_one({'service_id': correct['service_id'], 'team_id': correct['team_id'], 'stealing_team': stealing_team, 'flag_id': correct['flag_id'], 'flag': flag, 'flag_tick': correct['tick']})
     return 'success'
 
 @app.post('/rename')
