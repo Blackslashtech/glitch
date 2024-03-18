@@ -1,4 +1,4 @@
-# Range
+# Glitch Range
 
 A general purpose attack-defense range for zero-config deployment
 
