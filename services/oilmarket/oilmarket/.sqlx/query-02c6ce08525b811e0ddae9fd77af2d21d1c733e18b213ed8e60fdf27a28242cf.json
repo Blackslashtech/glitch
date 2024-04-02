@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT\n                b.id as id,\n                b.name as name,\n                b.api_key as api_key,\n                b.flag as flag, \n                ARRAY_AGG(\n                    ROW(\n                        a.id,\n                        a.name,\n                        a.api_key,\n                        a.key\n                    )\n                ) AS \"attesters!: Vec<(i32, String, Uuid, String)>\"\n            FROM buyers b\n            LEFT JOIN buyer_attester ba\n            ON ba.buyer_id = b.id\n            LEFT JOIN attesters a\n            ON a.id = ba.attester_id\n            WHERE b.name = $1\n            GROUP BY b.id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "api_key",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 3,
+        "name": "flag",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "attesters!: Vec<(i32, String, Uuid, String)>",
+        "type_info": "RecordArray"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      null
+    ]
+  },
+  "hash": "02c6ce08525b811e0ddae9fd77af2d21d1c733e18b213ed8e60fdf27a28242cf"
+}

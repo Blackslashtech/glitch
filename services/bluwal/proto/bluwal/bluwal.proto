@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package bluwal;
+
+message FactorChallenge {
+    string n = 1;
+}
+
+message FactorChallengeSubmission {
+    repeated string factors = 1;
+}
+
+message Challenge {
+    oneof challenge {
+        FactorChallenge factor_challenge = 1;
+    }
+
+    int32 characteristic = 2;
+    int32 delta = 3;
+}
+
+message Contest {
+    string id = 1;
+    string author = 2;
+    repeated int32 goal = 3;
+    repeated int32 threshold = 4;
+
+    repeated Challenge challenges = 5;
+
+    string reward = 6;
+}
+
+message EnrollmentFilter {
+    string contest_id = 1;
+    string user_id = 2;
+    repeated int32 current_state = 3;
+}
+
+message ContestCreateRequest {
+    Contest contest = 1;
+}
+
+message ContestCreateResponse {
+    Contest contest = 1;
+}
+
+message ContestGetRequest {
+    string id = 1;
+    string author = 2;
+}
+
+message ContestGetResponse {
+    Contest contest = 1;
+}
+
+message ContestEnrollRequest {
+    EnrollmentFilter enrollment_filter = 1;
+}
+
+message ContestEnrollResponse {
+    EnrollmentFilter enrollment_filter = 1;
+}
+
+message ChallengeSubmitRequest {
+    EnrollmentFilter enrollment_filter = 1;
+
+    oneof submission {
+        FactorChallengeSubmission factor_challenge_submission = 2;
+    }
+}
+
+message ChallengeSubmitResponse {
+    EnrollmentFilter enrollment_filter = 1;
+    int32 current_challenge = 2;
+}
+
+message CheckGoalRequest {
+    EnrollmentFilter enrollment_filter = 1;
+}
+
+message CheckGoalResponse {
+    int32 current_challenge = 1;
+    repeated int32 current_state = 2;
+}
+
+message ClaimRewardRequest {
+    EnrollmentFilter enrollment_filter = 1;
+}
+
+message ClaimRewardResponse {
+    string reward = 1;
+}
+
+message ContestListRequest {
+    string author = 1;
+    uint32 limit = 2;
+    uint32 offset = 3;
+}
+
+message ContestListResponse {
+    repeated Contest contests = 1;
+}

@@ -1,0 +1,58 @@
+syntax = "proto3";
+package oilmarket;
+
+service Oilmarket {
+    rpc Sign (SignRequest) returns (SignResponse);
+    rpc Sell (SellRequest) returns (SellResponse);
+    rpc CreateBuyer (CreateBuyerRequest) returns (ApiKeyResponse);
+    rpc CreateAttester (CreateAttesterRequest) returns (ApiKeyResponse);
+    rpc CreateSeller (CreateSellerRequest) returns (ApiKeyResponse);
+    rpc AddBarrel (AddBarrelRequest) returns (AddBarrelResponse);
+}
+
+message SignRequest  {
+    string api_key = 1;
+    bytes request = 2;
+}
+
+message SignResponse {
+    bytes signature = 1;
+}
+
+message SellRequest  {
+    string api_key = 1;
+    string buyer = 2;
+    string attester = 3;
+    bytes request = 4;
+    bytes signature = 5;
+}
+
+message SellResponse {
+    string flag = 1;
+}
+
+message CreateBuyerRequest {
+    string name = 1;
+    string flag = 2;
+    repeated string attesters = 3; 
+}
+
+message CreateAttesterRequest {
+    string name = 1;
+}
+
+message CreateSellerRequest {
+    string name = 1;
+}
+
+message ApiKeyResponse {
+    string api_key = 1;
+}
+
+message AddBarrelRequest {
+    string api_key = 1;
+}
+
+message AddBarrelResponse {
+    int32 id = 1;
+}

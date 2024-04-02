@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT\n                s.id as id,\n                s.name as name,\n                s.api_key as api_key,\n                ARRAY_REMOVE(ARRAY_AGG(\n                    b.id\n                ), NULL) AS \"barrels!: Vec<i32>\"\n            FROM sellers s\n            LEFT JOIN barrels b\n            ON s.id = b.seller_id\n            WHERE s.api_key = $1\n            GROUP BY s.id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "api_key",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 3,
+        "name": "barrels!: Vec<i32>",
+        "type_info": "Int4Array"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      null
+    ]
+  },
+  "hash": "0865e38359e0800779ba2b5f48b6e1f875ae652a0300c3382908d230babd88e2"
+}

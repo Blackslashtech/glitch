@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        CREATE TABLE IF NOT EXISTS attesters (\n        id SERIAL PRIMARY KEY,\n        name VARCHAR UNIQUE NOT NULL,\n        api_key uuid UNIQUE NOT NULL,\n        key TEXT NOT NULL\n        )\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "7a163b832f406aa168f147ea3e9b3cc54d887f1506f706f71c923c594ae5c804"
+}

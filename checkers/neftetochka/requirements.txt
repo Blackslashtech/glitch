@@ -1,0 +1,6 @@
+checklib
+grpcio
+pycryptodome
+protobuf
+websocket-client==1.6.4
+gpxpy

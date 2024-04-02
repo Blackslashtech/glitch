@@ -1,0 +1,17 @@
+{
+	admin off
+}
+
+:8087 {
+  handle_path /api/* {
+    reverse_proxy app:8087
+  }
+
+  handle_path /ws/* {
+    reverse_proxy app:8087
+  }
+
+  header -server
+  root * /var/www/neftetochka
+  file_server
+}

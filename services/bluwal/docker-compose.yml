@@ -1,0 +1,14 @@
+services:
+  bluwal:
+    build: .
+    restart: unless-stopped
+    cpus: 2
+    mem_limit: 2G
+    pids_limit: 512
+    ports:
+      - "9090:9090"
+    volumes:
+      - "./vol/data:/data"
+    environment:
+      GOMAXPROCS: 2
+      DB_PATH: /data/bluwal.db

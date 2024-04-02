@@ -1,0 +1,29 @@
+# config for https://github.com/ericseppanen/cargo-cranky 
+ # TODO: remove this when https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#lints becomes usable 
+  
+ warn = ["clippy::all", "clippy::pedantic", "clippy::nursery"] 
+  
+ allow = [ 
+     "clippy::module_name_repetitions", 
+     "clippy::cast_lossless", 
+     "clippy::cast_possible_truncation", 
+     "clippy::cast_precision_loss", 
+     "clippy::default-trait-access", 
+     "clippy::doc_markdown", 
+     "clippy::enum-variant-names", 
+     "clippy::explicit-iter-loop", 
+     "clippy::explicit_deref_methods", 
+     "clippy::iter_with_drain", 
+     "clippy::missing_const_for_fn", 
+     "clippy::missing_errors_doc", 
+     "clippy::missing_panics_doc", 
+     "clippy::must_use_candidate", 
+     "clippy::needless_pass_by_value", 
+     "clippy::option-if-let-else", 
+     "clippy::redundant_else", 
+     "clippy::return_self_not_must_use", 
+     "clippy::similar_names", 
+     "clippy::too_many_lines", 
+     "clippy::too_many_arguments", 
+     "clippy::unused-self", 
+ ]

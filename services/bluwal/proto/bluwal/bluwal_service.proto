@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package bluwal;
+
+import "bluwal/bluwal.proto";
+
+service BluwalService {
+    rpc ContestCreate(bluwal.ContestCreateRequest) returns (bluwal.ContestCreateResponse);
+
+    rpc ContestGet(bluwal.ContestGetRequest) returns (bluwal.ContestGetResponse);
+
+    rpc ContestList(bluwal.ContestListRequest) returns (bluwal.ContestListResponse);
+
+    rpc ContestEnroll(bluwal.ContestEnrollRequest) returns (bluwal.ContestEnrollResponse);
+
+    rpc ChallengeSubmit(bluwal.ChallengeSubmitRequest) returns (bluwal.ChallengeSubmitResponse);
+
+    rpc CheckGoal(bluwal.CheckGoalRequest) returns (bluwal.CheckGoalResponse);
+
+    rpc ClaimReward(bluwal.ClaimRewardRequest) returns (bluwal.ClaimRewardResponse);
+}

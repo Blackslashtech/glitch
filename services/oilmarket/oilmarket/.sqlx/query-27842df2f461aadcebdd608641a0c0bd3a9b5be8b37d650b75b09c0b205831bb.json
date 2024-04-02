@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        CREATE TABLE IF NOT EXISTS buyer_attester (\n        buyer_id INTEGER REFERENCES buyers(id),\n        attester_id  INTEGER REFERENCES attesters(id),\n        PRIMARY KEY(buyer_id, attester_id)\n        )\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "27842df2f461aadcebdd608641a0c0bd3a9b5be8b37d650b75b09c0b205831bb"
+}

@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO buyer_attester\n                (buyer_id, attester_id)\n                VALUES ($1, $2)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "fd21e75bbe29c4e7b1cfbed6d49b352efd208bf33296cba3c81914a4be77c00b"
+}

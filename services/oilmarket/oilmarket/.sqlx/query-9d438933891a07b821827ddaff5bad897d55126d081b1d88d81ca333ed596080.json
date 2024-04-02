@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        CREATE TABLE IF NOT EXISTS buyers (\n        id SERIAL PRIMARY KEY,\n        name VARCHAR UNIQUE NOT NULL,\n        flag VARCHAR NOT NULL,\n        api_key uuid UNIQUE NOT NULL\n        )\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "9d438933891a07b821827ddaff5bad897d55126d081b1d88d81ca333ed596080"
+}

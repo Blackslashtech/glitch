@@ -1,0 +1,38 @@
+version: v1
+managed:
+  enabled: true
+  go_package_prefix:
+    default: bluwal/pkg/proto
+plugins:
+# Go
+- plugin: buf.build/protocolbuffers/go:v1.31.0
+  out: ../pkg/proto
+  opt:
+  - paths=source_relative
+- plugin: buf.build/grpc/go:v1.3.0
+  out: ../pkg/proto
+  opt:
+  - paths=source_relative
+
+# Python
+- plugin: buf.build/grpc/python:v1.59.1
+  out: ./python
+- plugin: buf.build/protocolbuffers/python
+  out: ./python
+- plugin: buf.build/protocolbuffers/pyi:v24.4
+  out: ./python
+
+# Typescript
+- plugin: buf.build/community/stephenh-ts-proto
+  out: ../front/src/proto
+  opt:
+  - enumsAsLiterals=true
+  - env=browser
+  - esModuleInterop=true
+  - forceLong=long
+  - oneof=unions
+  - outputServices=nice-grpc,outputServices=generic-definitions
+  - unrecognizedEnum=false
+  - removeEnumPrefix=true
+  - useDate=false
+  - useMapType=true

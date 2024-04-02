@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        CREATE TABLE IF NOT EXISTS barrels (\n        id SERIAL PRIMARY KEY,\n        seller_id INTEGER REFERENCES sellers(id)\n        )\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "e01dd9eacafc47366144149a7ba487c9922c57d3fbee7bbd4bf0f1b7b3154f64"
+}
