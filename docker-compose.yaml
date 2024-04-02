@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   vpn:
     image: linuxserver/wireguard:latest
@@ -9,13 +7,13 @@ services:
     depends_on:
       - api
     environment:
-    - PEERS=${PEERS}
-    - ALLOWEDIPS=10.100.0.0/15
-    - SERVERURL=${SERVER_URL}
-    - SERVERPORT=${VPN_PORT}
-    - PEERDNS=${VPN_DNS}
-    - TICK_SECONDS=${TICK_SECONDS}
-    - START_TIME_PATH=${START_TIME_PATH}
+      - PEERS=${PEERS}
+      - ALLOWEDIPS=10.100.0.0/15
+      - SERVERURL=${SERVER_URL}
+      - SERVERPORT=${VPN_PORT}
+      - PEERDNS=${VPN_DNS}
+      - TICK_SECONDS=${TICK_SECONDS}
+      - START_TIME_PATH=${START_TIME_PATH}
     cap_add:
       - NET_ADMIN
     volumes:
@@ -144,10 +142,8 @@ services:
       infra:
         ipv4_address: 10.102.0.3
 
-
 volumes:
   db:
-
 
 networks:
   game:

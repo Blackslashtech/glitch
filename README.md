@@ -4,20 +4,21 @@ A general purpose attack-defense range for zero-config deployment
 
 ## Usage
 
-1. Drop each service into a folder in the [`./services`](services) directory.  Each service must have a `docker-compose.yml` file that defines the service, or a `deploy.sh` which starts the service. ([Services README](./services)).
-3. Drop each checker script in the [`./checkers`](checkers) directory.  Each checker directory must be named the same as the service it corresponds to. ([Checkers README](./checkers)).
-4. Run `cp sample.env .env` and modify the [`.env`](sample.env) as desired for all configuration options
-5. Run `bash scripts/install.sh` to install all dependancies.
-6. Run `bash scripts/up.sh` to start the range.
-7. Distribute the printed team links to each team, which will allow them to download the VPN configs and credentials.
+1. Drop each service into a folder in the [`./services`](services) directory. Each service must have a `docker-compose.yml` file that defines the service, or a `deploy.sh` which starts the service. ([Services README](./services)).
+2. Drop each checker script in the [`./checkers`](checkers) directory. Each checker directory must be named the same as the service it corresponds to. ([Checkers README](./checkers)).
+3. Run `cp sample.env .env` and modify the [`.env`](sample.env) as desired for all configuration options
+4. Run `bash scripts/install.sh` to install all dependancies.
+5. Run `bash scripts/up.sh` to start the range.
+6. Distribute the printed team links to each team, which will allow them to download the VPN configs and credentials.
 
 To temporarily stop the range, run `bash scripts/down.sh`.
 To delete all data associated with the range, run `bash scripts/clear.sh`.
 
-> [!WARNING] 
-> `scripts/clear.sh` runs a docker image and volume prune.  This can have unintended consequences if you have other docker containers on the host system.  Use with caution.
+> [!WARNING]
+> `scripts/clear.sh` runs a docker image and volume prune. This can have unintended consequences if you have other docker containers on the host system. Use with caution.
 
 ## Connecting to the Range
+
 Credentials for all services are printed to STDOUT during the range startup.
 
 For local testing, you can get a shell inside the range environment with the command `bash scripts/rangemaster.sh`.
@@ -28,9 +29,10 @@ As long as the `SERVER_URL` is properly set and port forwarding is enabled for U
 Wireguard configs are stored in the [`.docker/vpn`](..docker/vpn) directory, or can be downloaded from the API at `http://<server>:8000/vpn/<team_id>/wg<vpn_id>.conf`. (i.e. `http://api/vpn/1/wg1.conf`)
 
 > [!NOTE]
-> Team IDs, Service IDs, and VPN IDs are all 1-indexed.  This is to avoid subnetting/IP confusion.
+> Team IDs, Service IDs, and VPN IDs are all 1-indexed. This is to avoid subnetting/IP confusion.
 
 ## API Quickstart
+
 By default, API is at `http://10.101.0.2:80` inside the range and `http://<server>:8000` from outside the range.
 
 - To get all targets, `GET /hosts`.
@@ -41,10 +43,10 @@ By default, API is at `http://10.101.0.2:80` inside the range and `http://<serve
 
 For full API documentation, visit `http://10.101.0.2/docs`
 
-
 # Network
 
 The range network is defined in [`docker-compose.yaml`](docker-compose.yaml):
+
 - Range network: `10.100.0.0/15`
   - Infrastructure subnet: `10.101.0.0/16`
     - VPN Server: `10.101.0.1` (hostname `vpn`) - NAT Source for all traffic (players and checkers)
@@ -67,9 +69,8 @@ The range network is defined in [`docker-compose.yaml`](docker-compose.yaml):
   - Rangemaster: `10.103.1.5` (hostname `rangemaster`)
   - Checker: `10.103.2.<service_id` (hostname `checker-<service_name>` - i.e. `checker-web`)
 
-
-
 # Service Archive
+
 - SECCONF (argv) ~40 services: https://github.com/HITB-CyberWeek
 - ICC (checklib) ~15 services: https://github.com/CybersecNatLab
 - HACKERDOM (custom/checklib) ~40 services: https://github.com/HackerDom
@@ -77,8 +78,6 @@ The range network is defined in [`docker-compose.yaml`](docker-compose.yaml):
 - FAUST (faust) ~50 services: https://github.com/fausecteam
 
 - More: (checklib dependants): https://github.com/pomo-mondreganto/checklib/network/dependents
-
-
 
 # License
 

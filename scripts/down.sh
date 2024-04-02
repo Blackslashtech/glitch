@@ -2,8 +2,8 @@
 
 # Check if cwd is range
 if [[ ! -d "./checkers" && -d "./services" && -d "./.docker" ]]; then
-  echo "Please run this script from the range directory (i.e. sh scripts/down.sh))"
-  exit 1
+    echo "Please run this script from the range directory (i.e. sh scripts/down.sh))"
+    exit 1
 fi
 
 API_KEY=""
@@ -22,33 +22,33 @@ CHECKER_LIST=$(echo $CHECKERS | tr ',' '\n')
 
 # If checker list is empty, default to all services
 if [ -z "$CHECKERS" ]; then
-  CHECKERS=$SERVICES
-  CHECKER_LIST=$SERVICE_LIST
+    CHECKERS=$SERVICES
+    CHECKER_LIST=$SERVICE_LIST
 fi
 
 for SERVICE_NAME in $CHECKER_LIST; do
-  dir="./checkers/$SERVICE_NAME"
-  # If the file is a directory
-  if [ -d "$dir" ]; then
-    # Generate a random root password
-    HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
-    echo "Stopping $HOSTNAME..."
-    docker stop $HOSTNAME -t 1 >/dev/null &
-  fi
+    dir="./checkers/$SERVICE_NAME"
+    # If the file is a directory
+    if [ -d "$dir" ]; then
+        # Generate a random root password
+        HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
+        echo "Stopping $HOSTNAME..."
+        docker stop $HOSTNAME -t 1 >/dev/null &
+    fi
 done
 
 # Loop from 1 to $TEAM_COUNT
 for TEAM_ID in $(seq 1 $TEAM_COUNT); do
-  for SERVICE_NAME in $SERVICE_LIST; do
-    dir="./services/$SERVICE_NAME"
-    # If the file is a directory
-    if [ -d "$dir" ]; then
-      # Generate a random root password
-      HOSTNAME=$(echo "team$TEAM_ID-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
-      echo "Stopping $HOSTNAME..."
-      docker stop $HOSTNAME -t 1 >/dev/null &
-    fi
-  done
+    for SERVICE_NAME in $SERVICE_LIST; do
+        dir="./services/$SERVICE_NAME"
+        # If the file is a directory
+        if [ -d "$dir" ]; then
+            # Generate a random root password
+            HOSTNAME=$(echo "team$TEAM_ID-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
+            echo "Stopping $HOSTNAME..."
+            docker stop $HOSTNAME -t 1 >/dev/null &
+        fi
+    done
 done
 
 sleep 2

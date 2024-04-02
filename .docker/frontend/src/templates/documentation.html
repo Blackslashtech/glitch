@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -8,53 +8,158 @@
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <link href="/static/style/style.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
-      ! function(o, c) {
+      !(function (o, c) {
         var n = c.documentElement,
           t = " w-mod-";
-        n.className += t + "js", ("ontouchstart" in o || o.DocumentTouch && c instanceof DocumentTouch) && (n.className += t + "touch")
-      }(window, document);
+        (n.className += t + "js"),
+          ("ontouchstart" in o ||
+            (o.DocumentTouch && c instanceof DocumentTouch)) &&
+            (n.className += t + "touch");
+      })(window, document);
     </script>
-    <link href="/static/img/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link
+      href="/static/img/favicon.ico"
+      rel="shortcut icon"
+      type="image/x-icon"
+    />
   </head>
   <body class="instructions-body">
     <div class="top-bar">
-      <div class="logo"></div><a href="/docs" class="top-bar-button w-button">Documentation</a><a href="/" class="top-bar-button w-button">Scoreboard</a>
+      <div class="logo"></div>
+      <a href="/docs" class="top-bar-button w-button">Documentation</a
+      ><a href="/" class="top-bar-button w-button">Scoreboard</a>
     </div>
     <div class="instruction-block">
       <div class="w-richtext">
         <h1>Setup</h1>
-        <p>Unique team tokens will be provided to each team prior to range open (example token: 5cfefcf8549395ac3aa5a6322cbb5b8a). These tokens are used to authenticate credential downloads, flag submssions, and name changes.</p>
-        <p>Once the range opens, the API endpoint <a href="http://{{server_url}}:{{api_port}}/teamdata/{team_token}/rangedata.zip" target="_blank"><strong>http://{{server_url}}:{{api_port}}/teamdata/{team_token}/rangedata.zip</strong></a> will open. The downloaded zip will contain all your team&#x27;s WireGuard VPN files, in addition to a creds.txt file which contains the credentials to each of your team&#x27;s vulnboxes.</p>
+        <p>
+          Unique team tokens will be provided to each team prior to range open
+          (example token: 5cfefcf8549395ac3aa5a6322cbb5b8a). These tokens are
+          used to authenticate credential downloads, flag submssions, and name
+          changes.
+        </p>
+        <p>
+          Once the range opens, the API endpoint
+          <a
+            href="http://{{server_url}}:{{api_port}}/teamdata/{team_token}/rangedata.zip"
+            target="_blank"
+            ><strong
+              >http://{{server_url}}:{{api_port}}/teamdata/{team_token}/rangedata.zip</strong
+            ></a
+          >
+          will open. The downloaded zip will contain all your team&#x27;s
+          WireGuard VPN files, in addition to a creds.txt file which contains
+          the credentials to each of your team&#x27;s vulnboxes.
+        </p>
         <h1>Network</h1>
-        <p>Each service is hosted on its own vulnbox on the 10.100.0.0/15 network. Each team is assigned a /24 subnet, with the third octet corresponding to their team ID. Therefore, the IP for each vulnbox takes the form of 10.100.T.S, where T is the team ID and S is the service ID.</p>
-        <p>All traffic is source NATed through the VPN server (10.101.0.1), including checker traffic.</p>
-        <p>All vulnboxes are running Alpine Linux. Any service source code is stored in <strong>/service. </strong>Services are usually run inside docker containers on the vulnboxes.</p>
+        <p>
+          Each service is hosted on its own vulnbox on the 10.100.0.0/15
+          network. Each team is assigned a /24 subnet, with the third octet
+          corresponding to their team ID. Therefore, the IP for each vulnbox
+          takes the form of 10.100.T.S, where T is the team ID and S is the
+          service ID.
+        </p>
+        <p>
+          All traffic is source NATed through the VPN server (10.101.0.1),
+          including checker traffic.
+        </p>
+        <p>
+          All vulnboxes are running Alpine Linux. Any service source code is
+          stored in <strong>/service. </strong>Services are usually run inside
+          docker containers on the vulnboxes.
+        </p>
         <h1>Flag Format</h1>
-        <p>Flag regex: <code><strong>[A-Z0-9]{31}=</strong></code></p>
-        <p>Example flag: <code><strong>XFWEC8CI1OP1DNBD8CJNUB22VIQ22T2=</strong></code></p>
-        <p>FlagIDs: (Vary per service. Usually usernames or user IDs associated with the service).</p>
+        <p>
+          Flag regex: <code><strong>[A-Z0-9]{31}=</strong></code>
+        </p>
+        <p>
+          Example flag:
+          <code><strong>XFWEC8CI1OP1DNBD8CJNUB22VIQ22T2=</strong></code>
+        </p>
+        <p>
+          FlagIDs: (Vary per service. Usually usernames or user IDs associated
+          with the service).
+        </p>
         <h1>Scoreboard</h1>
-        <p>The scoreboard is accessible at <a href="/"><strong>http://{{server_url}}</strong></a></p>
+        <p>
+          The scoreboard is accessible at
+          <a href="/"><strong>http://{{server_url}}</strong></a>
+        </p>
         <p><strong> </strong></p>
         <figure class="w-richtext-align-normal w-richtext-figure-type-image">
-          <div><img src="https://assets-global.website-files.com/655f86ce43b70e3d6e3e541e/65ced3ba75cae2ba6fec0caf_Screenshot%202024-02-15%20at%2022.04.44.png" loading="lazy" alt="" /></div>
+          <div>
+            <img
+              src="https://assets-global.website-files.com/655f86ce43b70e3d6e3e541e/65ced3ba75cae2ba6fec0caf_Screenshot%202024-02-15%20at%2022.04.44.png"
+              loading="lazy"
+              alt=""
+            />
+          </div>
         </figure>
         <h1>API</h1>
-        <p>API is hosted at <a href="http://{{server_url}}:{{api_port}}"><strong>http://{{server_url}}:{{api_port}}</strong></a> from outside the range, or <a href="http://10.101.0.2:80"><strong>http://10.101.0.2:80</strong></a> from inside the range. Full OpenAPI documentation is at /docs.</p>
+        <p>
+          API is hosted at
+          <a href="http://{{server_url}}:{{api_port}}"
+            ><strong>http://{{server_url}}:{{api_port}}</strong></a
+          >
+          from outside the range, or
+          <a href="http://10.101.0.2:80"
+            ><strong>http://10.101.0.2:80</strong></a
+          >
+          from inside the range. Full OpenAPI documentation is at /docs.
+        </p>
         <p>‍</p>
-        <p>To submit flags <strong>POST /steal</strong> with URL parameters <strong>token </strong>and<strong> flag. </strong>Below is an example curl command:</p>
+        <p>
+          To submit flags <strong>POST /steal</strong> with URL parameters
+          <strong>token </strong>and<strong> flag. </strong>Below is an example
+          curl command:
+        </p>
       </div>
-      <pre class="code-block w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-bash" style="white-space:pre"><span>curl -X POST </span><span style="color:#abe338">&quot;http://{{server_url}}:{{api_port}}/steal?token=&lt;token&gt;&amp;flag=&lt;flag&gt;&quot;</span></code></pre>
+      <pre
+        class="code-block w-code-block"
+        style="
+          display: block;
+          overflow-x: auto;
+          background: #2b2b2b;
+          color: #f8f8f2;
+          padding: 0.5em;
+        "
+      ><code class="language-bash" style="white-space:pre"><span>curl -X POST </span><span style="color:#abe338">&quot;http://{{server_url}}:{{api_port}}/steal?token=&lt;token&gt;&amp;flag=&lt;flag&gt;&quot;</span></code></pre>
       <div class="w-richtext">
         <p>‍</p>
-        <p>To change your team name on the scoreboard, <strong>POST /rename</strong> with URL parameters <strong>token </strong>and<strong> name. </strong>Name changes will only apply to future ticks. Below is an example curl command:</p>
+        <p>
+          To change your team name on the scoreboard,
+          <strong>POST /rename</strong> with URL parameters
+          <strong>token </strong>and<strong> name. </strong>Name changes will
+          only apply to future ticks. Below is an example curl command:
+        </p>
       </div>
-      <pre class="code-block w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-bash" style="white-space:pre"><span>curl -X POST </span><span style="color:#abe338">&quot;http://{{server_url}}:{{api_port}}/rename?token=&lt;token&gt;&amp;name=&lt;name&gt;&quot;</span></code></pre>
+      <pre
+        class="code-block w-code-block"
+        style="
+          display: block;
+          overflow-x: auto;
+          background: #2b2b2b;
+          color: #f8f8f2;
+          padding: 0.5em;
+        "
+      ><code class="language-bash" style="white-space:pre"><span>curl -X POST </span><span style="color:#abe338">&quot;http://{{server_url}}:{{api_port}}/rename?token=&lt;token&gt;&amp;name=&lt;name&gt;&quot;</span></code></pre>
       <div class="w-richtext">
         <p>‍</p>
-        <p>To get a list of targets,<strong> GET /hosts</strong>. Example response:</p>
+        <p>
+          To get a list of targets,<strong> GET /hosts</strong>. Example
+          response:
+        </p>
       </div>
-      <pre class="code-block w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-json" style="white-space:pre"><span>[
+      <pre
+        class="code-block w-code-block"
+        style="
+          display: block;
+          overflow-x: auto;
+          background: #2b2b2b;
+          color: #f8f8f2;
+          padding: 0.5em;
+        "
+      ><code class="language-json" style="white-space:pre"><span>[
 </span>  {
 <span>    </span><span class="hljs-attr">&quot;service_name&quot;</span><span>: </span><span style="color:#abe338">&quot;simple&quot;</span><span>,
 </span><span>    </span><span class="hljs-attr">&quot;service_id&quot;</span><span>: </span><span style="color:#f5ab35">1</span><span>,
@@ -82,9 +187,21 @@
 ]</code></pre>
       <div class="w-richtext">
         <p>‍</p>
-        <p>To get a list of active Flag IDs, <strong>GET /flagids</strong>. Example response:</p>
+        <p>
+          To get a list of active Flag IDs, <strong>GET /flagids</strong>.
+          Example response:
+        </p>
       </div>
-      <pre class="code-block w-code-block" style="display:block;overflow-x:auto;background:#2b2b2b;color:#f8f8f2;padding:0.5em"><code class="language-json" style="white-space:pre"><span>[
+      <pre
+        class="code-block w-code-block"
+        style="
+          display: block;
+          overflow-x: auto;
+          background: #2b2b2b;
+          color: #f8f8f2;
+          padding: 0.5em;
+        "
+      ><code class="language-json" style="white-space:pre"><span>[
 </span>  {
 <span>    </span><span class="hljs-attr">&quot;service&quot;</span><span>: </span><span style="color:#abe338">&quot;simple&quot;</span><span>,
 </span><span>    </span><span class="hljs-attr">&quot;service_id&quot;</span><span>: </span><span style="color:#f5ab35">1</span><span>,

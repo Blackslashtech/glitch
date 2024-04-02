@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   checker:
     build:
@@ -20,9 +18,8 @@ services:
       - SERVICE_NAME=${SERVICE_NAME}
       - TICK_SECONDS=${TICK_SECONDS}
     networks:
-     range_checker:
+      range_checker:
         ipv4_address: ${IP}
-
 
 networks:
   range_checker:

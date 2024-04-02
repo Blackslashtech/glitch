@@ -19,10 +19,10 @@ sleep 5
 
 echo "Deleting all containers..."
 
-docker rm -f api > /dev/null
-docker rm -f ticker > /dev/null
-docker rmi -f api > /dev/null
-docker rmi -f ticker > /dev/null
+docker rm -f api >/dev/null
+docker rm -f ticker >/dev/null
+docker rmi -f api >/dev/null
+docker rmi -f ticker >/dev/null
 
 SERVICE_LIST=$(echo $SERVICES | tr ',' '\n')
 CHECKER_LIST=$(echo $CHECKERS | tr ',' '\n')
@@ -43,9 +43,9 @@ for TEAM_ID in $(seq 1 $TEAM_COUNT); do
         if [ -d "$dir" ]; then
             HOSTNAME=$(echo "team$TEAM_ID-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
             echo "Deleting $HOSTNAME..."
-            docker rm -f $HOSTNAME > /dev/null 2>&1
-            docker rmi -f $HOSTNAME-service > /dev/null 2>&1
-            docker rmi -f ${HOSTNAME}_service > /dev/null 2>&1
+            docker rm -f $HOSTNAME >/dev/null 2>&1
+            docker rmi -f $HOSTNAME-service >/dev/null 2>&1
+            docker rmi -f ${HOSTNAME}_service >/dev/null 2>&1
         fi
     done
 done
@@ -58,34 +58,34 @@ for SERVICE_NAME in $CHECKER_LIST; do
         echo "Deleting $SERVICE_NAME checker..."
         HOSTNAME=$(echo "checker-$SERVICE_NAME" | tr '[:upper:]' '[:lower:]')
         echo "Deleting $HOSTNAME..."
-        docker rm -f $HOSTNAME > /dev/null 2>&1
-        docker rmi -f $HOSTNAME-checker > /dev/null 2>&1
-        docker rmi -f ${HOSTNAME}_checker > /dev/null 2>&1
+        docker rm -f $HOSTNAME >/dev/null 2>&1
+        docker rmi -f $HOSTNAME-checker >/dev/null 2>&1
+        docker rmi -f ${HOSTNAME}_checker >/dev/null 2>&1
     fi
 done
 
 # Delete all the vpn files
-rm -rf ./.docker/vpn/* > /dev/null
+rm -rf ./.docker/vpn/* >/dev/null
 
 # Delete all the teamdata files
 rm ./teamdata.txt
-rm -rf ./.docker/api/teamdata/* > /dev/null
+rm -rf ./.docker/api/teamdata/* >/dev/null
 
 # Prune docker containers
-docker container prune -f > /dev/null
+docker container prune -f >/dev/null
 
 # Prune docker images
-docker image prune -f > /dev/null
+docker image prune -f >/dev/null
 
 # Prune docker volumes
-docker volume rm range_db > /dev/null
-docker volume prune -f > /dev/null
+docker volume rm range_db >/dev/null
+docker volume prune -f >/dev/null
 
 # Prune docker networks
-docker network prune -f > /dev/null
+docker network prune -f >/dev/null
 
 # Clear debug log
-rm ./debug.log > /dev/null 2>&1
+rm ./debug.log >/dev/null 2>&1
 
 # Clear .env.live
-rm .env.live > /dev/null 2>&1
+rm .env.live >/dev/null 2>&1

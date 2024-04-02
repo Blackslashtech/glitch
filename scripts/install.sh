@@ -2,8 +2,8 @@
 
 # Check if script is run as root
 if [ "$(id -u)" != "0" ]; then
-  echo "Please run this script as root (i.e. sudo sh scripts/install.sh)"
-  exit 1
+    echo "Please run this script as root (i.e. sudo sh scripts/install.sh)"
+    exit 1
 fi
 
 apt update
@@ -18,9 +18,9 @@ sudo chmod a+r /etc/apt/keyrings/docker.asc
 
 # Add the repository to Apt sources:
 echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" |
-  sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+    sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
 sudo apt-get update
 
 # Install docker
