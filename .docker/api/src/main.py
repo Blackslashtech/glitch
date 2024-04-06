@@ -2,6 +2,7 @@ import pymongo
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse, FileResponse, RedirectResponse
 import os
+import re
 
 app = FastAPI()
 
@@ -70,23 +71,18 @@ def get_checks(skip: int = 0, limit: int = 20):
 @app.get("/flagids")
 def get_flagids():
     current_tick = get_current_tick()
-    return (
-        list(
-            db.flags.find(
-                {"tick": {"$gte": current_tick - FLAG_LIFETIME}},
-                {
-                    "service": 1,
-                    "service_id": 1,
-                    "team_id": 1,
-                    "flag_id": 1,
-                    "tick": 1,
-                    "_id": 0,
-                },
-            )
-        )
-        .sort("team_id", 1)
-        .sort("service_id", 1)
-        .sort("tick", -1)
+    return list(
+        db.flags.find(
+            {"tick": {"$gte": current_tick - FLAG_LIFETIME}},
+            {
+                "service": 1,
+                "service_id": 1,
+                "team_id": 1,
+                "flag_id": 1,
+                "tick": 1,
+                "_id": 0,
+            },
+        ).sort({"team_id": 1, "service_id": 1, "tick": -1})
     )
 
 
@@ -125,6 +121,7 @@ def rename_team(name: str, token: str):
     if token not in TEAM_TOKENS:
         return "error: unauthorized"
     team_id = TEAM_TOKENS.index(token) + 1
+    name = re.sub(r"[^a-zA-Z0-9\-\._]", "", name)
     db.teams.update_one({"team_id": team_id}, {"$set": {"team_name": name}})
     return "success"
 
