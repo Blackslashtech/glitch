@@ -20,7 +20,7 @@ services:
       - ./.docker/vpn:/config
       - ./pcaps:/pcaps
     ports:
-      - "${VPN_PORT}:${VPN_PORT}/udp"
+      - "${VPN_PORT}:51820/udp"
     networks:
       game:
         ipv4_address: 10.101.0.1
