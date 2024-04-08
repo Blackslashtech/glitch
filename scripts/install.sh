@@ -27,3 +27,6 @@ echo -e '{ "experimental": true, "ip6tables": true, "dns" : [ "8.8.8.8" , "8.8.4
 
 systemctl enable docker
 systemctl restart docker
+
+# Copy sample.env to .env if it doesn't already exist
+cp -n sample.env .env
