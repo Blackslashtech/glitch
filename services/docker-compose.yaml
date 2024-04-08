@@ -23,7 +23,7 @@ services:
           cpus: $CPU_LIMIT
           memory: $MEM_LIMIT
     networks:
-      range_game:
+      glitch_game:
         ipv4_address: ${IP}
 
 networks:
