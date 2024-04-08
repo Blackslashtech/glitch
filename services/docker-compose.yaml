@@ -27,6 +27,6 @@ services:
         ipv4_address: ${IP}
 
 networks:
-  range_game:
+  glitch_game:
     driver: bridge
     external: true
