@@ -6,9 +6,6 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-apt update
-apt install -y docker docker-compose zip
-
 # Add Docker's official GPG key:
 sudo apt-get update
 sudo apt-get install ca-certificates curl
