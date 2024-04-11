@@ -1,8 +1,10 @@
 import pymongo
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse, FileResponse, RedirectResponse
+import dateutil
 import os
 import re
+import time
 
 app = FastAPI()
 
@@ -14,6 +16,7 @@ VPN_PER_TEAM = VPN_COUNT / TEAM_COUNT
 SERVICES = os.environ.get("SERVICES").split(",")
 TEAM_TOKENS = os.environ.get("TEAM_TOKENS").split(",")
 FLAG_LIFETIME = int(os.environ.get("FLAG_LIFETIME"))
+START_TIME = int(dateutil.parser.parse(os.environ.get("START_TIME")).timestamp())
 
 
 client = pymongo.MongoClient("mongodb://db:27017/")
@@ -131,4 +134,6 @@ def get_team_data(team_token: str):
     # Check if team token is strictly hex characters
     if not all(c in "0123456789abcdef" for c in team_token) or len(team_token) != 32:
         return "invalid-team-token"
+    if time.time() < START_TIME:
+        return "range-not-open"
     return FileResponse(f"/teamdata/{team_token}.zip")
