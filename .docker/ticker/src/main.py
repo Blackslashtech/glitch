@@ -202,7 +202,7 @@ def calculate_scores_simple(tick: int = 0) -> None:
         if (
             db.checks.count_documents({"tick": tick, "code": int(StatusCode.OK)})
             == TEAM_COUNT * len(SERVICES) * 3
-            and time.time() >= START_TIME
+            and time.time() >= START_TIME - TICK_SECONDS
         ):  # and db.checks.count_documents({'tick': tick - 1, 'code': int(StatusCode.OK)}) == TEAM_COUNT * len(SERVICES) * 3:
             db.checks.delete_many({})
             range_initialized = True
@@ -433,8 +433,8 @@ def loop() -> None:
         last_run = time.time()
         tick = round((time.time() - START_TIME) // TICK_SECONDS)
         # Calculate the scores for two ticks ago (to ensure all checks have been completed)
-        print("### TICK " + str(tick - 2) + " ###", flush=True)
-        calculate_scores_simple(tick - 2)
+        print("### TICK " + str(tick) + " ###", flush=True)
+        calculate_scores_simple(tick)
         # Run checks
         checker_id = 1
         for checker_name in CHECKERS:
