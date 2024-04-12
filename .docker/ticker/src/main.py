@@ -193,7 +193,7 @@ def run_checks(service_id: int, service_name: str, target_ips: list, tick: int) 
             return
 
 
-def calculate_scores(tick: int = 0) -> None:
+def calculate_scores_simple(tick: int = 0) -> None:
     global range_initialized
     print("Calculating scores", flush=True)
     # Calculate the scores for each team
@@ -202,9 +202,9 @@ def calculate_scores(tick: int = 0) -> None:
         if (
             db.checks.count_documents({"tick": tick, "code": int(StatusCode.OK)})
             == TEAM_COUNT * len(SERVICES) * 3
+            and time.time() >= START_TIME
         ):  # and db.checks.count_documents({'tick': tick - 1, 'code': int(StatusCode.OK)}) == TEAM_COUNT * len(SERVICES) * 3:
-            db.checks.delete_many({"tick": tick - 1})
-            db.checks.delete_many({"tick": tick})
+            db.checks.delete_many()
             range_initialized = True
             print("Range Initialized! Going hot...", flush=True)
             return
@@ -337,6 +337,7 @@ def calculate_scores(tick: int = 0) -> None:
                 "failed_checks_2": failed_checks_2,
                 "failed_checks_3": failed_checks_3,
             }
+
             db.hosts.update_one(
                 {"service_id": service["service_id"], "team_id": team["team_id"]},
                 {"$set": all_host_data},
@@ -433,7 +434,7 @@ def loop() -> None:
         tick = round((time.time() - START_TIME) // TICK_SECONDS)
         # Calculate the scores for two ticks ago (to ensure all checks have been completed)
         print("### TICK " + str(tick - 2) + " ###", flush=True)
-        calculate_scores(tick - 2)
+        calculate_scores_simple(tick - 2)
         # Run checks
         checker_id = 1
         for checker_name in CHECKERS:
