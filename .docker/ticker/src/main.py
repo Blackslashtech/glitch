@@ -204,7 +204,7 @@ def calculate_scores_simple(tick: int = 0) -> None:
             == TEAM_COUNT * len(SERVICES) * 3
             and time.time() >= START_TIME
         ):  # and db.checks.count_documents({'tick': tick - 1, 'code': int(StatusCode.OK)}) == TEAM_COUNT * len(SERVICES) * 3:
-            db.checks.delete_many()
+            db.checks.delete_many({})
             range_initialized = True
             print("Range Initialized! Going hot...", flush=True)
             return
