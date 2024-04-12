@@ -44,6 +44,7 @@ services:
       - PEERS=${PEERS}
       - SERVICES=${CHECKERS}
       - TEAM_TOKENS=${TEAM_TOKENS}
+      - START_TIME=${START_TIME}
     volumes:
       - ./.docker/api/src:/code
       - ./.docker/vpn:/vpn
