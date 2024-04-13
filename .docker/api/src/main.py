@@ -24,7 +24,10 @@ db = client["range"]
 
 
 def get_current_tick():
-    return db.ticks.find_one(sort=[("tick", pymongo.DESCENDING)])["tick"]
+    try:
+        return db.ticks.find_one(sort=[("tick", pymongo.DESCENDING)])["tick"]
+    except:
+        return 0
 
 
 @app.get("/")
