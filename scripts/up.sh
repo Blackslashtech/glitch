@@ -83,7 +83,7 @@ sleep 5
 if [ "$CAPTURE_PCAPS" = true ]; then
   echo "Starting tcpdump on vpn interface..."
   mkdir -p ./pcaps/$START_TIME_PATH
-  docker exec -d vpn sh -c 'apk update && apk add tcpdump && tcpdump -i any -G $TICK_SECONDS -w /pcaps/$START_TIME_PATH/range_$START_TIME_%Y-%m-%dT%H-%M-%SZ.pcap -s 0 -S net 10.101.0.0/16'
+  docker exec -d vpn sh -c 'apk update && apk add tcpdump && tcpdump -i any -G $TICK_SECONDS -w /pcaps/$START_TIME_PATH/range_$START_TIME_%Y-%m-%dT%H-%M-%SZ.pcap -s 0 -S net 10.101.0.0/15'
 fi
 
 # Loop from 1 to $TEAM_COUNT - 1
