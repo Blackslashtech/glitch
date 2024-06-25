@@ -2244,7 +2244,7 @@ a {
 }
 
 .body {
-  background-image: url("https://assets-global.website-files.com/655f86ce43b70e3d6e3e541e/655f87d211e95d231010dea9_glitch-range.jpg"),
+  background-image: url("/static/img/glitch-background.png"),
     linear-gradient(#00080e, #00080e);
   background-position:
     50%,
@@ -2268,7 +2268,7 @@ a {
   white-space: nowrap;
   background-color: #00080e;
   background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
-    url("https://assets-global.website-files.com/655f86ce43b70e3d6e3e541e/655f87d211e95d231010dea9_glitch-range.jpg");
+    url("/static/img/glitch-background.png");
   background-position:
     0 0,
     50%;
@@ -2479,7 +2479,7 @@ a {
 
 .logo {
   height: 45px;
-  background-image: url("https://assets-global.website-files.com/655f86ce43b70e3d6e3e541e/65cce7b6faf5aba645e38c6f_Screenshot%202024-02-14%20at%2010.13.35.png");
+  background-image: url("/static/img/glitch-name.png");
   background-position: 50%;
   background-repeat: no-repeat;
   background-size: contain;
@@ -2511,7 +2511,7 @@ a {
 
 .loading-body {
   background-image: linear-gradient(rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.58)),
-    url("https://assets-global.website-files.com/655f86ce43b70e3d6e3e541e/655f87d211e95d231010dea9_glitch-range.jpg");
+    url("/static/img/glitch-background.png");
   background-position:
     0 0,
     50%;
@@ -2560,7 +2560,7 @@ a {
 .instructions-body {
   color: #fff;
   background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
-    url("https://assets-global.website-files.com/655f86ce43b70e3d6e3e541e/655f87d211e95d231010dea9_glitch-range.jpg");
+    url("/static/img/glitch-background.png");
   background-position:
     0 0,
     50%;

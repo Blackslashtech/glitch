@@ -1,5 +1,7 @@
 # Glitch Range
 
+![Glitch Range](https://github.com/Blackslashtech/glitch/blob/main/.docker/frontend/src/static/img/glitch-background.png)
+
 A general purpose attack-defense range for zero-config deployment
 
 ## Usage
