@@ -2230,7 +2230,7 @@ textarea.w-select {
 
 :root {
   --error: #e28215;
-  --green: #00d2bf;
+  --blue: #000b4a;
   --black: black;
   --grey: #5f5f5f;
   --down: #bb0e0e;
@@ -2285,7 +2285,7 @@ a {
 .top-bar {
   z-index: 50;
   height: 70px;
-  border-bottom: 5px solid var(--green);
+  border-bottom: 5px solid var(--blue);
   background-color: var(--black);
   justify-content: flex-end;
   align-items: center;
@@ -2550,7 +2550,7 @@ a {
 .loading-bar {
   width: 75%;
   height: 100%;
-  background-color: var(--green);
+  background-color: var(--blue);
 }
 
 .body-3 {
