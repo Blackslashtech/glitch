@@ -73,18 +73,18 @@
           <div class="status-block header">
             <div><strong class="bold-text">{{service.name}}</strong></div>
             <div>10.100.T.{{service.id}}</div>
-            {% if service.attackers == 0 %}
+            {% if service.victims == 0 %}
             <div>⌖ No Attackers</div>
-            {% elif service.attackers == 1 %}
-            <div>⌖ {{service.attackers}} Attacker</div>
-            {% else %}
-            <div>⌖ {{service.attackers}} Attackers</div>
-            {% endif %} {% if service.victims == 0 %}
-            <div>⛨ No Victims</div>
             {% elif service.victims == 1 %}
-            <div>⛨ {{service.victims}} Victim</div>
+            <div>⌖ {{service.victims}} Attacker</div>
             {% else %}
-            <div>⛨ {{service.victims}} Victims</div>
+            <div>⌖ {{service.victims}} Attackers</div>
+            {% endif %} {% if service.attackers == 0 %}
+            <div>⛨ No Victims</div>
+            {% elif service.attackers == 1 %}
+            <div>⛨ {{service.attackers}} Victim</div>
+            {% else %}
+            <div>⛨ {{service.attackers}} Victims</div>
             {% endif %} {% if service.firstblood != "None" %}
             <div>🩸 {{service.firstblood}}</div>
             {% endif %}
