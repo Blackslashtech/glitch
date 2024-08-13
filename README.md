@@ -84,7 +84,10 @@ The range network is defined in [`docker-compose.yaml`](docker-compose.yaml):
 # License
 
 This work is licensed under a
-[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].  This work may be freely used, modified, and distributed for non-commercial activites.  Express permissions by Blackslash Technology Solutions is required for commercial use of this work (defined as any use, modification, deployment, or distribution of this work in exchange for payment, goods, or services).
+
+Copyright 2024 Blackslash Technology Solutions.  All rights reserved.
+
 
 [![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
 
