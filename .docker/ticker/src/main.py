@@ -237,6 +237,11 @@ def calculate_scores_simple(tick: int = 0) -> None:
                     "team_id": team["team_id"],
                     "code": int(StatusCode.OK),
                 }
+            ) / db.checks.count_documents(
+                {
+                    "service_id": service["service_id"],
+                    "team_id": team["team_id"],
+                }
             )
             offense_score = db.steals.count_documents(
                 {"service_id": service["service_id"], "stealing_team": team["team_id"]}
@@ -246,7 +251,7 @@ def calculate_scores_simple(tick: int = 0) -> None:
             )
             flags_gained = offense_score
             flags_lost = defense_score
-            service_score = sla_score + (offense_score - defense_score)
+            service_score = sla_score * (offense_score - defense_score)
             host_sla_delta = sla_score - old_host["sla"]
             host_offense_delta = offense_score - old_host["offense"]
             host_defense_delta = defense_score - old_host["defense"]
@@ -254,7 +259,7 @@ def calculate_scores_simple(tick: int = 0) -> None:
             flags_lost_delta = defense_score - old_host["flags_lost"]
             team_offense += offense_score
             team_defense += defense_score
-            team_sla += sla_score
+            team_sla += sla_score / len(SERVICES)
             team_score += service_score
             # check_status = db.checks.find({'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'check'}).sort('tick', -1).limit(1).get(0, None)
             check_status = db.checks.find_one(

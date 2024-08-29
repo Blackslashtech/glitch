@@ -99,7 +99,7 @@
                 <strong class="bold-text">{{team.data.team_name}}</strong>
               </div>
               <div>10.100.{{team.data.team_id}}.S</div>
-              <div>{{team.data.score}} (+{{team.data.score_delta}})</div>
+              <div>{{'%0.2f'|format(team.data.score)}} ({{'%+0.2f'|format(team.data.score_delta)}})</div>
             </div>
             <div
               id="w-node-_19665a84-ad7a-ca8d-acc7-ffe46f01f743-ca2c6ea1"
@@ -109,8 +109,8 @@
               <div class="info-text">(+{{team.data.offense_delta}})</div>
               <div class="info-text">⛨ -{{team.data.defense}}</div>
               <div class="info-text">(-{{team.data.defense_delta}})</div>
-              <div class="info-text">⏲ {{team.data.sla}}</div>
-              <div class="info-text">(+{{team.data.sla_delta}})</div>
+              <div class="info-text">⏲ {{'%0.1f'|format(team.data.sla*100)}}%</div>
+              <div class="info-text">({{'%+0.1f'|format(team.data.sla_delta*100)}}%)</div>
             </div>
           </div>
           {% for host in team.hosts.values() %}
@@ -123,8 +123,8 @@
               <div class="info-text">(+{{host.offense_delta}})</div>
               <div class="info-text">⛨ -{{host.defense}}</div>
               <div class="info-text">(-{{host.defense_delta}})</div>
-              <div class="info-text">⏲ {{host.sla}}</div>
-              <div class="info-text">(+{{host.sla_delta}})</div>
+              <div class="info-text">⏲ {{'%+0.1f'|format(host.sla*100)}}%</div>
+              <div class="info-text">({{'%+0.1f'|format(host.sla_delta*100)}}%)</div>
             </div>
             <div
               id="w-node-_7ed03803-206a-6a11-646c-486d8caec611-ca2c6ea1"
