@@ -75,6 +75,7 @@ def init() -> None:
                     "hostname": hostname,
                     "score": 0,
                     "scores": [],
+                    "multiplier": 1,
                     "sla": 0,
                     "offense": 0,
                     "defense": 0,
@@ -94,6 +95,7 @@ def init() -> None:
                 "score": 0,
                 "scores": [],
                 "team_name": "Team " + str(i),
+                "multiplier": 1,
                 "sla": 0,
                 "offense": 0,
                 "defense": 0,
@@ -193,7 +195,7 @@ def run_checks(service_id: int, service_name: str, target_ips: list, tick: int) 
             return
 
 
-def calculate_scores_simple(tick: int = 0) -> None:
+def calculate_scores(tick: int = 0) -> None:
     global range_initialized
     print("Calculating scores", flush=True)
     # Calculate the scores for each team
@@ -221,6 +223,7 @@ def calculate_scores_simple(tick: int = 0) -> None:
     for team in db.teams.find():
         team_score = 0
         old_team = db.teams.find_one({"team_id": team["team_id"]})
+        team_multiplier = 0
         team_sla = 0
         team_offense = 0
         team_defense = 0
@@ -237,12 +240,14 @@ def calculate_scores_simple(tick: int = 0) -> None:
                     "team_id": team["team_id"],
                     "code": int(StatusCode.OK),
                 }
-            ) / db.checks.count_documents(
+            )
+            multiplier = sla_score / db.checks.count_documents(
                 {
                     "service_id": service["service_id"],
                     "team_id": team["team_id"],
                 }
             )
+
             offense_score = db.steals.count_documents(
                 {"service_id": service["service_id"], "stealing_team": team["team_id"]}
             )
@@ -251,15 +256,17 @@ def calculate_scores_simple(tick: int = 0) -> None:
             )
             flags_gained = offense_score
             flags_lost = defense_score
-            service_score = sla_score * (offense_score - defense_score)
+            service_score = max(multiplier * (sla_score + offense_score - defense_score), 0)
+            host_multiplier_delta = multiplier - old_host["multiplier"]
             host_sla_delta = sla_score - old_host["sla"]
             host_offense_delta = offense_score - old_host["offense"]
             host_defense_delta = defense_score - old_host["defense"]
             flags_gained_delta = offense_score - old_host["flags_gained"]
             flags_lost_delta = defense_score - old_host["flags_lost"]
+            team_multiplier += multiplier / len(SERVICES)
             team_offense += offense_score
             team_defense += defense_score
-            team_sla += sla_score / len(SERVICES)
+            team_sla += sla_score
             team_score += service_score
             # check_status = db.checks.find({'service_id': service['service_id'], 'team_id': team['team_id'], 'action': 'check'}).sort('tick', -1).limit(1).get(0, None)
             check_status = db.checks.find_one(
@@ -323,9 +330,11 @@ def calculate_scores_simple(tick: int = 0) -> None:
             all_host_data = {
                 "score": service_score,
                 "scores": old_host["scores"] + [service_score],
+                "multiplier": multiplier,
                 "sla": sla_score,
                 "offense": offense_score,
                 "defense": defense_score,
+                "multiplier_delta": host_multiplier_delta,
                 "sla_delta": host_sla_delta,
                 "offense_delta": host_offense_delta,
                 "defense_delta": host_defense_delta,
@@ -360,6 +369,7 @@ def calculate_scores_simple(tick: int = 0) -> None:
                 + comments,
                 flush=True,
             )
+        multiplier_delta = team_multiplier - old_team["multiplier"]
         sla_delta = team_sla - old_team["sla"]
         offense_delta = team_offense - old_team["offense"]
         defense_delta = team_defense - old_team["defense"]
@@ -370,9 +380,11 @@ def calculate_scores_simple(tick: int = 0) -> None:
             "score": team_score,
             "scores": old_team["scores"] + [team_score],
             "score_delta": score_delta,
+            "multiplier": team_multiplier,
             "sla": team_sla,
             "offense": team_offense,
             "defense": team_defense,
+            "multiplier_delta": multiplier_delta,
             "sla_delta": sla_delta,
             "offense_delta": offense_delta,
             "defense_delta": defense_delta,
@@ -439,7 +451,7 @@ def loop() -> None:
         tick = round((time.time() - START_TIME) // TICK_SECONDS)
         # Calculate the scores for two ticks ago (to ensure all checks have been completed)
         print("### TICK " + str(tick - 2) + " ###", flush=True)
-        calculate_scores_simple(tick - 2)
+        calculate_scores(tick - 2)
         # Run checks
         checker_id = 1
         for checker_name in CHECKERS:

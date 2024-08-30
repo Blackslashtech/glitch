@@ -109,8 +109,10 @@
               <div class="info-text">(+{{team.data.offense_delta}})</div>
               <div class="info-text">⛨ -{{team.data.defense}}</div>
               <div class="info-text">(-{{team.data.defense_delta}})</div>
-              <div class="info-text">⏲ {{'%0.1f'|format(team.data.sla*100)}}%</div>
-              <div class="info-text">({{'%+0.1f'|format(team.data.sla_delta*100)}}%)</div>
+              <div class="info-text">⏲ {{team.data.sla}}</div>
+              <div class="info-text">(+{{team.data.sla_delta}})</div>
+              <div class="info-text">⏱ {{'%0.1f'|format(team.data.multiplier*100)}}%</div>
+              <div class="info-text">({{'%+0.1f'|format(team.data.multiplier_delta*100)}}%)</div>
             </div>
           </div>
           {% for host in team.hosts.values() %}
@@ -123,8 +125,10 @@
               <div class="info-text">(+{{host.offense_delta}})</div>
               <div class="info-text">⛨ -{{host.defense}}</div>
               <div class="info-text">(-{{host.defense_delta}})</div>
-              <div class="info-text">⏲ {{'%+0.1f'|format(host.sla*100)}}%</div>
-              <div class="info-text">({{'%+0.1f'|format(host.sla_delta*100)}}%)</div>
+              <div class="info-text">⏲ {{host.sla}}</div>
+              <div class="info-text">(+{{host.sla_delta}})</div>
+              <div class="info-text">⏱ {{'%0.1f'|format(host.multiplier*100)}}%</div>
+              <div class="info-text">({{'%+0.1f'|format(host.multiplier_delta*100)}}%)</div>
             </div>
             <div
               id="w-node-_7ed03803-206a-6a11-646c-486d8caec611-ca2c6ea1"
