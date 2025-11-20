@@ -1,5 +1,9 @@
 # Glitch Range
 
+> [!WARNING]
+> This is a depricated version of Glitch Range, and is no longer officially supported.
+> The current version of Glitch Range is still undergoing internal development and has not yet been released as open-source.
+
 ![Glitch Range](https://github.com/Blackslashtech/glitch/blob/main/.docker/frontend/src/static/img/glitch-background.png)
 
 A general purpose attack-defense range for zero-config deployment
